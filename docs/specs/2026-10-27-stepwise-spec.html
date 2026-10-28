@@ -1,0 +1,851 @@
+<title>Stepwise product spec</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky contents rail + one 68ch reading column; tables and code scroll in place. */
+:root{
+  --bg:#FBFAFD;--surface:#FFFFFF;--fg:#1B1830;--muted:#5F5A73;--line:#E4E1EE;
+  --accent:#534AB7;--accent-tint:#EEEDFE;
+  --done:#0F6E56;--done-tint:#E1F5EE;
+  --warn:#993C1D;--warn-tint:#FAECE7;
+  --font-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12101C;--surface:#1A1726;--fg:#ECEAF5;--muted:#A29DB8;--line:#2D2940;
+  --accent:#A9A2F0;--accent-tint:#26214A;--done:#5DCAA5;--done-tint:#0F3A2F;--warn:#F0997B;--warn-tint:#3A1E14;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12101C;--surface:#1A1726;--fg:#ECEAF5;--muted:#A29DB8;--line:#2D2940;
+  --accent:#A9A2F0;--accent-tint:#26214A;--done:#5DCAA5;--done-tint:#0F3A2F;--warn:#F0997B;--warn-tint:#3A1E14;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;padding-top:40px;font-size:13px;max-height:calc(100vh - 48px);overflow:auto}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 0 3px 10px;border-left:1px solid var(--line)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+main{min-width:0;max-width:72ch}
+header{padding:40px 0 8px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(34px,5vw,48px);line-height:1.08;margin:8px 0 12px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.2;margin:56px 0 12px;text-wrap:balance;scroll-margin-top:24px}
+h3{font-size:17px;font-weight:600;margin:28px 0 6px}
+p,ul,ol{margin:0 0 14px}
+li{margin:4px 0}
+.lede{font-size:18px;color:var(--muted)}
+code,.mono{font-family:var(--font-mono);font-size:.86em}
+code{background:var(--accent-tint);color:var(--fg);padding:1px 5px;border-radius:4px}
+pre{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;margin:0 0 16px}
+pre code{background:none;padding:0}
+.tbl{overflow-x:auto;margin:0 0 18px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.5}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+tr:last-child td{border-bottom:none}
+td:first-child{white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:1px 9px;border-radius:999px;white-space:nowrap}
+.p-mvp{background:var(--done-tint);color:var(--done)}
+.p-v1{background:var(--accent-tint);color:var(--accent)}
+.p-v2{background:var(--warn-tint);color:var(--warn)}
+.p-assume{background:var(--warn-tint);color:var(--warn)}
+.note{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 16px;margin:0 0 16px;font-size:15px}
+.note strong{font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted);margin:0 0 20px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 18px}
+.flow span.s{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:14px;font-weight:500}
+.flow span.a{color:var(--muted)}
+/* Hero strip: binary search mid-step, the product's own picture. */
+.strip{display:flex;gap:4px;margin:18px 0 6px;flex-wrap:wrap}
+.cell{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.cell b{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.cell.out b{opacity:.35}
+.cell.mid b{border:2px solid var(--accent)}
+.cell.hit b{background:var(--done-tint);color:var(--done);border-color:var(--done)}
+.cell .p{height:14px;color:var(--accent);font-weight:500}
+.caption{font-size:13px;color:var(--muted);margin-bottom:8px}
+pre.mermaid{background:var(--surface);text-align:center}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}nav.toc{display:none}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow" style="margin-bottom:10px">Contents</div>
+  <a href="#summary">Summary</a>
+  <a href="#problem">Problem</a>
+  <a href="#users">Users</a>
+  <a href="#goals">Goals and metrics</a>
+  <a href="#principles">Product principles</a>
+  <a href="#scope">Scope by release</a>
+  <a href="#requirements">Functional requirements</a>
+  <a href="#ux">UX specification</a>
+  <a href="#motion">Motion</a>
+  <a href="#a11y">Accessibility</a>
+  <a href="#viz">Visualization system</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#stack">Tech stack</a>
+  <a href="#kbui">Building on kbui</a>
+  <a href="#perf">Performance</a>
+  <a href="#security">Safety and security</a>
+  <a href="#quality">Testing and quality</a>
+  <a href="#analytics">Analytics</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#risks">Risks and open questions</a>
+  <a href="#appendix">Appendix</a>
+</nav>
+
+<main>
+<header>
+  <div class="eyebrow">Product requirements · Tech stack · UX spec</div>
+  <h1>Stepwise</h1>
+  <p class="lede">A practice space for data structures and algorithms where you write a solution and watch it run, one step at a time, drawn the way you would sketch it on a whiteboard.</p>
+  <div class="strip" aria-label="Example: binary search for 11, mid lands on index 5">
+    <div class="cell out"><span>0</span><b>1</b><span class="p"></span></div>
+    <div class="cell out"><span>1</span><b>3</b><span class="p"></span></div>
+    <div class="cell out"><span>2</span><b>5</b><span class="p"></span></div>
+    <div class="cell out"><span>3</span><b>7</b><span class="p"></span></div>
+    <div class="cell"><span>4</span><b>9</b><span class="p">lo</span></div>
+    <div class="cell mid hit"><span>5</span><b>11</b><span class="p">mid</span></div>
+    <div class="cell"><span>6</span><b>13</b><span class="p"></span></div>
+    <div class="cell"><span>7</span><b>15</b><span class="p">hi</span></div>
+  </div>
+  <div class="caption">Step 6 of 6 · “nums[5] is 11. Found it.”</div>
+  <div class="meta"><span>Working name: Stepwise</span><span>Status: draft v0.1</span><span>Date: 27 Oct 2026</span></div>
+</header>
+
+<section id="summary">
+<h2>Summary</h2>
+<p>Learners who think in pictures struggle with DSA because the material arrives as code and math notation, while understanding comes from seeing state change. Existing tools split the job: LeetCode-style sites give you problems and a pass/fail verdict, and visualizers such as VisuAlgo or Python Tutor show either canned animations or generic box-and-arrow memory diagrams.</p>
+<p>Stepwise joins the two. A learner picks a problem, writes a solution, and presses <strong>Walk through</strong>. Their own code runs in the browser, every step is recorded, and the system detects what the data is (a grid, an array with two pointers, a linked list, a tree) and draws it that way. Each step gets one plain-English sentence. When a test fails, Stepwise jumps to the step where things went wrong.</p>
+<div class="flow" aria-label="Core loop"><span class="s">Pick a problem</span><span class="a">→</span><span class="s">Write code</span><span class="a">→</span><span class="s">Walk through</span><span class="a">→</span><span class="s">Fix and repeat</span></div>
+<p>The MVP is Python-only, runs fully in the browser, ships with 30 original problems and six visual views, and needs no account to start.</p>
+<p>The interface is built with <strong>kbui</strong>, the in-house React component library. Anything Stepwise needs that kbui lacks is added to kbui rather than copied into the product. <a href="#kbui">Building on kbui</a> lists what already fits, the 20 gaps, and the order to close them in.</p>
+</section>
+
+<section id="problem">
+<h2>Problem</h2>
+<h3>What learners run into</h3>
+<ul>
+  <li><strong>The work is invisible.</strong> A loop runs 40 times in a blink. The learner sees only the final output, so the cause of a wrong answer stays hidden.</li>
+  <li><strong>Notation is a barrier.</strong> Σ, big-O and index arithmetic describe loops in a second language that many self-taught learners never learned.</li>
+  <li><strong>Debuggers don't fit the job.</strong> A debugger lists <code>i = 3, j = 7</code>. A learner needs to see <code>i</code> and <code>j</code> as arrows on the array.</li>
+  <li><strong>Visualizers are disconnected from practice.</strong> Watching a canned BFS animation is different from understanding why <em>your</em> BFS visits a cell twice.</li>
+</ul>
+<h3>Evidence status</h3>
+<div class="note">Every claim on this page about learner behavior is an <span class="pill p-assume">Assumption</span> until Phase 0 research tests it. The roadmap opens with a two-week validation phase that has kill criteria (see <a href="#roadmap">Roadmap</a>).</div>
+<div class="tbl"><table>
+<thead><tr><th>Assumption</th><th>How we test it</th><th>Fails if</th></tr></thead>
+<tbody>
+<tr><td>A1</td><td>Visual learners solve more problems when they can step through their own code drawn as a picture.</td><td>Fewer than 5 of 8 test participants fix a seeded bug faster with Stepwise than with print statements.</td></tr>
+<tr><td>A2</td><td>Auto-detected views are right often enough that people trust them.</td><td>The detector picks the wrong primary view in more than 15% of the 30 MVP problems' common solutions.</td></tr>
+<tr><td>A3</td><td>Python in the browser starts fast enough.</td><td>Cold start to first walkthrough takes over 6 s on a mid-range laptop over 4G.</td></tr>
+<tr><td>A4</td><td>Learners step backwards, not only forwards.</td><td>Fewer than 30% of walkthrough sessions use step-back or scrub.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="users">
+<h2>Users</h2>
+<div class="tbl"><table>
+<thead><tr><th>Persona</th><th>Situation</th><th>What they need from Stepwise</th></tr></thead>
+<tbody>
+<tr><td><strong>Visual learner</strong> (primary)</td><td>Self-taught or bootcamp graduate. Comfortable writing basic Python, lost once indexes, pointers or recursion appear.</td><td>See state change, connect each line to its effect, learn notation by seeing it.</td></tr>
+<tr><td><strong>Interview prepper</strong></td><td>Grinding problems before interviews. Knows patterns by name, can't always explain why a solution works.</td><td>Fast feedback on wrong answers, pattern recognition, keyboard-first speed.</td></tr>
+<tr><td><strong>CS student</strong></td><td>Taking a data structures course with homework in Python.</td><td>Understand lecture concepts by running them, check edge cases.</td></tr>
+<tr><td><strong>Instructor</strong> (v2)</td><td>Teaches a course or bootcamp cohort.</td><td>Shareable walkthroughs, assigned problem sets, aggregate view of where a cohort gets stuck.</td></tr>
+</tbody></table></div>
+<h3>Jobs to be done</h3>
+<ul>
+  <li>When my answer is wrong, show me the exact moment my code did something I didn't expect.</li>
+  <li>When I read a solution I don't understand, let me watch it run on a small input.</li>
+  <li>When I learn a new pattern (two pointers, BFS, DP), show me what it looks like so I recognize it next time.</li>
+</ul>
+</section>
+
+<section id="goals">
+<h2>Goals and metrics</h2>
+<h3>Goals</h3>
+<ul>
+  <li>Make the effect of every line of a learner's code visible in a form that matches how DSA is taught.</li>
+  <li>Keep the interface simple enough that a first-time visitor completes a walkthrough within 60 seconds, with no signup.</li>
+  <li>Feel fast and calm: instant stepping, smooth motion, no flicker while typing.</li>
+</ul>
+<h3>Non-goals for MVP</h3>
+<ul>
+  <li>Competing with LeetCode on problem count. 30 well-chosen problems beat 3,000 with no visuals.</li>
+  <li>Contests, rankings or social feeds.</li>
+  <li>Languages other than Python (JS/TS in v1, others in v2).</li>
+  <li>A full IDE. No files, no packages, no terminal.</li>
+  <li>Mobile code editing. Phones get read-and-step mode.</li>
+</ul>
+<h3>Success metrics</h3>
+<div class="tbl"><table>
+<thead><tr><th>Metric</th><th>Definition</th><th>MVP target</th></tr></thead>
+<tbody>
+<tr><td>Activation</td><td>New visitors who complete one full walkthrough in their first session</td><td>≥ 60%</td></tr>
+<tr><td>Time to first picture</td><td>Landing to first rendered step, median</td><td>≤ 60 s</td></tr>
+<tr><td>Active stepping</td><td>Walkthroughs that use step-back, scrub or a click-to-jump</td><td>≥ 40%</td></tr>
+<tr><td>Fix after walk</td><td>Failed runs followed by a passing run within 10 minutes, among those who opened a walkthrough</td><td>≥ 15 points higher than among those who didn't</td></tr>
+<tr><td>D7 return</td><td>Learners who come back within 7 days</td><td>≥ 25%</td></tr>
+<tr><td>Understanding</td><td>“I understand why my solution works” after solving, 1–5 in-app prompt</td><td>median ≥ 4</td></tr>
+<tr><td>View accuracy</td><td>Walkthroughs where the learner doesn't change the detected primary view</td><td>≥ 85%</td></tr>
+</tbody></table></div>
+<p>Guardrail metrics: crash-free sessions ≥ 99.5%, p75 interaction latency (INP) ≤ 100 ms, runner timeouts ≤ 2% of runs.</p>
+</section>
+
+<section id="principles">
+<h2>Product principles</h2>
+<ol>
+  <li><strong>Three screens, one primary action each.</strong> Library: pick. Workspace: walk through. Walk mode: step. If a feature needs a fourth screen, it waits.</li>
+  <li><strong>One step, one moment.</strong> The highlighted line, the picture, the variables and the sentence always describe the same instant. Nothing lags behind.</li>
+  <li><strong>Only what changed moves.</strong> Motion directs the eye. Everything that didn't change in this step stays perfectly still.</li>
+  <li><strong>Never go blank.</strong> Broken code keeps the last good picture on screen, dimmed, with a quiet badge. Learners mid-thought shouldn't lose their place.</li>
+  <li><strong>Draw it like a teacher would.</strong> Pointers are labeled arrows, grids are grids, trees are trees. The generic memory diagram is a fallback, not the default.</li>
+  <li><strong>Words beside pictures.</strong> Every step has one plain sentence. No jargon that the problem itself didn't introduce.</li>
+  <li><strong>The learner can always override.</strong> Any automatic choice (view, speed, input) is one click to change and stays changed.</li>
+</ol>
+</section>
+
+<section id="scope">
+<h2>Scope by release</h2>
+<div class="tbl"><table>
+<thead><tr><th>Capability</th><th>Release</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Problem library (30 original problems)</td><td><span class="pill p-mvp">MVP</span></td><td>Arrays, two pointers, sliding window, binary search, stacks, queues, linked lists, trees, grids/BFS/DFS, recursion, hashing</td></tr>
+<tr><td>Python editor and test runner in browser</td><td><span class="pill p-mvp">MVP</span></td><td>Pyodide in a Web Worker</td></tr>
+<tr><td>Walk mode with step controls and scrubber</td><td><span class="pill p-mvp">MVP</span></td><td>Forward, back, play, speed, keyboard</td></tr>
+<tr><td>Six auto-detected views</td><td><span class="pill p-mvp">MVP</span></td><td>Array + pointers, grid, linked list, binary tree, hash map/set, call stack + recursion tree</td></tr>
+<tr><td>Generic fallback view</td><td><span class="pill p-mvp">MVP</span></td><td>Boxes and arrows for anything undetected</td></tr>
+<tr><td>Step narration</td><td><span class="pill p-mvp">MVP</span></td><td>Template-based, screen-reader announced</td></tr>
+<tr><td>Jump to failure</td><td><span class="pill p-mvp">MVP</span></td><td>Jump to the exception step or the wrong return</td></tr>
+<tr><td>Live mode while typing</td><td><span class="pill p-mvp">MVP</span></td><td>Off by default, toggle in walk mode</td></tr>
+<tr><td>Local progress, no account</td><td><span class="pill p-mvp">MVP</span></td><td>IndexedDB; optional sign-in syncs</td></tr>
+<tr><td>Predict mode</td><td><span class="pill p-v1">v1</span></td><td>Pause and ask “which cell is visited next?”</td></tr>
+<tr><td>Divergence diff against reference</td><td><span class="pill p-v1">v1</span></td><td>First step where your state differs from a reference solution</td></tr>
+<tr><td>Click data to time-travel</td><td><span class="pill p-v1">v1</span></td><td>Click a cell to jump to the step that last changed it</td></tr>
+<tr><td>Graph, DP table, heap, stack/queue, string views</td><td><span class="pill p-v1">v1</span></td><td></td></tr>
+<tr><td>Complexity strip and notation bridge</td><td><span class="pill p-v1">v1</span></td><td>Operation count vs input size; Σ shown on hover over loops</td></tr>
+<tr><td>JavaScript and TypeScript</td><td><span class="pill p-v1">v1</span></td><td>Instrumented, runs in a worker</td></tr>
+<tr><td>Bring your own problem</td><td><span class="pill p-v1">v1</span></td><td>An LLM proposes a view spec from the pasted problem statement</td></tr>
+<tr><td>Shareable walkthrough links</td><td><span class="pill p-v1">v1</span></td><td>Read-only, opens at a chosen step</td></tr>
+<tr><td>Java, C++, Go, Rust</td><td><span class="pill p-v2">v2</span></td><td>Server sandbox with Debug Adapter Protocol</td></tr>
+<tr><td>Instructor mode</td><td><span class="pill p-v2">v2</span></td><td>Problem sets, cohort insights</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="requirements">
+<h2>Functional requirements (MVP)</h2>
+<p>Each requirement lists the acceptance checks that close it.</p>
+
+<h3>FR-1 Problem library</h3>
+<ul>
+  <li>Shows each problem's title, pattern tag, difficulty and the learner's status (new, attempted, solved).</li>
+  <li>Filter by pattern and difficulty; search by title. Filters persist across visits.</li>
+  <li><em>Accept:</em> list renders from local cache in under 100 ms; keyboard users can reach and open any problem with Tab and Enter.</li>
+</ul>
+
+<h3>FR-2 Problem statement</h3>
+<ul>
+  <li>Statement, examples and constraints in a drawer that opens over the editor. Closed by default once the learner has opened it once.</li>
+  <li><em>Accept:</em> drawer toggles with <code>P</code>; focus moves into it and returns to the editor on close.</li>
+</ul>
+
+<h3>FR-3 Editor</h3>
+<ul>
+  <li>Python syntax highlighting, bracket matching, indentation, basic completion of names in scope.</li>
+  <li>Starter code per problem. The draft autosaves locally after 1 s of idle time.</li>
+  <li><em>Accept:</em> typing latency under 16 ms with a 200-line file; reloading the page restores the draft.</li>
+</ul>
+
+<h3>FR-4 Run tests</h3>
+<ul>
+  <li>Runs all visible test cases off the main thread and shows pass or fail per case, with expected and actual values.</li>
+  <li><em>Accept:</em> a correct solution for any MVP problem reports results in under 500 ms after the runtime is warm.</li>
+</ul>
+
+<h3>FR-5 Walk through</h3>
+<ul>
+  <li>Runs the selected test case with tracing on and switches the workspace into walk mode. Defaults to the first failing case, else the first case.</li>
+  <li>Records at most 5,000 steps. Past that, the walkthrough keeps what it has and says so.</li>
+  <li><em>Accept:</em> trace of 5,000 steps is ready in under 400 ms; the walk opens at step 1 with the line, picture and sentence in sync.</li>
+</ul>
+
+<h3>FR-6 Step controls</h3>
+<ul>
+  <li>Previous, play/pause, next, scrubber, jump to start and end, speed (0.5×, 1×, 2×, 4×).</li>
+  <li>Step over and step out for function calls; “next time this line runs” by clicking a line number.</li>
+  <li><em>Accept:</em> each step renders within one frame (under 8 ms of main-thread work); scrubbing across 5,000 steps never drops below 50 fps.</li>
+</ul>
+
+<h3>FR-7 Code and state sync</h3>
+<ul>
+  <li>Current line highlighted. A compact variables panel lists locals; values that changed this step pulse once.</li>
+  <li>Call stack shown when depth is above 1.</li>
+  <li><em>Accept:</em> at every step, the highlighted line, the views and the variable panel come from the same snapshot (checked by an automated test that compares them).</li>
+</ul>
+
+<h3>FR-8 Automatic views</h3>
+<ul>
+  <li>The detector assigns a view to each relevant variable and lays out at most three primary views. A badge names what it found (“Grid + BFS”).</li>
+  <li>The learner can switch any variable's view or pin it. Pins persist per problem.</li>
+  <li><em>Accept:</em> on the reference solution of every MVP problem, the detector picks the intended primary view (golden tests).</li>
+</ul>
+
+<h3>FR-9 Narration</h3>
+<ul>
+  <li>One sentence per step, generated from templates keyed on the kind of event (compare, assign, append, pop, call, return, branch taken).</li>
+  <li><em>Accept:</em> no step shows an empty sentence; screen readers announce it through a polite live region.</li>
+</ul>
+
+<h3>FR-10 Jump to failure</h3>
+<ul>
+  <li>On an exception, the timeline marks the step and the walk opens there. On a wrong answer, it opens at the final return and offers “Watch from the start”.</li>
+  <li><em>Accept:</em> both cases covered by end-to-end tests on seeded bugs.</li>
+</ul>
+
+<h3>FR-11 Live mode</h3>
+<ul>
+  <li>When on, edits re-run the current test case 400 ms after typing stops. If the code doesn't parse or crashes, the last good walkthrough stays, dimmed, with a “Showing last working run” badge.</li>
+  <li>After a re-run, the walk tries to stay at the same line and loop iteration.</li>
+  <li><em>Accept:</em> no blank frames during 60 s of continuous typing; main-thread long tasks stay under 50 ms.</li>
+</ul>
+
+<h3>FR-12 Progress and accounts</h3>
+<ul>
+  <li>Everything works without an account. Signing in (email link or GitHub) syncs drafts, status and pins.</li>
+  <li><em>Accept:</em> a learner who signs in after solving 3 problems keeps all 3 marked solved.</li>
+</ul>
+
+<h3>FR-13 Runaway code</h3>
+<ul>
+  <li>Step cap, 3 s wall-clock limit and memory limit. The Stop button interrupts within 100 ms.</li>
+  <li>The message names the likely cause: “Stopped after 5,000 steps. The loop on line 4 may never end.”</li>
+  <li><em>Accept:</em> <code>while True: pass</code> never freezes the tab.</li>
+</ul>
+</section>
+
+<section id="ux">
+<h2>UX specification</h2>
+<h3>Information architecture</h3>
+<div class="tbl"><table>
+<thead><tr><th>Screen</th><th>Job</th><th>Primary action</th></tr></thead>
+<tbody>
+<tr><td>Library</td><td>Choose what to practice</td><td>Open a problem</td></tr>
+<tr><td>Workspace: write</td><td>Write and test a solution</td><td>Walk through</td></tr>
+<tr><td>Workspace: walk</td><td>Understand what the code did</td><td>Step</td></tr>
+<tr><td>Settings (sheet)</td><td>Theme, default speed, motion, font size, keys</td><td>—</td></tr>
+</tbody></table></div>
+<p>Write and walk are two modes of one screen, not two pages. The layout stays put when switching; only the right panel and the bottom dock change. That keeps the learner's spatial memory intact.</p>
+
+<h3>First visit</h3>
+<ol>
+  <li>Landing shows a binary search walkthrough resting on its last step, with a Play button beside it. It moves only when pressed, matching kbui's rule that nothing animates on its own. One main button: “Try a problem”.</li>
+  <li>Opens Two Sum with a working solution prefilled and the Walk through button pulsing once. Pyodide has been loading in the background since landing.</li>
+  <li>After the first walk, a single tip: “Use ← and → to step. Now try writing your own.” Then the starter code is restored.</li>
+</ol>
+<p>No signup wall, no tour carousel, no modal on arrival.</p>
+
+<h3>Workspace layout (desktop, 1200 px and up)</h3>
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│ ←  Number of islands     Grid · BFS     Medium     ⚙        │  48 px top bar
+├───────────────────────────────┬──────────────────────────────┤
+│                               │                              │
+│  Editor (CodeMirror)          │  Write mode: test cases      │
+│  current line highlighted     │  Walk mode:  views           │
+│  in walk mode                 │   ┌ grid ┐  ┌ queue ┐        │
+│                               │   └──────┘  └───────┘        │
+│                               │  variables · call stack      │
+├───────────────────────────────┴──────────────────────────────┤
+│  “Neighbor (1,1) is land. Add it to the queue.”              │  narration
+│  ⏮  ◀  ▶  ▶▶   ━━━━━━━━●━━━━━━━━━━━━━━━  42 / 118   1×      │  56 px dock
+└──────────────────────────────────────────────────────────────┘</code></pre>
+<ul>
+  <li>The split between editor and right panel is resizable (default 50/50, remembered).</li>
+  <li>Write mode dock: “Run tests” (secondary) and “Walk through” (primary, the only accent-filled button on screen).</li>
+  <li>Walk mode dock: step controls. An “Edit” button returns to write mode at the same scroll position.</li>
+  <li>Timeline markers: red for exceptions and failed assertions, small ticks for function calls.</li>
+</ul>
+
+<h3>Tablet and phone</h3>
+<ul>
+  <li><strong>Tablet (768–1199 px):</strong> views on top, editor below, both visible. Dock fixed to the bottom.</li>
+  <li><strong>Phone (under 768 px):</strong> walk mode first. Views fill the screen, code collapses to the current line plus two lines of context, swipe left or right to step. Editing works but shows a one-time note that a keyboard is better.</li>
+</ul>
+
+<h3>States</h3>
+<div class="tbl"><table>
+<thead><tr><th>State</th><th>What the learner sees</th></tr></thead>
+<tbody>
+<tr><td>Runtime loading (first visit)</td><td>Editor is usable immediately. Walk through shows “Getting Python ready” with a thin progress bar. Later visits load it from cache.</td></tr>
+<tr><td>Empty editor</td><td>Walk through stays enabled; pressing it shows “Write a solution first.” beside the button.</td></tr>
+<tr><td>Syntax error</td><td>Red underline at the error, a one-line message in the dock. In live mode, last good walk stays, dimmed.</td></tr>
+<tr><td>Exception at runtime</td><td>Walk opens at the failing step, marked red on the timeline. Sentence explains it: “<code>grid[4]</code> doesn't exist. The grid has 4 rows, numbered 0 to 3.”</td></tr>
+<tr><td>Step cap reached</td><td>Partial walk is available, banner names the loop that kept running.</td></tr>
+<tr><td>Wrong answer</td><td>Expected and actual side by side; button “Walk through this case”.</td></tr>
+<tr><td>All tests pass</td><td>Quiet success state, the understanding prompt (1–5), and a link to the next problem in the pattern.</td></tr>
+<tr><td>Offline</td><td>Everything except sign-in sync works after the first visit.</td></tr>
+</tbody></table></div>
+
+<h3>Keyboard map</h3>
+<div class="tbl"><table>
+<thead><tr><th>Key</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><code>⌘/Ctrl + Enter</code></td><td>Run tests</td></tr>
+<tr><td><code>⌘/Ctrl + '</code></td><td>Walk through</td></tr>
+<tr><td><code>←</code> / <code>→</code></td><td>Previous / next step</td></tr>
+<tr><td><code>Shift + →</code></td><td>Step over the current call</td></tr>
+<tr><td><code>Alt + →</code></td><td>Next time the current line runs</td></tr>
+<tr><td><code>Home</code> / <code>End</code></td><td>First / last step</td></tr>
+<tr><td><code>Space</code></td><td>Play or pause</td></tr>
+<tr><td><code>[</code> / <code>]</code></td><td>Slower / faster</td></tr>
+<tr><td><code>E</code></td><td>Back to write mode</td></tr>
+<tr><td><code>P</code></td><td>Problem statement</td></tr>
+<tr><td><code>?</code></td><td>Show all shortcuts</td></tr>
+</tbody></table></div>
+<p>Arrow keys step only when focus is outside the editor, so they never fight with text editing.</p>
+
+<h3>Visual language</h3>
+<div class="tbl"><table>
+<thead><tr><th>Meaning</th><th>kbui token (new, see G1)</th><th>Proposed hue</th><th>Second signal (never color alone)</th></tr></thead>
+<tbody>
+<tr><td>Current element / cursor</td><td><code>--kb-viz-current</code></td><td>Blue</td><td>2 px outline, slight scale, pointer label</td></tr>
+<tr><td>Visited / done</td><td><code>--kb-viz-visited</code></td><td>Teal</td><td>Filled background</td></tr>
+<tr><td>Changed this step</td><td><code>--kb-viz-changed</code></td><td>Amber pulse</td><td>Brief underline on the value</td></tr>
+<tr><td>Error</td><td><code>--kb-viz-error</code> (aliases danger)</td><td>Red</td><td>Icon and text</td></tr>
+<tr><td>Out of range / discarded</td><td><code>--kb-viz-discarded</code></td><td>Gray at 35%</td><td>Diagonal hatch</td></tr>
+<tr><td>Answer path</td><td><code>--kb-viz-path</code> (aliases accent)</td><td>Rust</td><td>Thicker stroke</td></tr>
+</tbody></table></div>
+<ul>
+  <li>The interface uses kbui's default theme: cream, forest and rust in light; charcoal and peach in dark. Earlier drafts used a violet palette; that is replaced.</li>
+  <li>“Current” deliberately avoids kbui's rust accent, because rust and the danger red sit close in hue and the cursor must never read as an error.</li>
+  <li>Type: kbui's sans and monospace tokens. Values in views use tabular numerals so columns don't jitter.</li>
+  <li>Decorative color is not allowed anywhere in the views. Both themes and forced-colors mode are checked for contrast.</li>
+</ul>
+
+<h3>Microcopy rules</h3>
+<ul>
+  <li>Narration uses the learner's own variable names: “<code>lo</code> moves to 4”, not “the left pointer moves”.</li>
+  <li>Present tense, active voice, one sentence, under 90 characters.</li>
+  <li>Errors say what happened and what to try. No apologies, no raw tracebacks unless the learner expands them.</li>
+</ul>
+</section>
+
+<section id="motion">
+<h2>Motion</h2>
+<p>Motion has one job: show what changed between two steps. Every step's changes play as one short, reversible segment, so stepping backwards plays the same motion in reverse.</p>
+<div class="tbl"><table>
+<thead><tr><th>Change</th><th>Animation</th><th>kbui token</th><th>Duration</th></tr></thead>
+<tbody>
+<tr><td>Pointer moves along an array</td><td>Slide the label and outline</td><td><code>motion-duration-slow</code></td><td>240 ms</td></tr>
+<tr><td>Value changes in place</td><td>Crossfade the digit, amber pulse behind it</td><td><code>motion-duration-fast</code> + <code>viz-pulse-duration</code> (new)</td><td>80 ms + 400 ms</td></tr>
+<tr><td>Insert into list or queue</td><td>FLIP: neighbours slide, new item fades in from 90% scale</td><td><code>motion-duration-slow</code></td><td>240 ms</td></tr>
+<tr><td>Remove</td><td>Fade and shrink to 90%, neighbours close the gap</td><td><code>motion-duration-base</code></td><td>160 ms</td></tr>
+<tr><td>Pointer arrow re-targets (linked list)</td><td>Arrow path morphs to its new end</td><td><code>motion-duration-slow</code></td><td>240 ms</td></tr>
+<tr><td>Tree or graph changes shape</td><td>Untouched nodes stay fixed; only affected nodes move</td><td><code>motion-duration-layout</code> (new)</td><td>about 320 ms</td></tr>
+<tr><td>Cell visited</td><td>Fill sweeps in</td><td><code>motion-duration-base</code></td><td>160 ms</td></tr>
+<tr><td>UI chrome (drawer, sheet, dialog)</td><td>kbui's own component transitions</td><td>kbui component tokens</td><td>as shipped</td></tr>
+</tbody></table></div>
+<ul>
+  <li><strong>One source of timing:</strong> the GSAP layer reads kbui's motion tokens from CSS at startup, so a token change retimes both interface and views.</li>
+  <li><strong>Easing:</strong> <code>--kb-motion-easing-standard</code> for state changes, <code>-enter</code> and <code>-exit</code> for items appearing and leaving. No bounce or overshoot in views.</li>
+  <li><strong>Speed:</strong> playback rate scales every duration. At 2× and above, or while scrubbing, steps snap with no tween.</li>
+  <li><strong>Rapid input:</strong> pressing → again before a tween ends jumps the tween to its end, then starts the next. Input is never queued behind animation.</li>
+  <li><strong>Reduced motion:</strong> with <code>prefers-reduced-motion</code> or the in-app switch, nothing moves. Changes snap and keep a 2 px outline for 600 ms instead.</li>
+  <li><strong>Stillness:</strong> the editor never animates layout, and nothing moves while the learner is typing.</li>
+</ul>
+</section>
+
+<section id="a11y">
+<h2>Accessibility</h2>
+<ul>
+  <li>Target WCAG 2.2 AA across the product, checked with automated axe tests in CI and a manual screen-reader pass (VoiceOver, NVDA) each release.</li>
+  <li>Every action works from the keyboard, with a visible focus ring. Touch targets at least 44 px on phones, 24 px minimum elsewhere.</li>
+  <li>Narration goes to a polite live region, so screen-reader users hear each step.</li>
+  <li>Each view has a table alternative (“Show as table”) that renders the same state as an accessible HTML table, with pointer positions as columns.</li>
+  <li>No meaning by color alone (see the visual language table). Palette verified with protanopia, deuteranopia and tritanopia simulation.</li>
+  <li>Text scales to 200% without losing content; views reflow or scroll inside their own panel.</li>
+  <li>Respects <code>prefers-reduced-motion</code>, <code>prefers-contrast</code> and <code>prefers-color-scheme</code>, each also settable in the app.</li>
+</ul>
+</section>
+
+<section id="viz">
+<h2>Visualization system</h2>
+<p>The system has three layers that only talk through two data formats. Adding a language touches only the first layer; adding a view touches only the third.</p>
+<div class="flow"><span class="s">Runner → Trace</span><span class="a">→</span><span class="s">Detector → View spec</span><span class="a">→</span><span class="s">Renderer</span></div>
+
+<h3>Trace</h3>
+<p>A language-neutral record of every step: the line, the call stack, the locals, and a heap of objects with stable ids so aliases (two names for one list) draw as one object. Full schema in the <a href="#appendix">appendix</a>.</p>
+<ul>
+  <li><strong>Storage:</strong> a full snapshot every 64 steps plus small deltas between them. Seeking to any step costs one snapshot plus at most 63 deltas.</li>
+  <li><strong>Large values:</strong> lists over 1,000 items keep a window around the indexes the code touched, plus the length.</li>
+  <li><strong>Events:</strong> each step is tagged with what happened (compare, assign, call, return, append, pop, branch), derived from the syntax node on that line. Narration and markers use these tags.</li>
+</ul>
+
+<h3>Detection</h3>
+<p>Three signals vote for each variable's view:</p>
+<ol>
+  <li><strong>Runtime shape</strong> from the values themselves. A list of equal-length lists is a grid; an object whose only self-typed field is <code>next</code> is a linked list.</li>
+  <li><strong>Code roles</strong> from syntax queries with tree-sitter. In <code>grid[r][c]</code>, <code>r</code> and <code>c</code> are the cursor on <code>grid</code>; in <code>nums[lo]</code>, <code>lo</code> is a pointer on <code>nums</code>.</li>
+  <li><strong>Problem context</strong> from the problem's tags (“grid-bfs”, “two-pointer”). For pasted problems in v1, an LLM proposes the tags once and the result is cached.</li>
+</ol>
+<p>Score = shape × 0.5 + roles × 0.3 + context × 0.2, and a learner pin overrides everything. Below a confidence of 0.6 the variable gets the generic view. A layout pass then picks up to three primary views; the rest stay in the variables panel.</p>
+
+<h3>View catalog</h3>
+<div class="tbl"><table>
+<thead><tr><th>View</th><th>Shape signal</th><th>Code signal</th><th>Renderer</th><th>Release</th></tr></thead>
+<tbody>
+<tr><td>Array + pointers</td><td>List of scalars</td><td>Integer variables used as its index</td><td>SVG; window around pointers past 200 items</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Grid / matrix</td><td>List of equal-length lists</td><td><code>x[r][c]</code>, direction arrays, <code>visited</code> of pairs</td><td>SVG up to 400 cells, canvas (PixiJS) above</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Linked list</td><td>Object with one self-typed field</td><td><code>.next</code>, <code>prev/curr</code> names</td><td>SVG with path-morphing arrows</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Binary tree</td><td>Object with two self-typed fields</td><td><code>.left</code> / <code>.right</code></td><td>d3-hierarchy tidy tree, SVG</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Hash map / set</td><td>dict, set</td><td><code>in</code>, <code>get</code>, counters</td><td>SVG key-value rows, recent key highlighted</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Call stack + recursion tree</td><td>Self-calls with depth above 1</td><td>Recursive call site</td><td>d3-hierarchy, frames collapse on return</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>Graph</td><td>Map of key to list of keys, edge list</td><td><code>visited</code>, queue, <code>heappush</code></td><td>ELK layered or d3-force; PixiJS past 300 nodes</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>DP table</td><td>Grid filled in order</td><td><code>dp[i][j] = … dp[i-1][j] …</code></td><td>SVG, arrows from cells read to the cell written</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>Heap</td><td>List that keeps the heap property</td><td><code>heapq.*</code></td><td>Tree layout derived from indexes, array beneath</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>Stack / queue</td><td>List changed only at one or both ends</td><td><code>append/pop</code>, <code>popleft</code></td><td>SVG chips</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>String</td><td>String indexed by integers</td><td><code>s[i]</code>, window variables</td><td>Character array view</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>Generic</td><td>Anything else</td><td>—</td><td>Boxes and arrows</td><td><span class="pill p-mvp">MVP</span></td></tr>
+</tbody></table></div>
+<div class="note"><strong>Ambiguity rule.</strong> When two views score within 0.1 of each other (an n×n grid of 0s and 1s could be a maze or an adjacency matrix), the badge reads “Grid?” and one click shows the alternative. The choice is remembered.</div>
+</section>
+
+<section id="architecture">
+<h2>Architecture</h2>
+<pre class="mermaid">
+flowchart LR
+  UI["React app on kbui<br/>main thread"] -->|code + test case| RW["Runner worker<br/>Pyodide + tracer"]
+  UI -->|source| TS["Parser worker<br/>web-tree-sitter"]
+  RW -->|trace snapshots + deltas| DET["Detector"]
+  TS -->|variable roles| DET
+  CAT[("Problem catalog<br/>static JSON")] -->|tags + presets| DET
+  DET -->|view spec| REN["Renderer<br/>SVG / PixiJS + GSAP"]
+  UI --> API["API on Cloudflare Workers"]
+  API --> DB[("D1: users, progress")]
+  API -.->|v1| LLM["View-spec service<br/>Claude"]
+  API -.->|v2| SBX["Sandbox containers<br/>DAP runners"]
+</pre>
+<ul>
+  <li><strong>All execution is off the main thread.</strong> The main thread only renders and handles input.</li>
+  <li><strong>Workers talk through Comlink.</strong> Traces transfer as structured clones of compact typed records.</li>
+  <li><strong>Interrupts:</strong> the app is served cross-origin isolated (COOP/COEP headers) so a <code>SharedArrayBuffer</code> interrupt flag can stop Pyodide instantly.</li>
+  <li><strong>Problem catalog is static.</strong> Statements, starter code, tests, reference solutions and view presets live in the repository as content files and ship with the build.</li>
+</ul>
+</section>
+
+<section id="stack">
+<h2>Tech stack</h2>
+<p>Pin exact versions of each at project kickoff and upgrade deliberately.</p>
+<div class="tbl"><table>
+<thead><tr><th>Layer</th><th>Choice</th><th>Why</th><th>Alternative</th></tr></thead>
+<tbody>
+<tr><td>Design system</td><td>kbui (<code>@kbui/react</code>, <code>@kbui/css</code>, <code>@kbui/tokens</code>)</td><td>In-house; tokens, light and dark themes, accessible components on Base UI; gaps are filled in kbui itself</td><td>—</td></tr>
+<tr><td>App framework</td><td>React 19 + Vite + React Router 7 (framework mode) on Cloudflare Workers</td><td>kbui requires React 19; prerendered library pages, client-heavy workspace, and response headers for cross-origin isolation are easy to set</td><td>TanStack Start</td></tr>
+<tr><td>Language</td><td>TypeScript, strict</td><td>Trace and view-spec types are the contract between layers</td><td>—</td></tr>
+<tr><td>Client state</td><td>Zustand with selectors</td><td>Trace and step index live outside React; each view subscribes only to the slice it draws, so a step doesn't re-render the page</td><td><code>useSyncExternalStore</code> with a hand-written store</td></tr>
+<tr><td>Styling</td><td>kbui tokens and plain CSS; Stepwise CSS in its own cascade layer after <code>kbui</code></td><td>Same tokens and themes as the components; kbui's check bans raw values, and Stepwise adopts the same rule</td><td>Tailwind, which kbui also supports for restyling</td></tr>
+<tr><td>Interaction primitives</td><td>Base UI 1.9 (through kbui)</td><td>Accessible dialogs, menus, sliders, tabs, toasts and drawers; kbui wraps each before Stepwise uses it</td><td>—</td></tr>
+<tr><td>Code editor</td><td>CodeMirror 6</td><td>Modular and light (a fraction of Monaco's size), works on touch devices, decoration API suits line highlighting</td><td>Monaco for a full VS Code feel</td></tr>
+<tr><td>Python runtime</td><td>Pyodide in a Web Worker, tracing with <code>sys.settrace</code></td><td>Real CPython in the browser; no server cost per run; works offline</td><td>Server sandbox (v2 path)</td></tr>
+<tr><td>JS/TS runtime (v1)</td><td>Code instrumented with SWC, run in a sandboxed worker</td><td>Native speed; instrumentation inserts trace hooks per statement</td><td>QuickJS compiled to WASM for stricter isolation</td></tr>
+<tr><td>Other languages (v2)</td><td>Debug Adapter Protocol runners (debugpy, lldb-dap, java-debug, delve) in Cloudflare Sandbox containers</td><td>One protocol for every language; isolation per run</td><td>Firecracker microVMs on Fly.io</td></tr>
+<tr><td>Parsing</td><td>web-tree-sitter with per-language grammars</td><td>Incremental, tolerates half-written code, one query language for roles across languages</td><td>Language-specific parsers</td></tr>
+<tr><td>Worker messaging</td><td>Comlink</td><td>Typed calls across workers without hand-written message plumbing</td><td>—</td></tr>
+<tr><td>Motion for views</td><td>GSAP 3 timelines + Flip plugin, through <code>@gsap/react</code></td><td>Seekable, reversible timelines map directly onto steps; scrubbing sets progress; durations come from kbui motion tokens</td><td>Motion (motion.dev)</td></tr>
+<tr><td>Motion for UI chrome</td><td>kbui's CSS transitions</td><td>Already tokenized and disabled under reduced motion; no extra library</td><td>—</td></tr>
+<tr><td>Drawing (small)</td><td>SVG rendered by React components, styled with <code>--kb-viz-*</code> tokens</td><td>Crisp, accessible, follows the theme</td><td>—</td></tr>
+<tr><td>Drawing (large)</td><td>PixiJS v8 (WebGL, WebGPU when present)</td><td>Thousands of cells or nodes at 60 fps</td><td>Plain Canvas 2D</td></tr>
+<tr><td>Layout math</td><td>d3-hierarchy, d3-force, d3-scale, elkjs</td><td>Proven tree and graph layouts; used for math only, React owns the DOM</td><td>dagre</td></tr>
+<tr><td>Complexity chart (v1)</td><td>d3-scale + hand-drawn SVG, or a kbui Sparkline if one is added (G19)</td><td>A single small chart doesn't justify a chart library</td><td>visx</td></tr>
+<tr><td>Local storage</td><td>IndexedDB through Dexie</td><td>Offline-first drafts, progress, cached traces</td><td>—</td></tr>
+<tr><td>Backend</td><td>Cloudflare Workers + D1 (SQLite) + KV for cached view specs</td><td>Edge-fast, simple, cheap at small scale</td><td>Supabase</td></tr>
+<tr><td>Auth</td><td>Better Auth (email link, GitHub)</td><td>Self-hosted, works on Workers and D1</td><td>Clerk</td></tr>
+<tr><td>View-spec LLM (v1)</td><td>Claude Haiku 5.5 with JSON-schema output; Claude Sonnet 5.5 as fallback</td><td>Cheap, fast classification; output validated against a schema and never executed</td><td>Rules only, no LLM</td></tr>
+<tr><td>Testing</td><td>Vitest, Playwright, axe-core, fast-check</td><td>Unit, end-to-end, visual regression, accessibility, property tests for the detector</td><td>—</td></tr>
+<tr><td>Observability</td><td>Sentry (errors + performance), PostHog (product analytics), web-vitals</td><td>Errors with source maps; funnel and retention; real-user performance</td><td>—</td></tr>
+<tr><td>Hosting</td><td>Cloudflare Pages / Workers</td><td>COOP/COEP headers are easy to set; Pyodide assets served from the same origin with long cache</td><td>Vercel</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="kbui">
+<h2>Building on kbui</h2>
+<p>kbui is a React 19 component library on Base UI 1.9, with design tokens and plain CSS. This analysis uses its latest main branch (v0.7.0): 21 components, token-only styling enforced by <code>bun run check</code>, light and dark themes, forced-colors checks, and a Storybook accessibility scan on every story.</p>
+<div class="note"><strong>Rule carried over from kbui.</strong> Every component a product screen needs and kbui lacks is added to kbui, not copied into the product. Parts that only make sense in Stepwise, such as the visual views, stay in Stepwise's repository. Stepwise is a good source for kbui's planned catalog work, which already lists <code>Tabs</code>, <code>Table</code>, <code>EmptyState</code> and a <code>Split</code> layout.</div>
+
+<h3>What changes in this spec</h3>
+<ul>
+  <li><strong>Framework:</strong> React 19 with React Router 7 replaces SvelteKit, because kbui is React-only.</li>
+  <li><strong>Components:</strong> kbui on Base UI replaces Bits UI.</li>
+  <li><strong>Styling:</strong> kbui tokens and plain CSS. Stepwise's own CSS reads only <code>--kb-*</code> semantic, scale and component tokens.</li>
+  <li><strong>Look:</strong> kbui's default theme replaces the violet palette. Visualization colors come from new <code>--kb-viz-*</code> tokens.</li>
+  <li><strong>Motion:</strong> kbui transitions for the interface, GSAP only for views, both timed by kbui's motion tokens.</li>
+  <li><strong>Landing:</strong> the demo walkthrough waits for a press, since nothing in kbui animates on its own.</li>
+</ul>
+
+<h3>Already covered by kbui</h3>
+<div class="tbl"><table>
+<thead><tr><th>Stepwise need</th><th>kbui component</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Walk through, Run tests, Edit</td><td><code>Button</code></td><td>One <code>primary</code> per screen; <code>icon</code> size already requires an <code>aria-label</code> in its types</td></tr>
+<tr><td>Step controls dock</td><td><code>Toolbar</code></td><td>Roving focus with arrow keys (see the keyboard rule below)</td></tr>
+<tr><td>Workspace panes, collapsible side panel</td><td><code>Panel</code>, <code>Panel.Group</code>, panel toggle</td><td>Row and column groups exist; resizing does not (G2)</td></tr>
+<tr><td>Pattern and difficulty tags</td><td><code>Badge</code></td><td></td></tr>
+<tr><td>Test pass or fail, runtime ready</td><td><code>Status</code></td><td></td></tr>
+<tr><td>Step-cap, syntax and exception banners</td><td><code>Callout</code></td><td>Tones cover info, warning, danger</td></tr>
+<tr><td>Run summary (3 of 4 passed, 118 steps)</td><td><code>Stat</code></td><td></td></tr>
+<tr><td>Library search</td><td><code>Input</code> type search with clear action</td><td>Existing search composition keeps focus and draft</td></tr>
+<tr><td>Pattern and difficulty filters, language</td><td><code>Select</code>, <code>Menu</code></td><td></td></tr>
+<tr><td>Speed (0.5× to 4×), write or walk mode</td><td><code>RadioGroup</code> (segmented)</td><td>Arrow-key selection built in</td></tr>
+<tr><td>Live mode, reduced motion, theme</td><td><code>Switch</code></td><td></td></tr>
+<tr><td>“Getting Python ready”</td><td><code>Progress</code></td><td></td></tr>
+<tr><td>Shortcut hints on controls</td><td><code>Tooltip</code></td><td>Needs <code>Kbd</code> inside (G5)</td></tr>
+<tr><td>Settings, keyboard map</td><td><code>Dialog</code> with sections</td><td></td></tr>
+<tr><td>Statement, variables, call stack</td><td><code>ScrollArea</code></td><td></td></tr>
+<tr><td>Custom test input values</td><td><code>NumberField</code></td><td></td></tr>
+<tr><td>Library cards, page layout</td><td><code>Card</code>, <code>Grid</code></td><td></td></tr>
+</tbody></table></div>
+
+<h3>Gaps to add to kbui</h3>
+<p>Size is rough effort inside kbui's contract (anatomy line, story, test, screenshot, accessibility scan): S is about a day, M two to three days, L four to six.</p>
+<div class="tbl"><table>
+<thead><tr><th>ID</th><th>Addition</th><th>Stepwise use</th><th>Base UI part</th><th>Size</th><th>Needed by</th></tr></thead>
+<tbody>
+<tr><td>G1</td><td>Visualization tokens: <code>viz.current</code>, <code>visited</code>, <code>changed</code>, <code>error</code>, <code>discarded</code>, <code>frontier</code>, <code>path</code>, each with an <code>-fg</code> pair, a <code>kb.dark</code> value and a forced-colors fallback</td><td>Every view</td><td>—</td><td>S</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G2</td><td>Resizable <code>Panel.Group</code> with a handle following the window splitter pattern (separator role, arrow keys, Home and End, Enter to collapse) and a size-change callback</td><td>Editor and visual split</td><td>none</td><td>L</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G3</td><td><code>Slider</code> with toned marks and value text (“Step 42 of 118”), Page Up and Page Down jumps</td><td>Timeline scrubber with error and call markers</td><td>slider</td><td>M</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G4</td><td><code>Tabs</code></td><td>Test cases; statement and hints</td><td>tabs</td><td>M</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G5</td><td><code>Kbd</code></td><td>Shortcuts in tooltips, keyboard map, first-run tip</td><td>—</td><td>S</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G6</td><td>Announcer: exported live-region hook, polite and assertive</td><td>Step narration, run results</td><td>—</td><td>S</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G7</td><td>Code tokens (syntax colors, active line, line numbers, selection, error underline) promoted from the kbui site's highlighting palette, plus a CodeMirror 6 theme built from them</td><td>Editor and code panel</td><td>—</td><td>M</td><td><span class="pill p-mvp">Phase 1</span></td></tr>
+<tr><td>G8</td><td><code>Drawer</code></td><td>Problem statement drawer; settings on phones</td><td>drawer</td><td>M</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G9</td><td><code>Table</code></td><td>Problem library, expected and actual values, “Show as table” alternative for views</td><td>—</td><td>L</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G10</td><td><code>Toast</code></td><td>“Solved”, “Draft restored”, runner failures</td><td>toast</td><td>M</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G11</td><td><code>Popover</code></td><td>View switcher (“Grid?”), why a view was chosen</td><td>popover</td><td>M</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G12</td><td><code>Collapsible</code></td><td>Traceback details, constraints</td><td>collapsible</td><td>S</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G13</td><td><code>Skeleton</code></td><td>Library and workspace loading</td><td>—</td><td>S</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G14</td><td><code>EmptyState</code></td><td>No search results, no attempts yet</td><td>—</td><td>S</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G15</td><td>Shortcut hook: scoped shortcuts that skip editable targets, with a registry that feeds the keyboard map</td><td>All keyboard control</td><td>—</td><td>M</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G20</td><td>Layout intents <code>Split</code> and <code>SupportingPane</code> with collapse rules for desktop, tablet and phone</td><td>Workspace on every screen size</td><td>—</td><td>L</td><td><span class="pill p-mvp">MVP</span></td></tr>
+<tr><td>G16</td><td>Command palette on <code>Combobox</code></td><td>⌘K to jump to a problem</td><td>combobox</td><td>M</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>G17</td><td><code>CodeBlock</code>: read-only highlighted code with line highlight</td><td>Phone walk mode, shared walkthroughs</td><td>—</td><td>M</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>G18</td><td><code>Avatar</code> and account menu</td><td>Sign-in</td><td>avatar</td><td>S</td><td><span class="pill p-v1">v1</span></td></tr>
+<tr><td>G19</td><td><code>Sparkline</code> or <code>Meter</code></td><td>Complexity strip</td><td>meter</td><td>M</td><td><span class="pill p-v1">v1</span></td></tr>
+</tbody></table></div>
+
+<h3>Changes across kbui</h3>
+<ul>
+  <li><strong>Color separation.</strong> kbui's rust accent (#b4462b) and danger (#a33444) are close in hue, and so are info teal (#276c69) and success green (#356747). The viz tokens must stay apart: blue for current, teal for visited, amber for changed, danger plus an icon for error. Check them with color-vision simulation and 3:1 non-text contrast in both themes.</li>
+  <li><strong>Motion tokens.</strong> Add <code>motion.duration.layout</code> (about 320 ms) for tree and graph relayout and a <code>viz.pulse-duration</code> component token (400 ms). Everything else maps to the existing fast, base and slow durations.</li>
+  <li><strong>Forced colors.</strong> kbui already checks Button under forced colors. The viz tokens need system-color fallbacks (Highlight for current, Mark for changed, GrayText for discarded) and patterns in place of fills.</li>
+  <li><strong>Touch targets.</strong> The dock uses <code>sm</code> controls on desktop. At phone width they need at least 44 px, through a media rule or a touch size.</li>
+  <li><strong>Keyboard rule.</strong> Toolbar uses arrow keys to move focus. Global ← and → stepping applies only when focus is on the page, a view or the timeline. The shortcut hook (G15) enforces this.</li>
+  <li><strong>Isolation headers.</strong> Stepwise serves COOP and COEP for Pyodide. kbui ships its CSS inside the package, so it loads from the same origin. Confirm in CI that every page renders under <code>require-corp</code>.</li>
+</ul>
+
+<h3>Stays in Stepwise</h3>
+<p>The array, grid, linked list, tree, hash map and call tree views; the playback engine and trace store; narration; the detector; the runner workers; and the CodeMirror integration. Views draw plain SVG or canvas styled with <code>--kb-viz-*</code> tokens and never render a kbui component per cell or per step, which keeps each step under the 8 ms budget. A view moves into kbui only if a second product needs it.</p>
+
+<h3>How the work flows</h3>
+<ul>
+  <li>Each addition meets kbui's contract before release: anatomy line, story, test, screenshot assertion, accessibility scan in light and dark, token-only CSS, and an entry in kbui's feature register.</li>
+  <li>During development Stepwise installs kbui by path; CI installs a pinned release tarball. kbui keeps all three packages on one version.</li>
+  <li>Group kbui releases by Stepwise phase: one release with G1–G7 before Phase 1, one with G8–G15 and G20 before the MVP beta, and later releases for v1 items.</li>
+  <li>A temporary component inside Stepwise is allowed only with a ticket to move it into kbui within the same phase.</li>
+</ul>
+</section>
+
+<section id="perf">
+<h2>Performance</h2>
+<h3>Budgets</h3>
+<div class="tbl"><table>
+<thead><tr><th>Measure</th><th>Budget</th></tr></thead>
+<tbody>
+<tr><td>Initial JS (library page, gzip)</td><td>≤ 120 KB</td></tr>
+<tr><td>Workspace JS excluding editor and Pyodide (gzip)</td><td>≤ 200 KB</td></tr>
+<tr><td>Largest Contentful Paint, p75</td><td>≤ 1.5 s</td></tr>
+<tr><td>Interaction to Next Paint, p75</td><td>≤ 100 ms</td></tr>
+<tr><td>Python ready, cached / cold</td><td>≤ 1.5 s / ≤ 5 s</td></tr>
+<tr><td>Run and trace 5,000 steps</td><td>≤ 400 ms</td></tr>
+<tr><td>Render one step</td><td>≤ 8 ms main-thread work</td></tr>
+<tr><td>Trace memory</td><td>≤ 50 MB per walkthrough</td></tr>
+</tbody></table></div>
+<h3>Techniques</h3>
+<ul>
+  <li>Start loading Pyodide on the library page when the browser is idle; cache it with a service worker so later visits skip the download.</li>
+  <li>Load CodeMirror language packs and tree-sitter grammars on demand.</li>
+  <li>Snapshot plus delta storage makes seeking cheap; precompute view geometry for each snapshot in the worker.</li>
+  <li>Batch DOM writes to one per animation frame; animate only <code>transform</code> and <code>opacity</code>.</li>
+  <li>Switch a view from SVG to PixiJS above its element threshold; window long arrays around active pointers.</li>
+  <li>Debounce live mode; cancel stale runs so only the newest result renders.</li>
+  <li>Performance budgets are enforced in CI with Lighthouse CI and a step-render benchmark.</li>
+</ul>
+</section>
+
+<section id="security">
+<h2>Safety and security</h2>
+<ul>
+  <li><strong>Learner code runs in a worker</strong> with no DOM access. The Pyodide build ships without its network helpers, and the worker's content security policy blocks <code>connect-src</code>.</li>
+  <li><strong>Hard limits:</strong> step cap, wall-clock timeout, interrupt flag, and worker restart if memory passes the cap.</li>
+  <li><strong>v2 server runners:</strong> one container per run, no network, CPU and memory quotas, read-only filesystem, destroyed after use. Rate-limited per user.</li>
+  <li><strong>LLM output</strong> is data only: validated against the view-spec schema, never run as code, cached by problem hash.</li>
+  <li><strong>Shared links</strong> contain a server-stored id, never code or personal data in the URL.</li>
+  <li><strong>Privacy:</strong> code stays on the device unless the learner signs in or shares. Analytics never captures code contents.</li>
+  <li><strong>Content:</strong> every problem statement is written in-house. Classic problems are fine as ideas, but no copied statements, numbering or names from other platforms.</li>
+</ul>
+</section>
+
+<section id="quality">
+<h2>Testing and quality</h2>
+<ul>
+  <li><strong>Golden traces:</strong> each problem's reference solution produces a trace that is checked into the repository; changes to the tracer must keep them identical or update them on purpose.</li>
+  <li><strong>Detector tests:</strong> golden view choices for every problem, plus property tests that generate random grids, lists and trees and check the detector classifies them.</li>
+  <li><strong>Seeded bug suite:</strong> five common wrong solutions per problem (off-by-one, missed visited check, wrong base case) that must produce a useful jump-to-failure.</li>
+  <li><strong>Visual regression:</strong> Playwright screenshots of each view at fixed steps, light and dark, three widths.</li>
+  <li><strong>Accessibility:</strong> axe on every screen in CI; keyboard-only end-to-end test of the core loop.</li>
+  <li><strong>Performance:</strong> benchmark that scrubs 5,000 steps and fails the build if frame time regresses past budget.</li>
+</ul>
+</section>
+
+<section id="analytics">
+<h2>Analytics</h2>
+<div class="tbl"><table>
+<thead><tr><th>Event</th><th>Properties</th></tr></thead>
+<tbody>
+<tr><td><code>problem_opened</code></td><td>problem id, pattern, source (library, next link, share)</td></tr>
+<tr><td><code>tests_run</code></td><td>problem id, pass count, fail count, duration</td></tr>
+<tr><td><code>walk_started</code></td><td>problem id, test case, step count, detected views, trigger (button, live, failure)</td></tr>
+<tr><td><code>walk_navigated</code></td><td>kind (next, back, scrub, jump, line click), sampled 1 in 10</td></tr>
+<tr><td><code>view_overridden</code></td><td>problem id, from view, to view</td></tr>
+<tr><td><code>problem_solved</code></td><td>problem id, attempts, walks before solving</td></tr>
+<tr><td><code>understanding_rated</code></td><td>problem id, score</td></tr>
+<tr><td><code>runner_limit_hit</code></td><td>kind (steps, time, memory)</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="roadmap">
+<h2>Roadmap</h2>
+<p>Rough estimates for a team of two engineers and one designer. Revisit after Phase 0.</p>
+<div class="tbl"><table>
+<thead><tr><th>Phase</th><th>Length</th><th>Delivers</th><th>Exit criteria</th></tr></thead>
+<tbody>
+<tr><td>0 · Validate</td><td>2 weeks</td><td>Clickable prototype with 3 problems; 8 sessions with visual learners; seeded-bug task timed against print debugging</td><td>Assumptions A1 and A4 hold. If A1 fails, stop or rethink before building.</td></tr>
+<tr><td>kbui release A</td><td>alongside Phase 0</td><td>G1–G7: viz and code tokens, resizable panels, timeline slider, tabs, Kbd, announcer</td><td>Released tarball installs in Stepwise; kbui checks pass</td></tr>
+<tr><td>1 · Core</td><td>4 weeks</td><td>Pyodide runner, tracer, trace store, editor, step controls, array and grid views</td><td>Two problems work end to end within performance budgets</td></tr>
+<tr><td>kbui release B</td><td>alongside Phase 1</td><td>G8–G15 and G20: drawer, table, toast, popover, collapsible, skeleton, empty state, shortcuts, layout intents</td><td>Released before the MVP beta</td></tr>
+<tr><td>2 · MVP</td><td>5 weeks</td><td>Remaining four views, detector, narration, jump to failure, live mode, library, 30 problems, accessibility pass</td><td>Golden tests green; private beta with 50 learners</td></tr>
+<tr><td>3 · v1</td><td>8 weeks</td><td>Predict mode, divergence diff, click-to-time-travel, graph/DP/heap views, JS/TS, bring your own problem, share links</td><td>Activation ≥ 60%, D7 ≥ 25% in beta</td></tr>
+<tr><td>4 · v2</td><td>10+ weeks</td><td>Server runners for more languages, instructor mode</td><td>Decided by v1 results</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="risks">
+<h2>Risks and open questions</h2>
+<h3>Risks</h3>
+<div class="tbl"><table>
+<thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Detector picks the wrong view</td><td>Learners lose trust in the picture</td><td>Problem presets for catalog problems, visible badge, one-click switch, pin memory, confidence threshold with generic fallback</td></tr>
+<tr><td>Pyodide cold start is slow</td><td>First visit feels broken</td><td>Preload during idle, service-worker cache, editor usable while loading, prefilled demo on first visit</td></tr>
+<tr><td>Traces get huge on big inputs</td><td>Memory and jank</td><td>Small sample inputs for walks, step cap, value windowing, snapshot + delta storage</td></tr>
+<tr><td>Animations get in the way at speed</td><td>Feels sluggish to experienced users</td><td>Snap at 2× and above, interruptible tweens, reduced-motion option</td></tr>
+<tr><td>Incumbents add visuals</td><td>Differentiation shrinks</td><td>Focus on detection quality, narration and failure diagnosis rather than problem count</td></tr>
+<tr><td>Problem content legality</td><td>Takedown</td><td>All statements original; no names or numbers borrowed from other platforms</td></tr>
+<tr><td>kbui work blocks the product</td><td>Phases slip while components wait</td><td>Front-load release A; build Stepwise views (which don't depend on new components) in parallel; time-boxed temporary components with a ticket to move them</td></tr>
+<tr><td>kbui's warm theme feels wrong for a learning tool</td><td>Weaker first impression</td><td>Data meaning lives in viz tokens, not the theme; check impressions in Phase 0 sessions; a Stepwise theme stays possible through tokens</td></tr>
+<tr><td>Base UI upgrades</td><td>Behavior changes in controls</td><td>kbui pins Base UI 1.9.0; upgrade inside kbui with its story tests, never directly in Stepwise</td></tr>
+</tbody></table></div>
+<h3>Open questions</h3>
+<ul>
+  <li>Business model: free core with a paid tier (bring-your-own-problem, more languages, instructor tools), or free with institutional licenses?</li>
+  <li>Which second language matters most to the target learners: JavaScript or Java?</li>
+  <li>Should walkthroughs default to the learner's code or a reference solution when the learner has written nothing yet?</li>
+  <li>How much should narration explain versus prompt the learner to think (Socratic mode)?</li>
+  <li>Is a desktop app (Tauri) worth it later for offline use and local language toolchains?</li>
+</ul>
+</section>
+
+<section id="appendix">
+<h2>Appendix</h2>
+<h3>Trace schema</h3>
+<pre><code>type Trace = {
+  language: "python" | "javascript" | "typescript" | string;
+  source: string;
+  steps: Step[];            // stored as snapshots every 64 steps + deltas
+  truncated?: "steps" | "time" | "memory";
+};
+
+type Step = {
+  i: number;
+  line: number;
+  event: "line" | "call" | "return" | "exception";
+  tags: ("compare" | "assign" | "append" | "pop" | "branch" | "index")[];
+  stack: Frame[];           // innermost last
+  heap: Record&lt;HeapId, HeapObj&gt;;
+  stdout?: string;
+  exception?: { type: string; message: string };
+};
+
+type Frame = { fn: string; line: number; locals: Record&lt;string, Value&gt; };
+
+type Value =
+  | { kind: "prim"; type: "int" | "float" | "str" | "bool" | "none"; v: unknown }
+  | { kind: "ref"; id: HeapId };
+
+type HeapObj =
+  | { kind: "list" | "tuple" | "set" | "deque"; items: Value[]; len: number; window?: [number, number] }
+  | { kind: "dict"; entries: [Value, Value][] }
+  | { kind: "object"; cls: string; fields: Record&lt;string, Value&gt; };</code></pre>
+
+<h3>View spec schema</h3>
+<pre><code>type ViewSpec = {
+  confidence: number;               // 0..1
+  badge: string;                    // "Grid + BFS"
+  views: View[];                    // at most 3 primary
+};
+
+type View =
+  | { type: "array"; bind: string; pointers: string[]; window?: string[] }
+  | { type: "grid"; bind: string; cursor?: [string, string]; overlays?: Overlay[] }
+  | { type: "linkedList"; head: string; pointers: string[] }
+  | { type: "tree"; root: string; pointers: string[] }
+  | { type: "hashMap"; bind: string }
+  | { type: "callTree"; fn: string }
+  | { type: "graph"; bind: string; frontier?: string; visited?: string }
+  | { type: "dpTable"; bind: string }
+  | { type: "generic"; bind: string };
+
+type Overlay = { set: string; style: "visited" | "frontier" | "path" };</code></pre>
+
+<h3>Example: view spec for Number of Islands</h3>
+<pre><code>{
+  "confidence": 0.92,
+  "badge": "Grid + BFS",
+  "views": [
+    { "type": "grid", "bind": "grid", "cursor": ["r", "c"],
+      "overlays": [{ "set": "seen", "style": "visited" }] },
+    { "type": "array", "bind": "q", "pointers": [] }
+  ]
+}</code></pre>
+
+<h3>MVP problem set by pattern</h3>
+<div class="tbl"><table>
+<thead><tr><th>Pattern</th><th>Count</th><th>Primary view</th></tr></thead>
+<tbody>
+<tr><td>Arrays and hashing</td><td>4</td><td>Array, hash map</td></tr>
+<tr><td>Two pointers</td><td>3</td><td>Array + pointers</td></tr>
+<tr><td>Sliding window</td><td>3</td><td>Array + window</td></tr>
+<tr><td>Binary search</td><td>3</td><td>Array + lo/mid/hi</td></tr>
+<tr><td>Stack</td><td>2</td><td>Array (as stack)</td></tr>
+<tr><td>Linked list</td><td>4</td><td>Linked list</td></tr>
+<tr><td>Trees</td><td>4</td><td>Binary tree, call tree</td></tr>
+<tr><td>Grid BFS / DFS</td><td>4</td><td>Grid</td></tr>
+<tr><td>Recursion and backtracking</td><td>3</td><td>Call tree</td></tr>
+</tbody></table></div>
+</section>
+</main>
+</div>

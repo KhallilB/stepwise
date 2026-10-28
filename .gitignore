@@ -1,0 +1,18 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.env*
+*.tsbuildinfo
+.infigraph/
+
+# Agent instruction and settings files stay local
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.mcp.json
+.claude/
+.codex/
+.agents/
+.cursor/
