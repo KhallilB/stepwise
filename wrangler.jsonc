@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stepwise",
+  "compatibility_date": "2026-10-20",
+  "main": "./workers/app.ts"
+}

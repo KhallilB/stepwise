@@ -14,7 +14,7 @@ Step 6 of 6 · "nums[5] is 11. Found it."
 
 Each step comes with one plain sentence. When a test fails, the walkthrough opens at the step where it went wrong.
 
-> **Status:** planning. This repository contains the design, in [`docs/`](docs). No application code exists yet.
+> **Status:** building the clickable prototype ([M1](docs/roadmap.md#m1--clickable-prototype)). The binary search walkthrough runs from a hand-written trace; no learner code runs yet. The design is in [`docs/`](docs).
 
 ## License
 
