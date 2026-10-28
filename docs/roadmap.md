@@ -1,35 +1,36 @@
 # Roadmap
 
-Development starts only if Phase 0 shows the core idea helps learners. Estimates assume two engineers and one designer.
+We only build Stepwise if Phase 0 shows the idea actually helps. Estimates assume two engineers and a designer, and we'll revisit them once Phase 0 is done.
 
 ## Phases
 
-| Phase | Length | Delivers | Exit criteria |
+| Phase | Length | What we deliver | How we know it's done |
 |---|---|---|---|
-| 0 · Validate | 2 weeks | Prototype with 3 problems, tested with 8 learners | Learners fix bugs faster with Stepwise and use step-back. Otherwise stop or rethink. |
-| 1 · Core | 4 weeks | Python runner, editor, step controls, array and grid views | Two problems work end to end within performance targets |
-| 2 · First release | 5 weeks | Remaining views, automatic view selection, narration, live mode, 30 problems | All tests pass; private beta with 50 learners |
-| 3 · v1 | 8 weeks | Predict mode, comparison, more views, JavaScript, sharing | 60% activation and 25% weekly return in beta |
-| 4 · v2 | 10+ weeks | More languages, instructor tools | Decided by v1 results |
+| 0 · Validate | 2 weeks | A clickable prototype with three problems, tested with eight learners against print-statement debugging | Learners fix bugs faster and use step-back. If they don't, we stop or rethink. |
+| 1 · Core | 4 weeks | The Python runner, tracing, editor, step controls, and the array and grid views | Two problems work end to end within our performance targets |
+| 2 · First release | 5 weeks | The other four views, automatic view choice, narration, jump to failure, live mode, the library and all 30 problems | Every test passes and a private beta with 50 learners is running |
+| 3 · v1 | 8 weeks | Predict mode, comparison with a reference solution, click-to-jump, more views, JavaScript and TypeScript, pasted problems, sharing | In beta, 60% of new visitors finish a walkthrough and 25% return within a week |
+| 4 · v2 | 10+ weeks | More languages on our servers, tools for instructors | We'll decide based on v1 |
 
-kbui additions ship alongside: G1–G7 during Phase 0, G8–G20 during Phase 1. See [Building on kbui](kbui.md).
+The kbui work runs alongside: G1–G7 during Phase 0 and G8–G20 during Phase 1. [Building on kbui](kbui.md) has the list.
 
 ## Risks
 
-| Risk | Mitigation |
+| Risk | What we'll do about it |
 |---|---|
-| The wrong view is chosen and learners lose trust | Per-problem presets, a visible badge, one-click switching, a safe fallback |
-| Python is slow to load on first visit | Load in the background, cache it, keep the editor usable meanwhile |
-| Large inputs create very large traces | Small sample inputs, a step limit, compact storage |
-| Animation slows down experienced users | Snap at high speed, interruptible animation, reduced-motion setting |
-| Established platforms add visualizations | Compete on view quality, narration and failure diagnosis |
-| Problem content raises legal issues | All problems written in-house |
-| kbui work delays Stepwise | Start kbui work early; build views in parallel |
+| Stepwise picks the wrong view and learners stop trusting it | Set views per problem, show the choice, make switching one click, and fall back to the general view when unsure |
+| Python is slow to load the first time | Load it in the background, cache it, and keep the editor usable while it loads |
+| Big inputs make traces too large | Use small inputs for walkthroughs, cap the steps, and store traces compactly |
+| Animation slows experienced users down | Snap at higher speeds, let any keypress cut an animation short, offer reduced motion |
+| Bigger platforms add visuals of their own | Compete on how good the views, narration and failure diagnosis are, not on problem count |
+| Problem content causes legal trouble | Write every problem ourselves |
+| kbui work holds up Stepwise | Start the kbui work early and build the views in parallel |
+| kbui's warm visual style feels wrong for learning | Keep data colors separate from the theme, check reactions in Phase 0, and adjust tokens if needed |
 
 ## Open questions
 
-- Business model: a free core with paid features, or institutional licenses?
-- Second language: JavaScript or Java?
-- Before the learner writes code, should a walkthrough show a reference solution?
-- How much should narration explain, and how much should it ask?
-- Is a desktop app worth building for offline use?
+- How do we make money: a free core with paid extras, or licenses for schools and bootcamps?
+- Which second language do our learners need more, JavaScript or Java?
+- If a learner hasn't written anything yet, should Walk through show a reference solution?
+- How much should narration explain, and how much should it ask the learner to work out?
+- Is a desktop app worth building later for offline use?

@@ -15,7 +15,7 @@ Build every screen with kbui. Add missing components to kbui, not to Stepwise. K
 - **Build missing components locally.** Faster at first, but local copies drift and are never moved upstream.
 - **Use another component library.** Introduces a second look and a second set of rules.
 
-## Trade-off
+## What it costs
 
 kbui work is on Stepwise's critical path. It starts during Phase 0, and views are built in parallel. Because kbui is React-only, Stepwise uses React.
 

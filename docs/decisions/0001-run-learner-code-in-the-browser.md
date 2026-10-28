@@ -15,7 +15,7 @@ Run Python with Pyodide in a Web Worker and trace it with `sys.settrace`. The wo
 - **Server sandbox per run.** Costs money per run and adds latency to every step. Kept as the v2 path for other languages.
 - **Python-to-JavaScript translators.** Behave differently from real Python, so learners would hit bugs that aren't theirs.
 
-## Trade-off
+## What it costs
 
 The first visit downloads several megabytes. Stepwise loads it in the background and caches it.
 

@@ -1,101 +1,67 @@
 # Product
 
-## Problem
+## The problem
 
-Data structures and algorithms are taught through code and notation, but understanding comes from seeing data change. Visual learners struggle because:
+Data structures and algorithms make sense once you can see the data change. Most learners never get to. Their code runs a loop forty times in a blink and they see the final answer. A debugger tells them `i = 3, j = 7`, when what they need is to see `i` and `j` as arrows on the array. Visualizers help with the concept, but they animate someone else's example, not the bug in your own BFS.
 
-- **Execution is invisible.** A loop runs 40 times and only the final result is shown.
-- **Debuggers show values, not structure.** `i = 3, j = 7` does not show `i` and `j` as positions in an array.
-- **Visualizers use prepared examples.** An animation of BFS does not explain why your BFS visits a cell twice.
+Stepwise lets you write a solution and then watch it run, one step at a time, drawn the way a teacher would sketch it.
 
-## Audience
+## Who it's for
 
-- **Visual learners** (primary). Self-taught developers and bootcamp graduates who can write basic Python but lose track once indexes, pointers or recursion appear.
-- **Interview candidates** who recognize patterns but cannot always explain why a solution works.
-- **Computer science students** checking coursework and lecture concepts.
-- **Instructors** (v2) who want to share walkthroughs and see where a class gets stuck.
+Our main audience is **visual learners**: self-taught developers and bootcamp graduates who are comfortable with basic Python but lose the thread once indexes, pointers or recursion show up.
 
-## Core loop
+We also expect **interview candidates**, who know the patterns by name but can't always explain why a solution works, and **computer science students** checking coursework. **Instructors** come later, in v2, when we add shared walkthroughs and class views.
 
-1. Choose a problem.
-2. Write a solution.
-3. Walk through it as a picture, step by step.
-4. Fix and run again.
+What they're trying to do:
 
-## Assumptions
+- When my answer is wrong, show me the moment my code did something I didn't expect.
+- When I don't understand a solution, let me watch it run on a small input.
+- When I learn a pattern like two pointers or BFS, show me what it looks like so I recognize it next time.
 
-These are untested. Phase 0 of the [roadmap](roadmap.md) tests them before development starts.
+## How it works
 
-| Assumption | Fails if |
+You pick a problem, write a solution, and press **Walk through**. Your code runs in the browser with every step recorded. Stepwise works out what your data is (an array with two pointers, a grid, a linked list, a tree) and draws it that way, with one plain sentence per step. If a test fails, the walkthrough opens at the step where things went wrong.
+
+## What we still need to prove
+
+All of this rests on assumptions we haven't tested. Phase 0 of the [roadmap](roadmap.md) tests them with real learners before we build the product, and we stop or rethink if the first one fails.
+
+| We believe | We're wrong if |
 |---|---|
-| Stepping through their own code as a picture helps learners fix bugs faster | Fewer than 5 of 8 participants fix a planted bug faster than with print statements |
-| Automatic view selection is accurate enough to trust | The wrong view is chosen for more than 15% of common solutions |
+| Seeing their own code as a picture helps learners fix bugs faster | Fewer than 5 of 8 participants fix a planted bug faster than with print statements |
+| Stepwise can pick the right view on its own | It picks the wrong one for more than 15% of common solutions |
 | Python in the browser starts quickly enough | The first walkthrough takes more than 6 seconds on a mid-range laptop |
-| Learners step backwards as well as forwards | Fewer than 30% of walkthroughs use step-back or scrub |
+| Learners step backwards, not just forwards | Fewer than 30% of walkthroughs use step-back or scrub |
 
-## Scope
+## What ships when
 
-### First release
+**First release.** Thirty original Python problems across the common patterns. Code runs in the browser and progress is saved on your device, so no account is needed. Walk mode with stepping, playback and a scrubber. Six views that Stepwise picks for you, plus a general fallback. A sentence for every step. Jump to the failing step. A live mode that re-runs as you type.
 
-- 30 original Python problems covering the common patterns
-- Code runs in the browser; progress is stored on the device, and an account is optional
-- Walk mode: step, play, scrub and adjust speed
-- Six automatic views and a general fallback
-- One sentence per step, announced to screen readers
-- Jump to the failing step
-- Live mode: re-runs while typing and keeps the last working picture if the code breaks
+**v1.** Predict mode, which pauses and asks what happens next. A comparison with a reference solution that shows where yours first differs. Click any value to jump to the step that changed it. Graph, DP table, heap, stack, queue and string views. JavaScript and TypeScript. Paste in your own problem. Share a walkthrough by link.
 
-### v1
+**v2.** Java, C++, Go and Rust, run on our servers. Tools for instructors.
 
-- Predict mode, which pauses and asks what happens next
-- Comparison with a reference solution, showing the first step where they differ
-- Select a value to jump to the step that last changed it
-- Graph, dynamic programming table, heap, stack, queue and string views
-- JavaScript and TypeScript
-- Learner-supplied problems
-- Shareable walkthrough links
+### What we're not doing
 
-### v2
-
-- Java, C++, Go and Rust
-- Instructor tools
-
-### Out of scope
-
-- A large problem catalog. Thirty well-visualized problems are the priority.
-- Contests, rankings and social features.
+- A huge problem bank. Thirty problems with good visuals are worth more than three thousand without.
+- Contests, leaderboards or social feeds.
 - A full IDE with files, packages or a terminal.
-- Code editing on phones. Phones support viewing and stepping.
+- Writing code on a phone. Phones can watch and step through a walkthrough.
 
-## Success measures
+## How we'll measure it
 
-| Measure | Target |
+| Measure | First-release target |
 |---|---|
-| New visitors who complete a walkthrough in their first session | 60% |
-| Median time from landing to first visualization | Under 60 s |
+| New visitors who finish a walkthrough in their first session | 60% |
+| Median time from landing to the first picture | Under 60 seconds |
 | Walkthroughs that use step-back, scrub or jump | 40% |
-| Learners who return within 7 days | 25% |
-| Walkthroughs where the learner keeps the selected view | 85% |
+| Learners who fix a failing solution within 10 minutes after a walkthrough, compared with those who didn't open one | 15 points higher |
+| Learners who come back within a week | 25% |
+| "I understand why my solution works," rated after solving | Median 4 out of 5 |
+| Walkthroughs where the learner keeps the view Stepwise picked | 85% |
 
-## Acceptance criteria
+We also hold three guardrails: at least 99.5% of sessions without a crash, interactions that respond within 100 ms for most users, and no more than 2% of runs hitting a time limit.
 
-Each first-release feature is complete when its check passes.
+## Problem content
 
-| Feature | Acceptance check |
-|---|---|
-| Problem library | Loads in under 100 ms; every problem opens with Tab and Enter |
-| Editor | No input lag in a 200-line file; drafts survive a reload |
-| Run tests | Results in under 500 ms once Python is loaded |
-| Walk through | A 5,000-step trace is ready in under 400 ms and opens at step 1 |
-| Stepping | Each step renders within one frame; scrubbing stays above 50 fps |
-| Synchronization | Line, picture, variables and sentence always reflect the same step, verified by test |
-| Automatic views | The intended view is chosen for every reference solution |
-| Narration | Every step has a sentence |
-| Jump to failure | Planted bugs open at the correct step |
-| Live mode | No blank frames during a minute of continuous typing |
-| Accounts | Signing in preserves all prior progress |
-| Runaway code | `while True: pass` never freezes the tab |
-
-## Content policy
-
-All problem statements are written for Stepwise. Well-known problems may inspire them, but no text, names or numbering are copied from other platforms.
+We write every problem ourselves. Well-known problems are fine as inspiration, but we don't copy text, names or numbering from other platforms.

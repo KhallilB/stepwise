@@ -1,52 +1,47 @@
 # Building on kbui
 
-Stepwise's interface uses [kbui](https://github.com/KhallilB/kbui), a React component library built on Base UI. When Stepwise needs a component kbui lacks, it is added to kbui rather than built in Stepwise. Code specific to Stepwise, such as the views, runners and detector, stays in this repository. See [decision 0002](decisions/0002-build-on-kbui.md).
+Stepwise's interface is built with [kbui](https://github.com/KhallilB/kbui), our shared React component library. The rule is simple: if a Stepwise screen needs a component kbui doesn't have, we add it to kbui instead of building it here. Things only Stepwise needs, like the views, the runners and the detector, stay in this repository. [Decision 0002](decisions/0002-build-on-kbui.md) explains why.
 
-## Available today
+## What kbui already covers
 
-Button, Toolbar, Panel, Badge, Status, Callout, Stat, Input, Select, Menu, RadioGroup, Switch, Progress, Tooltip, Dialog, ScrollArea, NumberField, Card and Grid cover most of the interface.
+Most of the interface. Buttons, the step-control toolbar, panels, badges, status indicators, callouts for errors and limits, search and filter inputs, the speed selector, switches for settings, the loading bar, tooltips, the settings dialog, scrolling panels, cards and the page grid all exist today.
 
-## To add
+## What we need to add
 
-Sizes: S is about a day, M two to three days, L four to six.
+Rough sizes: S is about a day, M two to three days, L four to six.
 
 **Before Phase 1**
 
-| | Addition | Used for | Size |
+| | Component | What Stepwise uses it for | Size |
 |---|---|---|---|
-| G1 | Visualization color tokens | Every view | S |
-| G2 | Resizable panels | Editor and view split | L |
-| G3 | Slider with markers | Step timeline | M |
-| G4 | Tabs | Test cases, statement | M |
-| G5 | Kbd | Shortcut hints | S |
+| G1 | Visualization colors | Every view | S |
+| G2 | Resizable panels | The editor and view split | L |
+| G3 | Slider with markers | The step timeline | M |
+| G4 | Tabs | Test cases, problem statement | M |
+| G5 | Keyboard key label | Shortcut hints | S |
 | G6 | Screen-reader announcer | Step narration | S |
-| G7 | Code highlighting tokens and editor theme | Editor | M |
+| G7 | Code colors and an editor theme | The editor | M |
 
 **Before the first release**
 
-| | Addition | Used for | Size |
+| | Component | What Stepwise uses it for | Size |
 |---|---|---|---|
-| G8 | Drawer | Problem statement | M |
-| G9 | Table | Library, results, table view of each visualization | L |
-| G10 | Toast | Notifications | M |
-| G11 | Popover | View switcher | M |
-| G12 | Collapsible | Error details | S |
-| G13 | Skeleton | Loading states | S |
-| G14 | EmptyState | Empty search and history | S |
-| G15 | Keyboard shortcut hook | All shortcuts | M |
-| G20 | Split layouts for desktop, tablet and phone | Workspace | L |
+| G8 | Drawer | The problem statement | M |
+| G9 | Table | The library, test results, and the table version of each view | L |
+| G10 | Toast | "Solved" and "Draft restored" messages | M |
+| G11 | Popover | Switching views | M |
+| G12 | Collapsible section | Error details | S |
+| G13 | Loading placeholder | The library and workspace | S |
+| G14 | Empty state | No search results, no attempts yet | S |
+| G15 | Keyboard shortcuts | Every shortcut, and the shortcut list | M |
+| G20 | Split layouts | The workspace on desktop, tablet and phone | L |
 
-**v1:** command palette (G16), read-only code block (G17), avatar and account menu (G18), sparkline (G19).
+**For v1:** a command palette (G16), a read-only code block (G17), an account menu (G18) and a small trend chart (G19).
 
 ## Changes to kbui itself
 
-- Visualization colors must stay distinct from kbui's accent and status colors, and be checked for color blindness and contrast in both themes.
-- Two new motion durations: tree and graph relayout (about 320 ms) and a value-change pulse (400 ms).
-- Phone-sized controls need 44 px touch targets.
-- Global arrow-key stepping must not conflict with Toolbar's arrow-key navigation.
+The visualization colors need to stay clearly apart from kbui's accent and status colors, and we'll check them for color blindness and contrast in both themes. We also need two new animation timings, one for trees and graphs rearranging and one for the pulse when a value changes. Controls need 44 px touch targets on phones. And step-by-step arrow keys can't clash with the toolbar's own arrow-key navigation.
 
-## Workflow
+## How we work
 
-- Each kbui addition ships with its standard story, test, screenshot and accessibility scan.
-- kbui releases are grouped by Stepwise phase.
-- A temporary component in Stepwise is allowed only with a ticket to move it into kbui in the same phase.
+Each new component ships the way every kbui component does, with a story, tests, a screenshot check and an accessibility scan. We group kbui releases by Stepwise phase. If we ever need a stopgap component inside Stepwise, it comes with a ticket to move it into kbui in the same phase.

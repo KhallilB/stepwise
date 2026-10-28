@@ -21,7 +21,7 @@ A new language produces traces. A new view reads view specs. Each stage is teste
 - **Renderers read runtime values directly.** Every view would need code for every language.
 - **One combined format.** View choices would be recomputed on every render, and the v1 model would have no small, checkable output to produce.
 
-## Trade-off
+## What it costs
 
 The formats are a contract. Changing them means updating stored test traces deliberately.
 
