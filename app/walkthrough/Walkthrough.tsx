@@ -1,4 +1,4 @@
-import { Badge, Panel, Toolbar } from "@kbui/react";
+import { Badge, Panel, Toolbar } from "@kb.ui/react";
 import { useCallback, useEffect, useState } from "react";
 import type { Problem } from "~/problems/problem";
 import { ArrayView } from "~/views/ArrayView";

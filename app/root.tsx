@@ -1,4 +1,4 @@
-import "@kbui/react/styles.css";
+import "@kb.ui/react/styles.css";
 import "./app.css";
 import type { ReactNode } from "react";
 import {

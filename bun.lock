@@ -5,7 +5,7 @@
     "": {
       "name": "stepwise",
       "dependencies": {
-        "@kbui/react": "https://github.com/KhallilB/kbui/releases/download/v0.8.0/kbui-react-0.8.0.tgz",
+        "@kb.ui/react": "0.10.2",
         "isbot": "5.2.2",
         "react": "19.3.1",
         "react-dom": "19.3.1",
@@ -255,7 +255,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@kbui/react": ["@kbui/react@https://github.com/KhallilB/kbui/releases/download/v0.8.0/kbui-react-0.8.0.tgz", { "dependencies": { "@base-ui/react": "1.9.0", "clsx": "^2.1.1" }, "peerDependencies": { "react": ">=19", "react-dom": ">=19" } }, "sha512-jLSm6rM1jw+y4MfoUeoym04Oi0b85q2n+e9pLNTFM8f1C71S+2ZUnkXgOEzulFWNVdwVCCGmhw6AJNnjWiSrHw=="],
+    "@kb.ui/react": ["@kb.ui/react@0.10.2", "", { "dependencies": { "@base-ui/react": "1.9.0", "clsx": "^2.1.1" }, "peerDependencies": { "react": ">=19", "react-dom": ">=19" } }, "sha512-rhqG6uyofnQrOIdtinA6nrmhSYc1cxmdJfPTV180ab93qLfVb556TdZNhPCuVU41GTLQHmW+pTIMtDc3oIlFGg=="],
 
     "@mjackson/node-fetch-server": ["@mjackson/node-fetch-server@0.2.0", "", {}, "sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng=="],
 

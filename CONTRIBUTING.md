@@ -20,7 +20,7 @@ bun run check      # kbui version guard, lint, types, unit and end-to-end tests
 | `bun run typecheck` | Generates Workers and route types, then type-checks |
 | `bun run build` | Builds the Cloudflare Worker |
 
-kbui is installed from its [GitHub release](https://github.com/KhallilB/kbui/releases) tarball, not a registry.
+kbui is installed from npm as `@kb.ui/react`; keep its version synchronized with any other `@kb.ui/*` packages.
 
 ## Documentation guidelines
 
