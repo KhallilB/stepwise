@@ -36,11 +36,66 @@
       "evidence": []
     },
     {
+      "id": "s1-1-binary-search-walkthrough",
+      "subject": "m1",
+      "kind": "slice",
+      "slice": "1.1",
+      "title": "Binary search walkthrough",
+      "passMark": "An end-to-end test steps to the planted off-by-one and back, with the line, picture and sentence matching at every step",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s1-2-sorted-pair-sum-problem",
+      "subject": "m1",
+      "kind": "slice",
+      "slice": "1.2",
+      "title": "Sorted pair sum, and a problem picker",
+      "passMark": "The same test passes for a planted bug where a pointer moves the wrong way",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s1-3-island-count-grid-view",
+      "subject": "m1",
+      "kind": "slice",
+      "slice": "1.3",
+      "title": "Island count, with the grid view and the queue beside it",
+      "passMark": "The same test passes for a planted off-by-one bounds check, and the preview link is public",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
       "id": "m2-javascript-tracing-check",
       "subject": "m2",
       "kind": "milestone",
       "title": "JavaScript tracing check",
       "passMark": "traced and untraced runs give the same result on every test, a 5,000-step trace is ready in under 400 ms on a mid-range laptop, and Stop ends an infinite loop within 100 ms",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s2-1-trace-three-prototype-problems",
+      "subject": "m2",
+      "kind": "slice",
+      "slice": "2.1",
+      "title": "Trace the three prototype problems",
+      "passMark": "Traced and untraced runs match on every test, and the binary search trace matches M1's hand-written one",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s2-2-limits-timing",
+      "subject": "m2",
+      "kind": "slice",
+      "slice": "2.2",
+      "title": "Limits and timing",
+      "passMark": "5,000 steps trace in under 400 ms, and Stop ends while (true) {} within 100 ms",
       "result": "not-run",
       "measured": [],
       "evidence": []
@@ -56,8 +111,73 @@
       "evidence": []
     },
     {
-      "id": "m4-kbui-release-a",
+      "id": "s3-1-recruit",
+      "subject": "m3",
+      "kind": "slice",
+      "slice": "3.1",
+      "title": "Recruit",
+      "passMark": "Eight participants are booked",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s3-2-study-kit",
+      "subject": "m3",
+      "kind": "slice",
+      "slice": "3.2",
+      "title": "Study kit",
+      "passMark": "A dry run with one person exports timings and step-back counts",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s3-3-run-eight-sessions-write",
+      "subject": "m3",
+      "kind": "slice",
+      "slice": "3.3",
+      "title": "Run the eight sessions and write the report",
+      "passMark": "The report is in research/ and the result is recorded",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m4-run-and-trace",
       "subject": "m4",
+      "kind": "milestone",
+      "title": "Run and trace",
+      "passMark": "traces for two problems match their stored copies exactly, a 5,000-step trace is ready in under 400 ms, and Stop ends an infinite loop within 100 ms without freezing the tab",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s4-1-runner-stored-traces-binary",
+      "subject": "m4",
+      "kind": "slice",
+      "slice": "4.1",
+      "title": "The runner, with stored traces for binary search and sorted pair sum",
+      "passMark": "CI compares both traces with their stored copies, and traced against untraced runs",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s4-2-step-time-memory-limits",
+      "subject": "m4",
+      "kind": "slice",
+      "slice": "4.2",
+      "title": "Step, time and memory limits, Stop, and a worker with no network access",
+      "passMark": "The runaway-code tests and the 5,000-step benchmark pass in CI",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m5-kbui-release-a",
+      "subject": "m5",
       "kind": "milestone",
       "title": "kbui release A",
       "passMark": "a tagged kbui release with all seven, passing kbui's checks, installed in Stepwise from its release tarball",
@@ -66,11 +186,23 @@
       "evidence": []
     },
     {
-      "id": "m5-run-and-trace",
+      "id": "s5-1-g1-g7-built-tracked",
       "subject": "m5",
-      "kind": "milestone",
-      "title": "Run and trace",
-      "passMark": "traces for two problems match their stored copies exactly, a 5,000-step trace is ready in under 400 ms, and Stop ends an infinite loop within 100 ms without freezing the tab",
+      "kind": "slice",
+      "slice": "5.1",
+      "title": "G1 to G7, built and tracked in the kbui repository",
+      "passMark": "Each is merged in kbui with its story, tests and accessibility scan",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s5-2-tag-release-install-stepwise",
+      "subject": "m5",
+      "kind": "slice",
+      "slice": "5.2",
+      "title": "Tag the release and install it in Stepwise",
+      "passMark": "Stepwise builds and passes its tests against the release tarball",
       "result": "not-run",
       "measured": [],
       "evidence": []
@@ -86,18 +218,41 @@
       "evidence": []
     },
     {
-      "id": "m7-kbui-release-b",
-      "subject": "m7",
-      "kind": "milestone",
-      "title": "kbui release B",
-      "passMark": "a tagged kbui release with all nine, passing kbui's checks, installed in Stepwise",
+      "id": "s6-1-editor-run-tests",
+      "subject": "m6",
+      "kind": "slice",
+      "slice": "6.1",
+      "title": "Editor and Run tests",
+      "passMark": "Results appear within 500 ms, and a reload brings the draft back",
       "result": "not-run",
       "measured": [],
       "evidence": []
     },
     {
-      "id": "m8-all-six-views",
-      "subject": "m8",
+      "id": "s6-2-walk-through-real-code",
+      "subject": "m6",
+      "kind": "slice",
+      "slice": "6.2",
+      "title": "Walk through on real code with the array view and the timeline",
+      "passMark": "Binary search works end to end from code the learner typed",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s6-3-grid-view-real-code",
+      "subject": "m6",
+      "kind": "slice",
+      "slice": "6.3",
+      "title": "Grid view on real code, and the drawing benchmark",
+      "passMark": "Island count works end to end, and the 8 ms and 50 fps targets pass in CI",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m7-all-six-views",
+      "subject": "m7",
       "kind": "milestone",
       "title": "All six views",
       "passMark": "the intended view is chosen for all 30 reference solutions, and the wrong one for no more than 15% of a set of common learner solutions",
@@ -106,11 +261,142 @@
       "evidence": []
     },
     {
-      "id": "m9-feedback-loop",
-      "subject": "m9",
+      "id": "s7-1-linked-list-view",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.1",
+      "title": "Linked list view",
+      "passMark": "Screenshot tests at fixed steps pass in light and dark",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s7-2-binary-tree-view",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.2",
+      "title": "Binary tree view",
+      "passMark": "Screenshot tests pass in light and dark",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s7-3-hash-map-set-view",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.3",
+      "title": "Hash map and set view",
+      "passMark": "Screenshot tests pass in light and dark",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s7-4-recursion-tree-view",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.4",
+      "title": "Recursion tree view",
+      "passMark": "Screenshot tests pass in light and dark",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s7-5-reference-solutions-all-30",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.5",
+      "title": "Reference solutions for all 30 problems, each tagged with its intended view",
+      "passMark": "All 30 run and have a stored trace",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s7-6-automatic-view-choice-badge",
+      "subject": "m7",
+      "kind": "slice",
+      "slice": "7.6",
+      "title": "Automatic view choice, the badge, and switching or pinning a view",
+      "passMark": "The M7 pass mark is met",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m8-feedback-loop",
+      "subject": "m8",
       "kind": "milestone",
       "title": "Feedback loop",
       "passMark": "every planted bug (five per problem) opens at a useful step, no step is missing a sentence, and a minute of continuous typing in live mode never shows a blank view",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s8-1-narration-from-templates-each",
+      "subject": "m8",
+      "kind": "slice",
+      "slice": "8.1",
+      "title": "Narration from templates for each kind of action",
+      "passMark": "No step is missing a sentence, and screen readers announce each one",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s8-2-jump-failure",
+      "subject": "m8",
+      "kind": "slice",
+      "slice": "8.2",
+      "title": "Jump to failure",
+      "passMark": "Every planted bug written so far opens at a useful step",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s8-3-live-mode",
+      "subject": "m8",
+      "kind": "slice",
+      "slice": "8.3",
+      "title": "Live mode",
+      "passMark": "A minute of continuous typing never shows a blank view",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m9-kbui-release-b",
+      "subject": "m9",
+      "kind": "milestone",
+      "title": "kbui release B",
+      "passMark": "a tagged kbui release with all nine, passing kbui's checks, installed in Stepwise",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s9-1-g8-g15-g20-built",
+      "subject": "m9",
+      "kind": "slice",
+      "slice": "9.1",
+      "title": "G8 to G15 and G20, built and tracked in the kbui repository",
+      "passMark": "Each is merged in kbui with its story, tests and accessibility scan",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s9-2-tag-release-install-stepwise",
+      "subject": "m9",
+      "kind": "slice",
+      "slice": "9.2",
+      "title": "Tag the release and install it in Stepwise",
+      "passMark": "Stepwise builds and passes its tests against the release tarball",
       "result": "not-run",
       "measured": [],
       "evidence": []
@@ -126,11 +412,121 @@
       "evidence": []
     },
     {
+      "id": "s10-1-library-page-problem-statement",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.1",
+      "title": "Library page and problem statement drawer",
+      "passMark": "The list loads in under 100 ms, and every problem opens with Tab and Enter",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-2-problems-1-6",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.2",
+      "title": "Problems 1 to 6",
+      "passMark": "Each passes its planted-bug and view-choice tests",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-3-problems-7-12",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.3",
+      "title": "Problems 7 to 12",
+      "passMark": "Each passes its planted-bug and view-choice tests",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-4-problems-13-18",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.4",
+      "title": "Problems 13 to 18",
+      "passMark": "Each passes its planted-bug and view-choice tests",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-5-problems-19-24",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.5",
+      "title": "Problems 19 to 24",
+      "passMark": "Each passes its planted-bug and view-choice tests",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-6-problems-25-30",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.6",
+      "title": "Problems 25 to 30",
+      "passMark": "Each passes its planted-bug and view-choice tests",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s10-7-accessibility-pass",
+      "subject": "m10",
+      "kind": "slice",
+      "slice": "10.7",
+      "title": "Accessibility pass",
+      "passMark": "The M10 pass mark is met",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
       "id": "m11-private-beta",
       "subject": "m11",
       "kind": "milestone",
       "title": "Private beta",
       "passMark": "50 learners invited and active, at least 99.5% of sessions without a crash, and all [success measures](product.md#how-well-measure-it) reported after two weeks",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s11-1-progress-saved-device-sign",
+      "subject": "m11",
+      "kind": "slice",
+      "slice": "11.1",
+      "title": "Progress saved on the device, and sign-in that syncs it",
+      "passMark": "Signing in after solving three problems keeps all three marked as solved",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s11-2-crash-reporting-analytics-events",
+      "subject": "m11",
+      "kind": "slice",
+      "slice": "11.2",
+      "title": "Crash reporting and the analytics events",
+      "passMark": "Every success measure can be read from the dashboard",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "s11-3-invite-50-learners-run",
+      "subject": "m11",
+      "kind": "slice",
+      "slice": "11.3",
+      "title": "Invite 50 learners, run for two weeks, write the report",
+      "passMark": "The M11 pass mark is checked and recorded",
       "result": "not-run",
       "measured": [],
       "evidence": []
@@ -150,8 +546,8 @@
       "subject": "m13",
       "kind": "milestone",
       "title": "v2",
+      "summary": "Scope, slices and pass mark set after M12.",
       "result": "not-run",
-      "summary": "Scope and pass mark set after M12.",
       "measured": [],
       "evidence": []
     }
