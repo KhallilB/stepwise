@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "project": "stepwise",
+  "entries": [
+    {
+      "id": "m0-design-published",
+      "subject": "m0",
+      "kind": "milestone",
+      "title": "Design published",
+      "passMark": "every page in the docs index exists, and every link resolves",
+      "date": "2026-10-27",
+      "result": "pass",
+      "summary": "Product, requirements, design, technical, kbui and roadmap docs are public, and every link resolves.",
+      "measured": [
+        {
+          "label": "Broken links",
+          "value": "0"
+        }
+      ],
+      "evidence": [
+        {
+          "label": "Docs",
+          "url": "https://github.com/KhallilB/stepwise/tree/main/docs"
+        }
+      ],
+      "commit": "2cc4d58"
+    },
+    {
+      "id": "m1-clickable-prototype",
+      "subject": "m1",
+      "kind": "milestone",
+      "title": "Clickable prototype",
+      "passMark": "all three problems can be walked forward and back with the line, picture and sentence in sync, on a public preview link",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m2-python-start-up-check",
+      "subject": "m2",
+      "kind": "milestone",
+      "title": "Python start-up check",
+      "passMark": "first walkthrough within 6 seconds over throttled 4G on a cold cache, and a 5,000-step trace in under 400 ms",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m3-learner-study",
+      "subject": "m3",
+      "kind": "milestone",
+      "title": "Learner study",
+      "passMark": "at least 5 of 8 fix the bug faster with Stepwise, and at least 30% of walkthroughs use step-back or scrub",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m4-kbui-release-a",
+      "subject": "m4",
+      "kind": "milestone",
+      "title": "kbui release A",
+      "passMark": "a tagged kbui release with all seven, passing kbui's checks, installed in Stepwise from its release tarball",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m5-run-and-trace",
+      "subject": "m5",
+      "kind": "milestone",
+      "title": "Run and trace",
+      "passMark": "traces for two problems match their stored copies exactly, a 5,000-step trace is ready in under 400 ms, and Stop ends an infinite loop within 100 ms without freezing the tab",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m6-first-real-walkthrough",
+      "subject": "m6",
+      "kind": "milestone",
+      "title": "First real walkthrough",
+      "passMark": "two problems work end to end. Each step draws in under 8 ms and scrubbing 5,000 steps stays above 50 fps",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m7-kbui-release-b",
+      "subject": "m7",
+      "kind": "milestone",
+      "title": "kbui release B",
+      "passMark": "a tagged kbui release with all nine, passing kbui's checks, installed in Stepwise",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m8-all-six-views",
+      "subject": "m8",
+      "kind": "milestone",
+      "title": "All six views",
+      "passMark": "the intended view is chosen for all 30 reference solutions, and the wrong one for no more than 15% of a set of common learner solutions",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m9-feedback-loop",
+      "subject": "m9",
+      "kind": "milestone",
+      "title": "Feedback loop",
+      "passMark": "every planted bug (five per problem) opens at a useful step, no step is missing a sentence, and a minute of continuous typing in live mode never shows a blank view",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m10-full-library-accessible",
+      "subject": "m10",
+      "kind": "milestone",
+      "title": "Full library, accessible",
+      "passMark": "30 problems live, no automated accessibility violations on any screen, the keyboard-only test passes, and a manual VoiceOver and NVDA check finds no blocking issues",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m11-private-beta",
+      "subject": "m11",
+      "kind": "milestone",
+      "title": "Private beta",
+      "passMark": "50 learners invited and active, at least 99.5% of sessions without a crash, and all [success measures](product.md#how-well-measure-it) reported after two weeks",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m12-v1",
+      "subject": "m12",
+      "kind": "milestone",
+      "title": "v1",
+      "passMark": "in beta, 60% of new visitors finish a walkthrough in their first session and 25% return within a week",
+      "result": "not-run",
+      "measured": [],
+      "evidence": []
+    },
+    {
+      "id": "m13-v2",
+      "subject": "m13",
+      "kind": "milestone",
+      "title": "v2",
+      "result": "not-run",
+      "summary": "Scope and pass mark set after M12.",
+      "measured": [],
+      "evidence": []
+    }
+  ]
+}
