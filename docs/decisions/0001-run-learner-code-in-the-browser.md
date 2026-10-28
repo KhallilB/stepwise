@@ -1,6 +1,6 @@
 # 0001. Run learner code in the browser with Pyodide
 
-**Status:** Proposed 2026-10-27. Load time is tested in Phase 0.
+**Status:** Replaced by [0005](0005-javascript-first.md) on 2026-10-28, when the first release switched to JavaScript. Python returns in v1 using this approach.
 
 ## Context
 

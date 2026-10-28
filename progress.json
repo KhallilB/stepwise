@@ -36,11 +36,11 @@
       "evidence": []
     },
     {
-      "id": "m2-python-start-up-check",
+      "id": "m2-javascript-tracing-check",
       "subject": "m2",
       "kind": "milestone",
-      "title": "Python start-up check",
-      "passMark": "first walkthrough within 6 seconds over throttled 4G on a cold cache, and a 5,000-step trace in under 400 ms",
+      "title": "JavaScript tracing check",
+      "passMark": "traced and untraced runs give the same result on every test, a 5,000-step trace is ready in under 400 ms on a mid-range laptop, and Stop ends an infinite loop within 100 ms",
       "result": "not-run",
       "measured": [],
       "evidence": []

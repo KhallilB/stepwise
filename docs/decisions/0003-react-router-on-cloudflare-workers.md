@@ -1,6 +1,6 @@
 # 0003. Use React Router 7 on Cloudflare Workers
 
-**Status:** Proposed 2026-10-27. Replaces SvelteKit from an earlier draft.
+**Status:** Proposed 2026-10-27. Replaces SvelteKit from an earlier draft. Updated 2026-10-28: the security headers were only needed for Python and are dropped until v1 (see [0005](0005-javascript-first.md)).
 
 ## Context
 

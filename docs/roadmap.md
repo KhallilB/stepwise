@@ -12,7 +12,7 @@ Status on 2026-10-27.
 |---|---|---|---|---|
 | M0 | Design published | — | Done | Passed |
 | M1 | Clickable prototype | 0 · Validate | Week 1 | Not started |
-| M2 | Python start-up check | 0 · Validate | Week 1 | Not started |
+| M2 | JavaScript tracing check | 0 · Validate | Week 1 | Not started |
 | M3 | Learner study | 0 · Validate | Week 2 | Not started |
 | M4 | kbui release A | Alongside Phase 0 | Week 2 | Not started |
 | M5 | Run and trace | 1 · Core | Week 4 | Not started |
@@ -59,18 +59,18 @@ The product, design and technical docs are public in this repository.
 
 ### M1 · Clickable prototype
 
-A browser prototype that walks through three problems (binary search, two pointers and a grid search) using traces we write by hand. No real Python yet. It's enough to put in front of learners.
+A browser prototype that walks through three problems (binary search, two pointers and a grid search) using traces we write by hand. No learner code runs yet. It's enough to put in front of learners.
 
 - **Demo:** open the preview link, pick a problem, step forward and back through a planted bug.
 - **Pass mark:** all three problems can be walked forward and back with the line, picture and sentence in sync, on a public preview link.
 - **Evidence:** the preview link and a short screen recording.
 
-### M2 · Python start-up check
+### M2 · JavaScript tracing check
 
-A throwaway test page that loads Pyodide in a worker and traces a loop. It answers whether Python in the browser is fast enough before we depend on it.
+A throwaway test page that rewrites JavaScript to call a tracing hook and runs it in a worker. It answers whether tracing this way is faithful and fast before we depend on it.
 
-- **Demo:** open the test page on a mid-range laptop with network throttling on, and watch the timer.
-- **Pass mark:** first walkthrough within 6 seconds over throttled 4G on a cold cache, and a 5,000-step trace in under 400 ms.
+- **Demo:** run the three prototype problems and their planted bugs traced and untraced, side by side, with the timings on screen. Then run `while (true) {}` and press Stop.
+- **Pass mark:** traced and untraced runs give the same result on every test, a 5,000-step trace is ready in under 400 ms on a mid-range laptop, and Stop ends an infinite loop within 100 ms.
 - **Evidence:** the benchmark script and its results, in `research/`.
 
 ### M3 · Learner study
@@ -93,9 +93,9 @@ The first batch of kbui components Stepwise needs: visualization colors, resizab
 
 ### M5 · Run and trace
 
-The real Python runner and tracer, with traces stored and replayable.
+The real JavaScript runner and tracer, with traces stored and replayable.
 
-- **Demo:** paste a solution into a bare test page, run it, and print the trace. Then run `while True: pass` and press Stop.
+- **Demo:** paste a solution into a bare test page, run it, and print the trace. Then run `while (true) {}` and press Stop.
 - **Pass mark:** traces for two problems match their stored copies exactly, a 5,000-step trace is ready in under 400 ms, and Stop ends an infinite loop within 100 ms without freezing the tab.
 - **Evidence:** CI run with the stored-trace and runaway-code tests.
 
@@ -153,7 +153,7 @@ Fifty learners using the first release.
 
 ### M12 · v1
 
-Predict mode, comparison with a reference solution, click-to-jump, graph, DP table and heap views, JavaScript and TypeScript, pasted problems, and share links.
+Predict mode, comparison with a reference solution, click-to-jump, graph, DP table and heap views, TypeScript and Python, pasted problems, and share links.
 
 - **Demo:** a shared link that opens someone else's walkthrough at a chosen step.
 - **Pass mark:** in beta, 60% of new visitors finish a walkthrough in their first session and 25% return within a week.
@@ -170,7 +170,8 @@ More languages running on our servers, and tools for instructors. We'll set the 
 | Risk | What we'll do about it |
 |---|---|
 | Stepwise picks the wrong view and learners stop trusting it | Set views per problem, show the choice, make switching one click, and fall back to the general view when unsure |
-| Python is slow to load the first time | Load it in the background, cache it, and keep the editor usable while it loads. M2 checks this early. |
+| Rewriting code to trace it changes how it behaves | Run every reference solution and planted bug traced and untraced in CI, and fail on any difference. M2 checks this early. |
+| Learners preparing for interviews want Python | Ask Phase 0 participants which language they practice in, and bring Python forward if most say Python |
 | Big inputs make traces too large | Use small inputs for walkthroughs, cap the steps, and store traces compactly |
 | Animation slows experienced users down | Snap at higher speeds, let any keypress cut an animation short, offer reduced motion |
 | Bigger platforms add visuals of their own | Compete on how good the views, narration and failure diagnosis are, not on problem count |
@@ -181,7 +182,7 @@ More languages running on our servers, and tools for instructors. We'll set the 
 ## Open questions
 
 - How do we make money: a free core with paid extras, or licenses for schools and bootcamps?
-- Which second language do our learners need more, JavaScript or Java?
+- Do interview candidates need Python sooner than v1?
 - If a learner hasn't written anything yet, should Walk through show a reference solution?
 - How much should narration explain, and how much should it ask the learner to work out?
 - Is a desktop app worth building later for offline use?

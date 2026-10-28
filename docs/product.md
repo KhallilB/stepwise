@@ -8,7 +8,7 @@ Stepwise lets you write a solution and then watch it run, one step at a time, dr
 
 ## Who it's for
 
-Our main audience is **visual learners**: self-taught developers and bootcamp graduates who are comfortable with basic Python but lose the thread once indexes, pointers or recursion show up.
+Our main audience is **visual learners**: self-taught developers and bootcamp graduates who are comfortable with basic JavaScript but lose the thread once indexes, pointers or recursion show up.
 
 We also expect **interview candidates**, who know the patterns by name but can't always explain why a solution works, and **computer science students** checking coursework. **Instructors** come later, in v2, when we add shared walkthroughs and class views.
 
@@ -30,14 +30,14 @@ All of this rests on assumptions we haven't tested. Phase 0 of the [roadmap](roa
 |---|---|
 | Seeing their own code as a picture helps learners fix bugs faster | Fewer than 5 of 8 participants fix a planted bug faster than with print statements |
 | Stepwise can pick the right view on its own | It picks the wrong one for more than 15% of common solutions |
-| Python in the browser starts quickly enough | The first walkthrough takes more than 6 seconds on a mid-range laptop |
+| Rewriting code to trace it doesn't change what it does | Any reference solution or planted bug gives a different result traced than untraced |
 | Learners step backwards, not just forwards | Fewer than 30% of walkthroughs use step-back or scrub |
 
 ## What ships when
 
-**First release.** Thirty original Python problems across the common patterns. Code runs in the browser and progress is saved on your device, so no account is needed. Walk mode with stepping, playback and a scrubber. Six views that Stepwise picks for you, plus a general fallback. A sentence for every step. Jump to the failing step. A live mode that re-runs as you type.
+**First release.** Thirty original JavaScript problems across the common patterns. Code runs in the browser and progress is saved on your device, so no account is needed. Walk mode with stepping, playback and a scrubber. Six views that Stepwise picks for you, plus a general fallback. A sentence for every step. Jump to the failing step. A live mode that re-runs as you type.
 
-**v1.** Predict mode, which pauses and asks what happens next. A comparison with a reference solution that shows where yours first differs. Click any value to jump to the step that changed it. Graph, DP table, heap, stack, queue and string views. JavaScript and TypeScript. Paste in your own problem. Share a walkthrough by link.
+**v1.** Predict mode, which pauses and asks what happens next. A comparison with a reference solution that shows where yours first differs. Click any value to jump to the step that changed it. Graph, DP table, heap, stack, queue and string views. TypeScript, and Python running in the browser. Paste in your own problem. Share a walkthrough by link.
 
 **v2.** Java, C++, Go and Rust, run on our servers. Tools for instructors.
 

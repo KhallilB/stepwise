@@ -35,7 +35,7 @@ On a tablet the views sit above the editor. On a phone, walk mode comes first: t
 
 ## First visit
 
-The landing page shows a binary search walkthrough paused on its last step, with a Play button next to it. It doesn't move until you press it. There's one call to action, **Try a problem**, which opens a warm-up problem with a working solution already filled in, so the first walkthrough is one click away. Python starts loading in the background as soon as the page opens.
+The landing page shows a binary search walkthrough paused on its last step, with a Play button next to it. It doesn't move until you press it. There's one call to action, **Try a problem**, which opens a warm-up problem with a working solution already filled in, so the first walkthrough is one click away.
 
 After that first walkthrough, a single tip appears: "Use ← and → to step. Now try writing your own." There's no signup wall, tour or pop-up.
 
@@ -43,7 +43,6 @@ After that first walkthrough, a single tip appears: "Use ← and → to step. No
 
 | Situation | What the learner sees |
 |---|---|
-| Python is still loading | The editor works straight away. Walk through shows "Getting Python ready" with a thin progress bar. |
 | Editor is empty | Pressing Walk through shows "Write a solution first." next to the button. |
 | Syntax error | A red underline at the error and a one-line message. In live mode, the last working walkthrough stays up, dimmed. |
 | Error while running | The walkthrough opens at the failing step with a plain explanation, such as "grid[4] doesn't exist. The grid has rows 0 to 3." |
@@ -58,11 +57,11 @@ Stepwise looks at both the data and how your code uses it to decide how to draw 
 
 | View | When it's used | Ships in |
 |---|---|---|
-| Array with pointers | A list, plus the integer variables used to index it | First release |
-| Grid | A list of equal-length lists | First release |
+| Array with pointers | An array, plus the integer variables used to index it | First release |
+| Grid | An array of equal-length arrays | First release |
 | Linked list | Objects connected through `next` | First release |
 | Binary tree | Objects with `left` and `right` | First release |
-| Hash map or set | A `dict` or `set` | First release |
+| Hash map or set | A `Map`, a `Set`, or a plain object used for lookups | First release |
 | Recursion tree | A function that calls itself | First release |
 | General | Anything we don't recognize | First release |
 | Graph, DP table, heap, stack, queue, string | Their own patterns | v1 |
