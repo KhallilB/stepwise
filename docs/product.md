@@ -1,115 +1,101 @@
 # Product
 
-Stepwise is a practice space for data structures and algorithms where you write a solution and watch it run, one step at a time, drawn the way you would sketch it on a whiteboard.
+## Problem
 
-This document is the home for what Stepwise is for, who it serves and what it will not do. [Requirements](requirements.md) turn the MVP into testable checks, and the [roadmap](roadmap.md) orders the work.
+Data structures and algorithms are taught through code and notation, but understanding comes from seeing data change. Visual learners struggle because:
 
-Status on 2026-10-27: draft v0.1. No code exists. Every claim about learner behavior below is an assumption until Phase 0 tests it.
+- **Execution is invisible.** A loop runs 40 times and only the final result is shown.
+- **Debuggers show values, not structure.** `i = 3, j = 7` does not show `i` and `j` as positions in an array.
+- **Visualizers use prepared examples.** An animation of BFS does not explain why your BFS visits a cell twice.
 
-## The loop
+## Audience
 
-```text
-Pick a problem  →  Write code  →  Walk through  →  Fix and repeat
-```
+- **Visual learners** (primary). Self-taught developers and bootcamp graduates who can write basic Python but lose track once indexes, pointers or recursion appear.
+- **Interview candidates** who recognize patterns but cannot always explain why a solution works.
+- **Computer science students** checking coursework and lecture concepts.
+- **Instructors** (v2) who want to share walkthroughs and see where a class gets stuck.
 
-A learner picks a problem, writes a solution and presses **Walk through**. Their code runs in the browser with tracing on. Stepwise detects what the data is (a grid, an array with two pointers, a linked list, a tree) and draws it that way, with one plain sentence per step. When a test fails, the walk opens at the step where things went wrong.
+## Core loop
 
-## The problem
+1. Choose a problem.
+2. Write a solution.
+3. Walk through it as a picture, step by step.
+4. Fix and run again.
 
-- **The work is invisible.** A loop runs 40 times in a blink. The learner sees only the final output, so the cause of a wrong answer stays hidden.
-- **Notation is a barrier.** Σ, big-O and index arithmetic describe loops in a second language that many self-taught learners never learned.
-- **Debuggers don't fit the job.** A debugger lists `i = 3, j = 7`. A learner needs to see `i` and `j` as arrows on the array.
-- **Visualizers are disconnected from practice.** Watching a canned BFS animation is different from understanding why *your* BFS visits a cell twice.
+## Assumptions
 
-## Assumptions to test
+These are untested. Phase 0 of the [roadmap](roadmap.md) tests them before development starts.
 
-The roadmap opens with a two-week validation phase. If A1 fails, the project stops or is rethought before anything is built.
-
-| | Assumption | How we test it | Fails if |
-|---|---|---|---|
-| A1 | Visual learners solve more problems when they can step through their own code drawn as a picture. | Timed seeded-bug task, Stepwise against print statements | Fewer than 5 of 8 participants fix the bug faster with Stepwise |
-| A2 | Auto-detected views are right often enough that people trust them. | Run the detector on common solutions to the 30 MVP problems | Wrong primary view in more than 15% of them |
-| A3 | Python in the browser starts fast enough. | Cold start on a mid-range laptop over 4G | Over 6 s to the first walkthrough |
-| A4 | Learners step backwards, not only forwards. | Session recordings in Phase 0 | Fewer than 30% of walks use step-back or scrub |
-
-## Who it serves
-
-| Persona | Situation | What they need |
-|---|---|---|
-| Visual learner (primary) | Self-taught or bootcamp graduate. Comfortable with basic Python, lost once indexes, pointers or recursion appear. | See state change, connect each line to its effect, learn notation by seeing it. |
-| Interview prepper | Grinding problems before interviews. Knows patterns by name, can't always explain why a solution works. | Fast feedback on wrong answers, pattern recognition, keyboard-first speed. |
-| CS student | Taking a data structures course with homework in Python. | Understand lecture concepts by running them, check edge cases. |
-| Instructor (v2) | Teaches a course or bootcamp cohort. | Shareable walkthroughs, assigned problem sets, a view of where a cohort gets stuck. |
-
-### Jobs to be done
-
-- When my answer is wrong, show me the exact moment my code did something I didn't expect.
-- When I read a solution I don't understand, let me watch it run on a small input.
-- When I learn a new pattern (two pointers, BFS, DP), show me what it looks like so I recognize it next time.
-
-## Goals
-
-- Make the effect of every line of a learner's code visible in a form that matches how DSA is taught.
-- Keep the interface simple enough that a first-time visitor completes a walkthrough within 60 seconds, with no signup.
-- Feel fast and calm: instant stepping, smooth motion, no flicker while typing.
-
-## Non-goals for the MVP
-
-- Competing on problem count. 30 well-chosen problems beat 3,000 with no visuals.
-- Contests, rankings or social feeds.
-- Languages other than Python. JavaScript and TypeScript come in v1, others in v2.
-- A full IDE. No files, no packages, no terminal.
-- Editing code on a phone. Phones get read-and-step mode.
-
-## Success metrics
-
-| Metric | Definition | MVP target |
-|---|---|---|
-| Activation | New visitors who complete one full walkthrough in their first session | ≥ 60% |
-| Time to first picture | Landing to first rendered step, median | ≤ 60 s |
-| Active stepping | Walkthroughs that use step-back, scrub or click-to-jump | ≥ 40% |
-| Fix after walk | Failed runs followed by a pass within 10 minutes, among learners who opened a walk | ≥ 15 points above those who didn't |
-| D7 return | Learners who come back within 7 days | ≥ 25% |
-| Understanding | "I understand why my solution works", 1–5 prompt after solving | Median ≥ 4 |
-| View accuracy | Walks where the learner keeps the detected primary view | ≥ 85% |
-
-Guardrails: crash-free sessions ≥ 99.5%, p75 Interaction to Next Paint ≤ 100 ms, runner timeouts ≤ 2% of runs.
-
-## Principles
-
-| Principle | What it means in practice |
+| Assumption | Fails if |
 |---|---|
-| Three screens, one primary action each | Library: pick. Workspace: walk through. Walk mode: step. A feature that needs a fourth screen waits. |
-| One step, one moment | The highlighted line, the picture, the variables and the sentence always describe the same instant. Nothing lags. |
-| Only what changed moves | Motion directs the eye. Everything that didn't change this step stays still. |
-| Never go blank | Broken code keeps the last good picture on screen, dimmed, with a quiet badge. |
-| Draw it like a teacher would | Pointers are labeled arrows, grids are grids, trees are trees. The generic memory diagram is the fallback. |
-| Words beside pictures | Every step has one plain sentence, with no jargon the problem itself didn't introduce. |
-| The learner can always override | Any automatic choice (view, speed, input) is one click to change and stays changed. |
+| Stepping through their own code as a picture helps learners fix bugs faster | Fewer than 5 of 8 participants fix a planted bug faster than with print statements |
+| Automatic view selection is accurate enough to trust | The wrong view is chosen for more than 15% of common solutions |
+| Python in the browser starts quickly enough | The first walkthrough takes more than 6 seconds on a mid-range laptop |
+| Learners step backwards as well as forwards | Fewer than 30% of walkthroughs use step-back or scrub |
 
-## Scope by release
+## Scope
 
-| Capability | Release | Notes |
-|---|---|---|
-| Problem library, 30 original problems | MVP | Arrays, two pointers, sliding window, binary search, stacks, queues, linked lists, trees, grids, recursion, hashing |
-| Python editor and test runner in the browser | MVP | Pyodide in a Web Worker |
-| Walk mode with step controls and scrubber | MVP | Forward, back, play, speed, keyboard |
-| Six auto-detected views and a generic fallback | MVP | See the [view catalog](visualization.md#view-catalog) |
-| Step narration | MVP | Template-based, announced to screen readers |
-| Jump to failure | MVP | Exception step or wrong return |
-| Live mode while typing | MVP | Off by default |
-| Local progress, no account | MVP | IndexedDB; optional sign-in syncs |
-| Predict mode | v1 | Pause and ask "which cell is visited next?" |
-| Divergence diff | v1 | First step where your state differs from a reference solution |
-| Click data to time-travel | v1 | Click a cell to jump to the step that last changed it |
-| Graph, DP table, heap, stack and queue, string views | v1 | |
-| Complexity strip and notation bridge | v1 | Operation count against input size; Σ on hover over loops |
-| JavaScript and TypeScript | v1 | Instrumented, run in a worker |
-| Bring your own problem | v1 | An LLM proposes a view spec from a pasted statement |
-| Shareable walkthrough links | v1 | Read-only, open at a chosen step |
-| Java, C++, Go, Rust | v2 | Server sandbox with the Debug Adapter Protocol |
-| Instructor mode | v2 | Problem sets, cohort insights |
+### First release
 
-## Content
+- 30 original Python problems covering the common patterns
+- Code runs in the browser; progress is stored on the device, and an account is optional
+- Walk mode: step, play, scrub and adjust speed
+- Six automatic views and a general fallback
+- One sentence per step, announced to screen readers
+- Jump to the failing step
+- Live mode: re-runs while typing and keeps the last working picture if the code breaks
 
-Every problem statement is written for Stepwise. Classic problems are fine as ideas, but no statements, numbering or names are copied from other platforms.
+### v1
+
+- Predict mode, which pauses and asks what happens next
+- Comparison with a reference solution, showing the first step where they differ
+- Select a value to jump to the step that last changed it
+- Graph, dynamic programming table, heap, stack, queue and string views
+- JavaScript and TypeScript
+- Learner-supplied problems
+- Shareable walkthrough links
+
+### v2
+
+- Java, C++, Go and Rust
+- Instructor tools
+
+### Out of scope
+
+- A large problem catalog. Thirty well-visualized problems are the priority.
+- Contests, rankings and social features.
+- A full IDE with files, packages or a terminal.
+- Code editing on phones. Phones support viewing and stepping.
+
+## Success measures
+
+| Measure | Target |
+|---|---|
+| New visitors who complete a walkthrough in their first session | 60% |
+| Median time from landing to first visualization | Under 60 s |
+| Walkthroughs that use step-back, scrub or jump | 40% |
+| Learners who return within 7 days | 25% |
+| Walkthroughs where the learner keeps the selected view | 85% |
+
+## Acceptance criteria
+
+Each first-release feature is complete when its check passes.
+
+| Feature | Acceptance check |
+|---|---|
+| Problem library | Loads in under 100 ms; every problem opens with Tab and Enter |
+| Editor | No input lag in a 200-line file; drafts survive a reload |
+| Run tests | Results in under 500 ms once Python is loaded |
+| Walk through | A 5,000-step trace is ready in under 400 ms and opens at step 1 |
+| Stepping | Each step renders within one frame; scrubbing stays above 50 fps |
+| Synchronization | Line, picture, variables and sentence always reflect the same step, verified by test |
+| Automatic views | The intended view is chosen for every reference solution |
+| Narration | Every step has a sentence |
+| Jump to failure | Planted bugs open at the correct step |
+| Live mode | No blank frames during a minute of continuous typing |
+| Accounts | Signing in preserves all prior progress |
+| Runaway code | `while True: pass` never freezes the tab |
+
+## Content policy
+
+All problem statements are written for Stepwise. Well-known problems may inspire them, but no text, names or numbering are copied from other platforms.

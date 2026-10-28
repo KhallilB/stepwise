@@ -1,73 +1,52 @@
 # Building on kbui
 
-Stepwise's interface is built with [kbui](https://github.com/KhallilB/kbui), a React 19 component library on Base UI with design tokens and plain CSS. This document lists what kbui already covers, what has to be added to it, and what stays in Stepwise. [Decision 0002](decisions/0002-build-on-kbui.md) records why.
+Stepwise's interface uses [kbui](https://github.com/KhallilB/kbui), a React component library built on Base UI. When Stepwise needs a component kbui lacks, it is added to kbui rather than built in Stepwise. Code specific to Stepwise, such as the views, runners and detector, stays in this repository. See [decision 0002](decisions/0002-build-on-kbui.md).
 
-**The rule.** Every component a Stepwise screen needs and kbui lacks is added to kbui, not copied into Stepwise. Parts that only make sense in Stepwise, such as the views, stay here.
+## Available today
 
-## Already covered
+Button, Toolbar, Panel, Badge, Status, Callout, Stat, Input, Select, Menu, RadioGroup, Switch, Progress, Tooltip, Dialog, ScrollArea, NumberField, Card and Grid cover most of the interface.
 
-| Stepwise need | kbui component | Notes |
-|---|---|---|
-| Walk through, Run tests, Edit | Button | One primary per screen; icon buttons require an `aria-label` |
-| Step controls dock | Toolbar | Roving focus with arrow keys; see the keyboard rule below |
-| Workspace panes, collapsible side panel | Panel, Panel.Group | Resizing is a gap (G2) |
-| Pattern and difficulty tags | Badge | |
-| Test pass or fail, runtime ready | Status | |
-| Step-cap, syntax and exception banners | Callout | Info, warning and danger tones |
-| Run summary ("3 of 4 passed, 118 steps") | Stat | |
-| Library search | Input, search type with clear | |
-| Pattern, difficulty and language filters | Select, Menu | |
-| Speed, write or walk mode | RadioGroup (segmented) | |
-| Live mode, reduced motion, theme | Switch | |
-| "Getting Python ready" | Progress | |
-| Shortcut hints | Tooltip | Needs Kbd inside (G5) |
-| Settings, keyboard map | Dialog | |
-| Statement, variables, call stack | ScrollArea | |
-| Custom test input values | NumberField | |
-| Library cards, page layout | Card, Grid | |
+## To add
 
-## Gaps to add to kbui
+Sizes: S is about a day, M two to three days, L four to six.
 
-Each addition meets kbui's own contract: anatomy line, story, test, screenshot, accessibility scan. Size is rough effort: S about a day, M two to three days, L four to six.
+**Before Phase 1**
 
-| ID | Addition | Stepwise use | Size | Needed by |
-|---|---|---|---|---|
-| G1 | Visualization tokens: current, visited, changed, error, discarded, frontier, path; each with a foreground pair, a dark value and a forced-colors fallback | Every view | S | Phase 1 |
-| G2 | Resizable Panel.Group with a window-splitter handle (separator role, arrow keys, Home and End, Enter to collapse) | Editor and view split | L | Phase 1 |
-| G3 | Slider with toned marks and value text ("Step 42 of 118"), Page Up and Page Down | Timeline scrubber | M | Phase 1 |
-| G4 | Tabs | Test cases; statement and hints | M | Phase 1 |
-| G5 | Kbd | Shortcuts in tooltips and the keyboard map | S | Phase 1 |
-| G6 | Announcer: live-region hook, polite and assertive | Narration, run results | S | Phase 1 |
-| G7 | Code tokens (syntax colors, active line, line numbers, selection, error underline) and a CodeMirror 6 theme built from them | Editor | M | Phase 1 |
-| G8 | Drawer | Problem statement; settings on phones | M | MVP |
-| G9 | Table | Library, expected and actual values, "Show as table" | L | MVP |
-| G10 | Toast | "Solved", "Draft restored", runner failures | M | MVP |
-| G11 | Popover | View switcher ("Grid?"), why a view was chosen | M | MVP |
-| G12 | Collapsible | Traceback details, constraints | S | MVP |
-| G13 | Skeleton | Library and workspace loading | S | MVP |
-| G14 | EmptyState | No search results, no attempts yet | S | MVP |
-| G15 | Shortcut hook: scoped shortcuts that skip editable targets, with a registry for the keyboard map | All keyboard control | M | MVP |
-| G20 | Layout intents Split and SupportingPane, with collapse rules for desktop, tablet and phone | Workspace at every size | L | MVP |
-| G16 | Command palette on Combobox | ⌘K to jump to a problem | M | v1 |
-| G17 | CodeBlock: read-only highlighted code with a line highlight | Phone walk mode, shared walks | M | v1 |
-| G18 | Avatar and account menu | Sign-in | S | v1 |
-| G19 | Sparkline or Meter | Complexity strip | M | v1 |
+| | Addition | Used for | Size |
+|---|---|---|---|
+| G1 | Visualization color tokens | Every view | S |
+| G2 | Resizable panels | Editor and view split | L |
+| G3 | Slider with markers | Step timeline | M |
+| G4 | Tabs | Test cases, statement | M |
+| G5 | Kbd | Shortcut hints | S |
+| G6 | Screen-reader announcer | Step narration | S |
+| G7 | Code highlighting tokens and editor theme | Editor | M |
 
-## Changes across kbui
+**Before the first release**
 
-- **Color separation.** kbui's rust accent and danger red are close in hue, and so are info teal and success green. The viz tokens stay apart: blue for current, teal for visited, amber for changed, danger plus an icon for error. They are checked with color-vision simulation and 3:1 non-text contrast in both themes.
-- **Motion tokens.** Add a layout duration (about 320 ms) for tree and graph relayout, and a viz pulse duration (400 ms). Everything else maps to the existing fast, base and slow durations.
-- **Forced colors.** The viz tokens need system-color fallbacks (Highlight for current, Mark for changed, GrayText for discarded) and patterns in place of fills.
-- **Touch targets.** The dock uses small controls on desktop. At phone width they need at least 44 px.
-- **Keyboard rule.** Toolbar uses arrow keys to move focus. Global ← and → stepping applies only when focus is on the page, a view or the timeline. The shortcut hook (G15) enforces this.
-- **Isolation headers.** Stepwise serves COOP and COEP for Pyodide. CI confirms every page renders under `require-corp`.
+| | Addition | Used for | Size |
+|---|---|---|---|
+| G8 | Drawer | Problem statement | M |
+| G9 | Table | Library, results, table view of each visualization | L |
+| G10 | Toast | Notifications | M |
+| G11 | Popover | View switcher | M |
+| G12 | Collapsible | Error details | S |
+| G13 | Skeleton | Loading states | S |
+| G14 | EmptyState | Empty search and history | S |
+| G15 | Keyboard shortcut hook | All shortcuts | M |
+| G20 | Split layouts for desktop, tablet and phone | Workspace | L |
 
-## Stays in Stepwise
+**v1:** command palette (G16), read-only code block (G17), avatar and account menu (G18), sparkline (G19).
 
-The views, the playback engine and trace store, narration, the detector, the runner workers and the CodeMirror integration. Views draw plain SVG or canvas styled with `--kb-viz-*` tokens and never render a kbui component per cell or per step, which keeps each step under the 8 ms budget. A view moves into kbui only if a second product needs it.
+## Changes to kbui itself
 
-## How the work flows
+- Visualization colors must stay distinct from kbui's accent and status colors, and be checked for color blindness and contrast in both themes.
+- Two new motion durations: tree and graph relayout (about 320 ms) and a value-change pulse (400 ms).
+- Phone-sized controls need 44 px touch targets.
+- Global arrow-key stepping must not conflict with Toolbar's arrow-key navigation.
 
-- During development Stepwise installs kbui by local path; CI installs a pinned release tarball. All kbui packages share one version.
-- kbui releases are grouped by Stepwise phase: G1–G7 before Phase 1, G8–G15 and G20 before the MVP beta, later releases for v1 items.
-- A temporary component inside Stepwise is allowed only with a ticket to move it into kbui within the same phase.
+## Workflow
+
+- Each kbui addition ships with its standard story, test, screenshot and accessibility scan.
+- kbui releases are grouped by Stepwise phase.
+- A temporary component in Stepwise is allowed only with a ticket to move it into kbui in the same phase.
