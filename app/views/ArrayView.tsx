@@ -1,7 +1,15 @@
+import { Text } from "@kb.ui/react";
 import type { ArrayFrame } from "~/walkthrough/frame";
 
 /** Array with labeled pointers. Each cell's accessible name carries index, value and pointers. */
 export function ArrayView({ array }: { array: ArrayFrame }) {
+  if (!array.defined || array.items.length === 0) {
+    return (
+      <Text size="sm" tone="muted" className="array-empty">
+        {array.defined ? "empty" : "not created yet"}
+      </Text>
+    );
+  }
   return (
     <ol aria-label={array.name} className="array-view">
       {array.items.map((value, index) => {

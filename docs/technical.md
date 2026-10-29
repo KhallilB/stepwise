@@ -83,7 +83,7 @@ The **view spec** lists up to three main views and what each one is bound to. He
   "confidence": 0.92,
   "badge": "Grid + BFS",
   "views": [
-    { "type": "grid", "bind": "grid", "cursor": ["r", "c"],
+    { "type": "grid", "bind": "grid", "cursors": [["r", "c"]],
       "overlays": [{ "set": "seen", "style": "visited" }] },
     { "type": "array", "bind": "q", "pointers": [] }
   ]
