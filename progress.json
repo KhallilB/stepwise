@@ -82,9 +82,42 @@
       "slice": "1.2",
       "title": "Sorted pair sum, and a problem picker",
       "passMark": "The same test passes for a planted bug where a pointer moves the wrong way",
-      "result": "not-run",
-      "measured": [],
-      "evidence": []
+      "date": "2026-10-29",
+      "result": "pass",
+      "summary": "The shared Playwright walk steps sorted pair sum forward to the planted bug (a sum that is too small moves hi down) and back to the start, checking the current line, every array cell and the sentence at each step. The picker opens both problems by keyboard.",
+      "measured": [
+        {
+          "label": "Playwright tests passed",
+          "value": "4 of 4"
+        },
+        {
+          "label": "Steps checked forward to the bug",
+          "value": "7"
+        },
+        {
+          "label": "Steps checked back to the start",
+          "value": "6"
+        },
+        {
+          "label": "Steps out of sync",
+          "value": "0"
+        },
+        {
+          "label": "Problems opened from the picker",
+          "value": "2 of 2"
+        }
+      ],
+      "evidence": [
+        {
+          "label": "End-to-end tests",
+          "url": "https://github.com/KhallilB/stepwise/blob/a790004/e2e/walkthrough.spec.ts"
+        },
+        {
+          "label": "Slice pull request",
+          "url": "https://github.com/KhallilB/stepwise/pull/7"
+        }
+      ],
+      "commit": "a790004"
     },
     {
       "id": "s1-3-island-count-grid-view",
