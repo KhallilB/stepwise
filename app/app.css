@@ -23,6 +23,11 @@ body {
   line-height: 2;
 }
 
+.back-link {
+  display: inline-block;
+  margin-block-end: var(--kb-space-2, 0.5rem);
+}
+
 .walk {
   display: grid;
   gap: 1rem;

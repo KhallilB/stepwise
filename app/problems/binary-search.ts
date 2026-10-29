@@ -1,4 +1,5 @@
-import { type HeapObj, num, ref, type Step, type StepTag, type Value } from "../trace/trace";
+import { type HeapObj, num, ref } from "../trace/trace";
+import { handTrace, type Row } from "./hand-trace";
 import type { Problem } from "./problem";
 
 // Planted bug: `lo < hi` stops one step early, so the last candidate is never checked.
@@ -20,8 +21,6 @@ export const target = 15;
 const heap: Record<string, HeapObj> = {
   h1: { kind: "array", items: nums.map(num), len: nums.length },
 };
-
-type Row = [line: number, tags: StepTag[], locals: Record<string, number>, sentence: string];
 
 const rows: Row[] = [
   [1, [], {}, "search starts, looking for 15 in nums."],
@@ -48,35 +47,25 @@ const rows: Row[] = [
   [10, [], { lo: 7, hi: 7 }, "search returns -1, but 15 is at index 7."],
 ];
 
-const steps: Step[] = rows.map(([line, tags, locals], i) => ({
-  line,
-  event: i === 0 ? "call" : i === rows.length - 1 ? "return" : "line",
-  tags,
-  stack: [
-    {
-      fn: "search",
-      line,
-      locals: {
-        nums: ref("h1"),
-        target: num(target),
-        ...Object.fromEntries(Object.entries(locals).map(([k, v]): [string, Value] => [k, num(v)])),
-      },
-    },
-  ],
+const { steps, narration } = handTrace(
+  "search",
   heap,
-}));
+  { nums: ref("h1"), target: num(target) },
+  rows,
+);
 
 export const binarySearch: Problem = {
   slug: "binary-search",
   title: "Binary search",
   pattern: "Binary search",
+  difficulty: "Easy",
   trace: { language: "javascript", source, steps },
   viewSpec: {
     confidence: 1,
     badge: "Array + pointers",
     views: [{ type: "array", bind: "nums", pointers: ["lo", "mid", "hi"] }],
   },
-  narration: rows.map((row) => row[3]),
+  narration,
   bugStep: 15,
   expected: 7,
 };

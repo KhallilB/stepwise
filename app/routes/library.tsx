@@ -12,7 +12,8 @@ export default function Library() {
       <ul className="library">
         {problems.map((p) => (
           <li key={p.slug}>
-            <Link to={`/problems/${p.slug}`}>{p.title}</Link> <Badge>{p.pattern}</Badge>
+            <Link to={`/problems/${p.slug}`}>{p.title}</Link> <Badge>{p.pattern}</Badge>{" "}
+            <Badge>{p.difficulty}</Badge>
           </li>
         ))}
       </ul>

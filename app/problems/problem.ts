@@ -6,6 +6,7 @@ export type Problem = {
   slug: string;
   title: string;
   pattern: string;
+  difficulty: "Easy" | "Medium" | "Hard";
   trace: Trace;
   viewSpec: ViewSpec;
   /** One sentence per step, same order as trace.steps. */
