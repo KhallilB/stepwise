@@ -42,9 +42,38 @@
       "slice": "1.1",
       "title": "Binary search walkthrough",
       "passMark": "An end-to-end test steps to the planted off-by-one and back, with the line, picture and sentence matching at every step",
-      "result": "not-run",
-      "measured": [],
-      "evidence": []
+      "date": "2026-10-29",
+      "result": "pass",
+      "summary": "The Playwright test steps forward to the planted off-by-one (while (lo < hi) skipping nums[7]) and back to the start, checking the current line, every array cell and the sentence at each step.",
+      "measured": [
+        {
+          "label": "Playwright tests passed",
+          "value": "1 of 1"
+        },
+        {
+          "label": "Steps checked forward to the bug",
+          "value": "16"
+        },
+        {
+          "label": "Steps checked back to the start",
+          "value": "15"
+        },
+        {
+          "label": "Steps out of sync",
+          "value": "0"
+        }
+      ],
+      "evidence": [
+        {
+          "label": "End-to-end test",
+          "url": "https://github.com/KhallilB/stepwise/blob/6359bdf/e2e/binary-search.spec.ts"
+        },
+        {
+          "label": "Slice pull request",
+          "url": "https://github.com/KhallilB/stepwise/pull/1"
+        }
+      ],
+      "commit": "6359bdf"
     },
     {
       "id": "s1-2-sorted-pair-sum-problem",
