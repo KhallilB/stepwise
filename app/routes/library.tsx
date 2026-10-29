@@ -1,4 +1,4 @@
-import { Badge } from "@kbui/react";
+import { Badge } from "@kb.ui/react";
 import { Link } from "react-router";
 import { problems } from "~/problems/catalog";
 
