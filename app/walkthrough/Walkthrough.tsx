@@ -1,7 +1,19 @@
-import { Badge, Grid, Heading, Inline, Panel, Split, Text, Toolbar, Tooltip } from "@kb.ui/react";
+import {
+  Badge,
+  Code,
+  Grid,
+  Heading,
+  Inline,
+  Panel,
+  Split,
+  Text,
+  Toolbar,
+  Tooltip,
+} from "@kb.ui/react";
 import { useCallback, useEffect, useState } from "react";
 import type { Problem } from "~/problems/problem";
 import { ArrayView } from "~/views/ArrayView";
+import { GridView } from "~/views/GridView";
 import { clampStep, frameAt } from "./frame";
 
 // Toolbar keeps arrows for its own focus moves; editable fields keep them for typing.
@@ -94,9 +106,16 @@ export function Walkthrough({ problem }: { problem: Problem }) {
             <Badge>{problem.viewSpec.badge}</Badge>
           </Panel.Header>
           <Panel.Body>
-            {frame.arrays.map((array) => (
-              <ArrayView key={array.name} array={array} />
-            ))}
+            <Inline gap="lg" align="start">
+              {frame.views.map((view) => (
+                <figure key={view.name} className="view">
+                  <figcaption>
+                    <Code>{view.name}</Code>
+                  </figcaption>
+                  {view.kind === "grid" ? <GridView grid={view} /> : <ArrayView array={view} />}
+                </figure>
+              ))}
+            </Inline>
           </Panel.Body>
         </Panel>
       </Split>

@@ -1,9 +1,40 @@
 import { expect, type Page, test } from "@playwright/test";
 import { binarySearch } from "../app/problems/binary-search";
 import { problems } from "../app/problems/catalog";
+import { islandCount } from "../app/problems/island-count";
 import type { Problem } from "../app/problems/problem";
 import { sortedPairSum } from "../app/problems/sorted-pair-sum";
-import { frameAt } from "../app/walkthrough/frame";
+import { frameAt, type ViewFrame } from "../app/walkthrough/frame";
+
+// Every cell's accessible name carries its position, value and the pointers on it.
+async function expectView(page: Page, view: ViewFrame) {
+  if (view.kind === "array") {
+    if (!view.defined || view.items.length === 0) {
+      await expect(page.getByRole("list", { name: view.name })).toHaveCount(0);
+      return;
+    }
+    const cells = page.getByRole("list", { name: view.name }).getByRole("listitem");
+    await expect(cells).toHaveCount(view.items.length);
+    for (const [index, value] of view.items.entries()) {
+      const names = view.pointers.filter((p) => p.index === index).map((p) => p.name);
+      const label = [`index ${index}`, `value ${value}`, ...names].join(", ");
+      await expect(cells.nth(index)).toHaveAccessibleName(label);
+    }
+    return;
+  }
+
+  const cells = page.getByRole("table", { name: view.name }).locator("td.grid-cell");
+  await expect(cells).toHaveCount(view.cells.flat().length);
+  const width = view.cells[0]?.length ?? 0;
+  for (const [r, row] of view.cells.entries()) {
+    for (const [c, value] of row.entries()) {
+      const label = [`row ${r}`, `column ${c}`, `value ${value}`];
+      if (view.visited[r]?.[c]) label.push("seen");
+      for (const p of view.cursors) if (p.row === r && p.col === c) label.push(p.name);
+      await expect(cells.nth(r * width + c)).toHaveAccessibleName(label.join(", "));
+    }
+  }
+}
 
 // Line, picture and sentence on screen must all describe step i.
 async function expectInSync(page: Page, problem: Problem, i: number) {
@@ -17,15 +48,8 @@ async function expectInSync(page: Page, problem: Problem, i: number) {
   await expect(current).toHaveAttribute("data-line", String(frame.line));
   await expect(current).toContainText(sourceLines[frame.line - 1]?.trim() ?? "");
 
-  const array = frame.arrays[0];
-  if (!array) throw new Error(`${problem.slug} step ${i} draws no array`);
-  const cells = page.getByRole("list", { name: array.name }).getByRole("listitem");
-  await expect(cells).toHaveCount(array.items.length);
-  for (const [index, value] of array.items.entries()) {
-    const names = array.pointers.filter((p) => p.index === index).map((p) => p.name);
-    const label = [`index ${index}`, `value ${value}`, ...names].join(", ");
-    await expect(cells.nth(index)).toHaveAccessibleName(label);
-  }
+  if (frame.views.length === 0) throw new Error(`${problem.slug} step ${i} draws nothing`);
+  for (const view of frame.views) await expectView(page, view);
 
   await expect(page.getByRole("status")).toHaveText(frame.sentence);
 }
@@ -74,6 +98,25 @@ test("sorted pair sum: steps to the pointer moving the wrong way and back in syn
     await expect(page.getByRole("status")).toHaveText(/hi moves down/);
     await expect(page.getByRole("listitem", { name: "index 3, value 6, hi" })).toBeVisible();
     await expect(page.getByRole("listitem", { name: "index 4, value 9" })).toBeVisible();
+  });
+});
+
+test("island count: steps to the planted off-by-one bounds check and back in sync", async ({
+  page,
+}) => {
+  await walkToBugAndBack(page, islandCount, async () => {
+    // Row 2 is one past the last row, yet it passes the bounds check.
+    await expect(page.getByRole("status")).toHaveText(/2 > 2 is false/);
+    await expect(page.getByText("nr,nc is (2, 0), outside the grid")).toBeVisible();
+    await expect(
+      page.getByRole("cell", { name: "row 1, column 0, value 1, seen, cr,cc" }),
+    ).toBeVisible();
+
+    // The next step is the TypeError the real code throws.
+    await page.getByRole("button", { name: "Next step" }).click();
+    await expect(page.getByRole("status")).toHaveText(/grid\[2\] doesn't exist/);
+    await page.getByRole("button", { name: "Previous step" }).click();
+    await expectInSync(page, islandCount, islandCount.bugStep);
   });
 });
 
