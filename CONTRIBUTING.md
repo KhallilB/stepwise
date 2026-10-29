@@ -1,6 +1,26 @@
 # Contributing
 
-Stepwise is in planning, so contributions are currently to the documents in [`docs/`](docs). Setup and commands will be added with the first code.
+Stepwise is an early prototype. The design lives in [`docs/`](docs); the app lives in `app/`.
+
+## Setup
+
+Install [Bun](https://bun.sh) 1.3 or later, then:
+
+```bash
+bun install
+bunx playwright install chromium
+bun run dev        # http://localhost:5173
+bun run check      # kbui version guard, lint, types, unit and end-to-end tests
+```
+
+| Command | What it does |
+|---|---|
+| `bun run test` | Unit tests (Vitest) |
+| `bun run test:e2e` | Browser tests (Playwright); starts the dev server |
+| `bun run typecheck` | Generates Workers and route types, then type-checks |
+| `bun run build` | Builds the Cloudflare Worker |
+
+kbui is installed from its [GitHub release](https://github.com/KhallilB/kbui/releases) tarball, not a registry.
 
 ## Documentation guidelines
 

@@ -16,3 +16,12 @@ GEMINI.md
 .codex/
 .agents/
 .cursor/
+
+# App build and test output
+/build/
+/.react-router/
+/.wrangler/
+.dev.vars*
+/test-results/
+/playwright-report/
+worker-configuration.d.ts

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["e2e/**/*", "app/**/*.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node"],
+    "lib": ["ES2022", "DOM"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "rootDirs": [".", "./.react-router/types"],
+    "paths": { "~/*": ["./app/*"] }
+  }
+}

@@ -62,6 +62,20 @@ type Step = {
 };
 ```
 
+Values are JavaScript values. Plain values are stored inline, and arrays and objects are stored in the heap by id. The original spec wrote these for Python; this version replaces it. `Map` and `Set` join the heap when the hash map view arrives (M8).
+
+```ts
+type Value =
+  | { kind: "prim"; type: "number" | "string" | "boolean" | "null" | "undefined"; v: unknown }
+  | { kind: "ref"; id: HeapId };
+
+type HeapObj =
+  | { kind: "array"; items: Value[]; len: number; window?: [number, number] }
+  | { kind: "object"; cls: string; fields: Record<string, Value> };
+```
+
+The code version is [`app/trace/trace.ts`](../app/trace/trace.ts). Changing it changes the stored traces, so do it on purpose ([decision 0004](decisions/0004-trace-and-view-spec-contracts.md)).
+
 The **view spec** lists up to three main views and what each one is bound to. Here's one for a grid search:
 
 ```json
