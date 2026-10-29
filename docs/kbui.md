@@ -10,7 +10,7 @@ Most of the interface. Buttons, the step-control toolbar, panels, badges, status
 
 Rough sizes: S is about a day, M two to three days, L four to six.
 
-**Before Phase 1**
+**Release A (M5), before the first real walkthrough**
 
 | | Component | What Stepwise uses it for | Size |
 |---|---|---|---|
@@ -22,7 +22,7 @@ Rough sizes: S is about a day, M two to three days, L four to six.
 | G6 | Screen-reader announcer | Step narration | S |
 | G7 | Code colors and an editor theme | The editor | M |
 
-**Before the first release**
+**Release B (M9), before the full library**
 
 | | Component | What Stepwise uses it for | Size |
 |---|---|---|---|
@@ -44,4 +44,4 @@ The visualization colors need to stay clearly apart from kbui's accent and statu
 
 ## How we work
 
-Each new component ships the way every kbui component does, with a story, tests, a screenshot check and an accessibility scan. We group kbui releases by Stepwise phase. If we ever need a stopgap component inside Stepwise, it comes with a ticket to move it into kbui in the same phase.
+Each new component ships the way every kbui component does, with a story, tests, a screenshot check and an accessibility scan. We build each group just before the Stepwise milestone that needs it, and nothing for Stepwise until the learner study says go. If we ever need a stopgap component inside Stepwise, it comes with a ticket to move it into kbui before the next milestone.

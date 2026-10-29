@@ -17,7 +17,7 @@ Build every screen with kbui. Add missing components to kbui, not to Stepwise. K
 
 ## What it costs
 
-kbui work is on Stepwise's critical path. It starts during Phase 0, and views are built in parallel. Because kbui is React-only, Stepwise uses React.
+kbui work is on Stepwise's critical path. Each group of components is built just before the Stepwise milestone that needs it. Because kbui is React-only, Stepwise uses React.
 
 ## Revisit if
 
