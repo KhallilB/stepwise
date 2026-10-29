@@ -4,7 +4,9 @@ Stepwise's interface is built with [kbui](https://github.com/KhallilB/kbui), our
 
 ## What kbui already covers
 
-Most of the interface. Buttons, the step-control toolbar, panels, badges, status indicators, callouts for errors and limits, search and filter inputs, the speed selector, switches for settings, the loading bar, tooltips, the settings dialog, scrolling panels, cards and the page grid all exist today.
+Most of the interface. Buttons, the step-control toolbar, panels, badges, status indicators, callouts for errors and limits, search and filter inputs, the speed selector, switches for settings, the loading bar, tooltips, the settings dialog, scrolling panels, cards and the page grid all exist today, along with page layout (`Container`, `Split`, `Grid`, `Inline`) and type (`Heading`, `Text`).
+
+Two components first listed below have since shipped, and Stepwise is on a kbui version that has them: resizable panels (G2) are `Panel.Group` with `Panel.Handle`, and the collapsible section (G12) is a collapsible `Panel` with `Panel.Toggle`.
 
 ## What we need to add
 
@@ -15,7 +17,7 @@ Rough sizes: S is about a day, M two to three days, L four to six.
 | | Component | What Stepwise uses it for | Size |
 |---|---|---|---|
 | G1 | Visualization colors | Every view | S |
-| G2 | Resizable panels | The editor and view split | L |
+| G2 | ~~Resizable panels~~ Shipped: `Panel.Group`, `Panel.Handle` | The editor and view split | — |
 | G3 | Slider with markers | The step timeline | M |
 | G4 | Tabs | Test cases, problem statement | M |
 | G5 | Keyboard key label | Shortcut hints | S |
@@ -30,7 +32,7 @@ Rough sizes: S is about a day, M two to three days, L four to six.
 | G9 | Table | The library, test results, and the table version of each view | L |
 | G10 | Toast | "Solved" and "Draft restored" messages | M |
 | G11 | Popover | Switching views | M |
-| G12 | Collapsible section | Error details | S |
+| G12 | ~~Collapsible section~~ Shipped: collapsible `Panel`, `Panel.Toggle` | Error details | — |
 | G13 | Loading placeholder | The library and workspace | S |
 | G14 | Empty state | No search results, no attempts yet | S |
 | G15 | Keyboard shortcuts | Every shortcut, and the shortcut list | M |

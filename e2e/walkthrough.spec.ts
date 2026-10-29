@@ -102,3 +102,15 @@ test("the picker opens every problem with Tab and Enter, and each page leads bac
     await expect(page).toHaveURL("/");
   }
 });
+
+test("step buttons show their name and key in a tooltip", async ({ page }) => {
+  await page.goto(`/problems/${binarySearch.slug}`);
+  await page.getByRole("button", { name: "Next step" }).hover();
+  await expect(page.getByText("Next step (→)")).toBeVisible();
+
+  // Keyboard focus too: the toolbar's own arrow keys move focus to the previous button.
+  await page.getByRole("button", { name: "Next step" }).click();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByRole("button", { name: "Previous step" })).toBeFocused();
+  await expect(page.getByText("Previous step (←)")).toBeVisible();
+});
