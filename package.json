@@ -21,7 +21,7 @@
     "check": "bun node_modules/@kb.ui/react/dist/check-versions.js && bun run lint && bun run typecheck && bun run test && bun run test:e2e"
   },
   "dependencies": {
-    "@kb.ui/react": "0.10.2",
+    "@kb.ui/react": "0.10.4",
     "isbot": "5.2.2",
     "react": "19.3.1",
     "react-dom": "19.3.1",
