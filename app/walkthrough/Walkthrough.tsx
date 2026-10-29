@@ -1,4 +1,4 @@
-import { Badge, Panel, Toolbar } from "@kb.ui/react";
+import { Badge, Grid, Heading, Inline, Panel, Split, Text, Toolbar, Tooltip } from "@kb.ui/react";
 import { useCallback, useEffect, useState } from "react";
 import type { Problem } from "~/problems/problem";
 import { ArrayView } from "~/views/ArrayView";
@@ -13,6 +13,14 @@ const first: Move = () => 0;
 const previous: Move = (i) => i - 1;
 const next: Move = (i) => i + 1;
 const last: Move = (_, total) => total - 1;
+
+// Tooltips name the key that does the same move.
+const buttons: { label: string; icon: string; key: string; move: Move; edge: "start" | "end" }[] = [
+  { label: "First step", icon: "⏮", key: "Home", move: first, edge: "start" },
+  { label: "Previous step", icon: "◀", key: "←", move: previous, edge: "start" },
+  { label: "Next step", icon: "▶", key: "→", move: next, edge: "end" },
+  { label: "Last step", icon: "⏭", key: "End", move: last, edge: "end" },
+];
 
 const keyMoves: Record<string, Move> = {
   arrowleft: previous,
@@ -49,11 +57,13 @@ export function Walkthrough({ problem }: { problem: Problem }) {
   const atEnd = index === total - 1;
 
   return (
-    <div className="walk">
-      <div className="walk-panes">
+    <Grid layout="stack">
+      <Split collapse="md">
         <Panel aria-labelledby="walk-code-title">
           <Panel.Header>
-            <h2 id="walk-code-title">Code</h2>
+            <Heading level={2} size="sm" id="walk-code-title">
+              Code
+            </Heading>
           </Panel.Header>
           <Panel.Body>
             <ol aria-label="Code" className="code">
@@ -78,7 +88,9 @@ export function Walkthrough({ problem }: { problem: Problem }) {
 
         <Panel aria-labelledby="walk-view-title">
           <Panel.Header>
-            <h2 id="walk-view-title">Picture</h2>
+            <Heading level={2} size="sm" id="walk-view-title">
+              Picture
+            </Heading>
             <Badge>{problem.viewSpec.badge}</Badge>
           </Panel.Header>
           <Panel.Body>
@@ -87,36 +99,32 @@ export function Walkthrough({ problem }: { problem: Problem }) {
             ))}
           </Panel.Body>
         </Panel>
-      </div>
+      </Split>
 
-      <div className="walk-bar">
-        <p role="status" className="walk-sentence">
+      <Grid layout="stack" className="walk-bar">
+        {/* kbui stopgap: G6 screen-reader announcer. */}
+        <Text role="status" size="lg" className="walk-sentence">
           {frame.sentence}
-        </p>
-        <div className="walk-controls">
+        </Text>
+        <Inline gap="md" align="center">
           <Toolbar aria-label="Step controls">
-            <Toolbar.Button aria-label="First step" disabled={atStart} onClick={() => go(first)}>
-              ⏮
-            </Toolbar.Button>
-            <Toolbar.Button
-              aria-label="Previous step"
-              disabled={atStart}
-              onClick={() => go(previous)}
-            >
-              ◀
-            </Toolbar.Button>
-            <Toolbar.Button aria-label="Next step" disabled={atEnd} onClick={() => go(next)}>
-              ▶
-            </Toolbar.Button>
-            <Toolbar.Button aria-label="Last step" disabled={atEnd} onClick={() => go(last)}>
-              ⏭
-            </Toolbar.Button>
+            {buttons.map(({ label, icon, key, move, edge }) => (
+              <Tooltip key={label} content={`${label} (${key})`}>
+                <Toolbar.Button
+                  aria-label={label}
+                  disabled={edge === "start" ? atStart : atEnd}
+                  onClick={() => go(move)}
+                >
+                  {icon}
+                </Toolbar.Button>
+              </Tooltip>
+            ))}
           </Toolbar>
-          <span className="walk-position">
+          <Text as="span" tone="muted" className="walk-position">
             Step {index + 1} of {total}
-          </span>
-        </div>
-      </div>
-    </div>
+          </Text>
+        </Inline>
+      </Grid>
+    </Grid>
   );
 }

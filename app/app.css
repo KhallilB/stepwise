@@ -4,7 +4,7 @@
   padding: var(--kb-space-6, 1.5rem) var(--kb-space-4, 1rem);
 }
 
-/* Stopgap view colors until kbui ships visualization colors (G1). Current element is blue, not accent. */
+/* kbui stopgap: G1 visualization colors. Current element is blue, not accent. */
 :root,
 [data-theme] {
   --sw-viz-current: light-dark(oklch(52% 0.17 255), oklch(74% 0.13 255));
@@ -18,35 +18,26 @@ body {
   font-family: var(--kb-font-sans, system-ui, sans-serif);
 }
 
+/* kbui owns width and gutters; screens add only vertical rhythm. */
+.screen {
+  padding-block: var(--kb-space-6, 1.5rem);
+}
+
+/* Grid renders the native list; drop its markers and indent. */
 .library {
-  padding-inline-start: 1.25rem;
-  line-height: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Grid gap spaces the cards; the reset's li + li margin would double it. */
+.library > li {
+  margin: 0;
 }
 
 .back-link {
   display: inline-block;
   margin-block-end: var(--kb-space-2, 0.5rem);
-}
-
-.walk {
-  display: grid;
-  gap: 1rem;
-}
-
-.walk-panes {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-}
-
-/* Grid items default to content width; long code lines must scroll inside their panel instead. */
-.walk-panes > * {
-  min-width: 0;
-}
-
-.walk h2 {
-  margin: 0;
-  font-size: 1rem;
 }
 
 .code {
@@ -134,21 +125,13 @@ body {
 }
 
 .walk-bar {
-  display: grid;
-  gap: 0.5rem;
+  gap: var(--kb-space-2, 0.5rem);
 }
 
+/* Keeps the controls still when a sentence is empty. */
 .walk-sentence {
   margin: 0;
   min-height: 1.5em;
-  font-size: 1.0625rem;
-}
-
-.walk-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
 }
 
 .walk-position {
