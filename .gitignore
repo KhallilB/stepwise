@@ -25,3 +25,6 @@ GEMINI.md
 /test-results/
 /playwright-report/
 worker-configuration.d.ts
+
+# Generated personal React lab runtime
+/public/react-lab-runtime.js

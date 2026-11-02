@@ -8,8 +8,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "react-router dev",
-    "build": "react-router build",
+    "dev": "bun run lab:runtime && react-router dev",
+    "build": "bun run lab:runtime && react-router build",
     "preview": "bun run build && vite preview",
     "deploy": "bun run build && wrangler deploy",
     "cf-typegen": "wrangler types",
@@ -18,14 +18,18 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "bun node_modules/@kb.ui/react/dist/check-versions.js && bun run lint && bun run typecheck && bun run test && bun run test:e2e"
+    "check": "bun node_modules/@kb.ui/react/dist/check-versions.js && bun run lint && bun run typecheck && bun run test && bun run test:e2e",
+    "lab:runtime": "bun scripts/build-lab-runtime.ts"
   },
   "dependencies": {
     "@kb.ui/react": "0.10.4",
     "isbot": "5.2.2",
+    "monaco-editor": "^0.57.0",
+    "prettier": "3.9.10",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-router": "7.18.5"
+    "react-router": "7.18.5",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",

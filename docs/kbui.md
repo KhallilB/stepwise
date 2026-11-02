@@ -19,7 +19,7 @@ Rough sizes: S is about a day, M two to three days, L four to six.
 | G1 | Visualization colors | Every view | S |
 | G2 | ~~Resizable panels~~ Shipped: `Panel.Group`, `Panel.Handle` | The editor and view split | — |
 | G3 | Slider with markers | The step timeline | M |
-| G4 | Tabs | Test cases, problem statement | M |
+| G4 | Tabs | Test cases, problem statement, open editor files | M |
 | G5 | Keyboard key label | Shortcut hints | S |
 | G6 | Screen-reader announcer | Step narration | S |
 | G7 | Code colors and an editor theme | The editor | M |
@@ -37,6 +37,7 @@ Rough sizes: S is about a day, M two to three days, L four to six.
 | G14 | Empty state | No search results, no attempts yet | S |
 | G15 | Keyboard shortcuts | Every shortcut, and the shortcut list | M |
 | G20 | Split layouts | The workspace on desktop, tablet and phone | L |
+| G21 | File tree | Collapsible project folders and file navigation in React lab | M |
 
 **For v1:** a command palette (G16), a read-only code block (G17), an account menu (G18) and a small trend chart (G19).
 
@@ -47,3 +48,13 @@ The visualization colors need to stay clearly apart from kbui's accent and statu
 ## How we work
 
 Each new component ships the way every kbui component does, with a story, tests, a screenshot check and an accessibility scan. We build each group just before the Stepwise milestone that needs it, and nothing for Stepwise until the learner study says go. If we ever need a stopgap component inside Stepwise, it comes with a ticket to move it into kbui before the next milestone.
+
+## Approved React lab stopgaps
+
+On November 2, 2026 the owner approved temporary File Tree (G21) and open-file Tabs (G4) for the React interview lab. `app/react-lab/FileNavigation.tsx` marks both with `kbui stopgap:` comments. G4/G21 track shared replacements: preserve folder disclosure and keyboard focus, tab selection/closing, and mounted Monaco model history. Shared implementation belongs in a separate kbui session; Stepwise keeps these local stopgaps until that work ships.
+
+The owner also approved temporary JSX highlighting under G7 on November 2, 2026.
+`app/react-lab/jsx-highlighting.ts` marks the stopgap. Parser-derived JSX tags, attributes
+and text reuse VS Dark token colors; expressions and TypeScript retain native tokens.
+Incomplete syntax falls back to native highlighting. Shared editor theme work still
+belongs in a separate kbui session.
