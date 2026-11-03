@@ -1,7 +1,13 @@
 import { defineConfig } from "vitest/config";
-
-// Separate from vite.config.ts: the Workers and React Router plugins are not needed for unit tests.
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
-  test: { include: ["app/**/*.test.ts", "scripts/review-existing-lab.test.ts"], css: true },
+  test: {
+    include: [
+      "apps/*/app/**/*.test.ts",
+      "packages/**/*.test.ts",
+      "apps/desktop/src/**/*.test.ts",
+      "apps/desktop/scripts/**/*.test.ts",
+      "scripts/review-existing-lab.test.ts",
+    ],
+    css: true,
+  },
 });

@@ -51,10 +51,10 @@ Each new component ships the way every kbui component does, with a story, tests,
 
 ## Approved React lab stopgaps
 
-On November 2, 2026 the owner approved temporary File Tree (G21) and open-file Tabs (G4) for the React interview lab. `app/react-lab/FileNavigation.tsx` marks both with `kbui stopgap:` comments. G4/G21 track shared replacements: preserve folder disclosure and keyboard focus, tab selection/closing, and mounted Monaco model history. Shared implementation belongs in a separate kbui session; Stepwise keeps these local stopgaps until that work ships.
+On November 2, 2026 the owner approved temporary File Tree (G21) and open-file Tabs (G4) for the React interview lab. `apps/interview-lab/app/react-lab/FileNavigation.tsx` marks both with `kbui stopgap:` comments. G4/G21 track shared replacements: preserve folder disclosure and keyboard focus, tab selection/closing, and mounted Monaco model history. Shared implementation belongs in a separate kbui session; Stepwise keeps these local stopgaps until that work ships.
 
 The owner also approved temporary JSX highlighting under G7 on November 2, 2026.
-`app/react-lab/jsx-highlighting.ts` marks the stopgap. Parser-derived JSX tags, attributes
+`apps/interview-lab/app/react-lab/jsx-highlighting.ts` marks the stopgap. Parser-derived JSX tags, attributes
 and text reuse VS Dark token colors; expressions and TypeScript retain native tokens.
 Incomplete syntax falls back to native highlighting. Shared editor theme work still
 belongs in a separate kbui session.

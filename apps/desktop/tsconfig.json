@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "types": ["vite/client"],
+    "paths": {
+      "~/react-lab/*": ["../interview-lab/app/react-lab/*"],
+      "~/problems/*": ["../stepwise/app/problems/*"],
+      "~/walkthrough/*": ["../stepwise/app/walkthrough/*"],
+      "~/views/*": ["../stepwise/app/views/*"],
+      "~/trace/*": ["../stepwise/app/trace/*"]
+    },
+    "rootDirs": [
+      ".",
+      "../interview-lab",
+      "../interview-lab/.react-router/types",
+      "../stepwise",
+      "../stepwise/.react-router/types"
+    ]
+  },
+  "include": ["src", "vite.config.ts", "e2e", "playwright.config.ts"]
+}

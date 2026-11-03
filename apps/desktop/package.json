@@ -1,0 +1,35 @@
+{
+  "name": "@interview/desktop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5175 --strictPort",
+    "build": "bun run prepare && tsc --noEmit && vite build",
+    "prepare": "bun scripts/prepare.ts",
+    "tauri": "tauri",
+    "package": "bun run prepare:runtime && tauri build --bundles app && bun scripts/package-local.ts",
+    "prepare:runtime": "bun scripts/bundle-ollama.ts",
+    "test:e2e": "playwright test",
+    "test:native:e2e": "bun scripts/test-native.ts",
+    "check:kbui": "bun node_modules/@kb.ui/react/dist/check-versions.js",
+    "package:local": "bun scripts/package-local.ts",
+    "verify:live": "bun scripts/verify-live-reviews.ts"
+  },
+  "dependencies": {
+    "@interview/platform": "workspace:*",
+    "@kb.ui/react": "0.10.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router": "7.18.5",
+    "@tauri-apps/api": "2.12.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/node": "22",
+    "vite": "8.3.5",
+    "typescript": "6.0.3",
+    "@playwright/test": "1.64.1"
+  }
+}

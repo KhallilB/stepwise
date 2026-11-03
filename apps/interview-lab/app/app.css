@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  background: var(--kb-color-bg, Canvas);
+  color: var(--kb-color-fg, CanvasText);
+  font-family: var(--kb-font-sans, system-ui, sans-serif);
+}
+.page {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}

@@ -1,0 +1,16 @@
+{
+  "productName": "Interview Practice Native Test",
+  "identifier": "pro.kcb.interview-practice.native-e2e",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Interview Practice Native Test",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 390,
+        "minHeight": 650
+      }
+    ]
+  }
+}

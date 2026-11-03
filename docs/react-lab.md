@@ -7,9 +7,6 @@ Difficulty, milestone, progress, and topic search combine in the URL.
 See the [112-problem curriculum](frontend-curriculum.md) for the runnable catalog,
 coverage boundaries, authoring standards, and 36 explicitly proposed exercises.
 
-For an isolated checkout, `STEPWISE_PORT=5181 bun run check` starts the browser suite on
-that port. The default remains 5173. This keeps verification separate from another running lab.
-
 **Algorithms in the UI** adds 12 practical DSA/JavaScript collection exercises: price-card
 transforms, availability quantifiers, product lookup, sales aggregation, page merging, numeric
 ranking, tag facets, sliding traffic windows, binary-search transcript seeking, comment trees,
@@ -98,7 +95,7 @@ editor models and live output mounted. The smaller default dock leaves more room
 its divider remains adjustable.
 
 In **Check settings**, choose **Run with → Playwright · Chromium**, then **Run checks**, to verify the current draft in a
-separate local browser. The development-only Vite middleware in `dev/react-lab-playwright.ts`
+separate local browser. The development-only Vite middleware in `apps/interview-lab/dev/react-lab-playwright.ts`
 drives a fresh lab page with Playwright, selects the Preview runner there, executes the same
 authored runtime assertions, and returns matching names/results for the requested stage.
 Build stages include earlier requirements. This does not run the repository-wide test suite,
