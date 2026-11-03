@@ -5,6 +5,7 @@ import {
   resolveModule,
   updateProjectFile,
   writeProject,
+  writeProjectSnapshot,
 } from "./project";
 
 it("round trips bounded files and resolves relative imports only inside the project", () => {
@@ -69,4 +70,28 @@ it("keeps a full imported project within its existing file capacity", () => {
       ),
     ),
   ).toHaveLength(20);
+});
+
+it("keeps plain drafts plain when only their offered empty stylesheet is present", () => {
+  const code = "export default function App(){return null;}";
+  const next = "export default function App(){return <p>Changed</p>}";
+  expect(writeProjectSnapshot(code, { "App.tsx": next, "styles.css": "" })).toBe(next);
+});
+
+it("serializes complete project snapshots once and preserves explicit files", () => {
+  const plain = "export default function App(){return null;}";
+  const styled = { "App.tsx": plain, "styles.css": "p{color:red}" };
+  expect(readProject(writeProjectSnapshot(plain, styled))).toEqual(styled);
+  const withEmptyFile = { "App.tsx": plain, "styles.css": "", "utility.ts": "" };
+  expect(readProject(writeProjectSnapshot(plain, withEmptyFile))).toEqual(withEmptyFile);
+  const existing = writeProject({ "App.tsx": plain, "styles.css": "" });
+  expect(writeProjectSnapshot(existing, { "App.tsx": plain, "styles.css": "" })).toBe(existing);
+  const snapshot = {
+    "App.tsx": "x".repeat(15000),
+    "value.ts": "x".repeat(15000),
+    "tail.ts": "changed",
+  };
+  expect(writeProjectSnapshot(existing, snapshot)).toBe(
+    `// @stepwise/project\n${JSON.stringify(snapshot)}`,
+  );
 });
