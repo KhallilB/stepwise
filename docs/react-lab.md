@@ -193,6 +193,25 @@ and diagnostics. The floating format icon formats the active file. Ctrl/Cmd Ente
 checks; Ctrl/Cmd F finds text; F1 opens commands. React hook snippets need imports.
 Editor options offers a plain kbui Textarea fallback and Monaco Tab-focus guidance.
 
+Monaco chooses its keyboard bindings from the platform. Word and line commands are
+loaded alongside the core editor; no separate keymap setting is needed.
+
+| Action | macOS | Windows |
+|---|---|---|
+| Move by word | Option + Left/Right | Ctrl + Left/Right |
+| Move to line boundary | Command + Left/Right | Home/End |
+| Move to file boundary | Command + Up/Down | Ctrl + Home/End |
+| Extend selection | Add Shift to a movement shortcut | Add Shift to a movement shortcut |
+| Delete previous word | Option + Backspace | Ctrl + Backspace |
+| Delete next word | Option + Delete | Ctrl + Delete |
+| Move line | Option + Up/Down | Alt + Up/Down |
+| Copy line | Shift + Option + Up/Down | Shift + Alt + Up/Down |
+| Undo / redo | Command + Z / Command + Shift + Z | Ctrl + Z / Ctrl + Y |
+| Let Tab leave editor | Ctrl + Shift + M | Ctrl + M |
+
+Ctrl/Command + Enter keeps its lab-specific action: run checks. The plain Textarea
+uses the browser's native editing keys; Monaco line commands apply to Monaco.
+
 App.tsx is the project entry. Up to 20 authored JS/TS/JSX/TSX modules resolve relative
 imports; React is the supported package. A bounded tagged JSON snapshot in the existing
 code field stores multi-file projects. Closing a tab keeps its code/model/undo history for
