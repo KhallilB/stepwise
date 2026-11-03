@@ -1,8 +1,19 @@
 export const difficultyLevels = ["Very easy", "Easy", "Medium", "Hard", "Very hard"] as const;
 export type Check = { name: string; script: string };
 export type Stage = { title: string; minutes: number; constraints: string[]; checks: Check[] };
+export type BuildExample = {
+  title: string;
+  input: string;
+  action: string;
+  expected: string;
+  stage?: number;
+};
+export type PracticeBrief = { inputs: string; initialUi: string; examples: BuildExample[] };
+export type BuildBrief = PracticeBrief;
 export type Challenge = {
   kind?: "build" | "debug";
+  buildBrief?: BuildBrief;
+  debugBrief?: PracticeBrief;
   id: string;
   track: string;
   title: string;

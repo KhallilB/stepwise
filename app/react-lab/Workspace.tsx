@@ -593,7 +593,7 @@ export function Workspace({
                 }}
               />
             )}
-            <ChallengeBrief challenge={challenge} id="lab-brief-title" />
+            <ChallengeBrief challenge={challenge} id="lab-brief-title" stage={stageIndex} />
           </Grid>
           {reviewVisited && (
             <Grid

@@ -33,7 +33,7 @@ test("quota failures preserve unsaved drafts across navigation and another chall
   expect(await exportedNotes(page, "snapshot")).toBe("Unsaved snapshot draft");
   await page.getByRole("link", { name: "All challenges", exact: true }).click();
   expect(await exportedNotes(page, "snapshot")).toBe("Unsaved snapshot draft");
-  await page.getByRole("link", { name: "An action deserves a button", exact: true }).click();
+  await page.locator('a[href="/react-lab/semantic-action"]').first().click();
   await startProject(page);
   await openTool(page, "Coach");
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("Second unsaved draft");
@@ -41,7 +41,7 @@ test("quota failures preserve unsaved drafts across navigation and another chall
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("Second saved draft");
   expect(await exportedNotes(page, "snapshot")).toBe("Unsaved snapshot draft");
   await page.getByRole("link", { name: "All challenges", exact: true }).click();
-  await page.getByRole("link", { name: "State is a snapshot", exact: true }).click();
+  await page.locator('a[href="/react-lab/snapshot"]').first().click();
   await startProject(page);
   await openTool(page, "Coach");
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
@@ -257,7 +257,7 @@ for (const navigation of ["automatic", "anchor", "handler"]) {
     const document = await page.goto("/");
     expect(document?.headers()["content-security-policy"]).toContain("frame-src 'self'");
     await page.getByRole("link", { name: "React interview lab", exact: true }).click();
-    await page.getByRole("link", { name: "State is a snapshot", exact: true }).click();
+    await page.locator('a[href="/react-lab/snapshot"]').first().click();
     const attempted = page.waitForEvent("console", {
       predicate: (message) => message.text() === "navigation-attempt",
     });
@@ -289,7 +289,7 @@ test("an unresolved cross-tab draft choice survives in-app navigation", async ({
   await other.getByRole("textbox", { name: "Explain your reasoning" }).fill("Other choice");
   await expect(page.getByText("Another tab changed this challenge", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "All challenges", exact: true }).click();
-  await page.getByRole("link", { name: "State is a snapshot", exact: true }).click();
+  await page.locator('a[href="/react-lab/snapshot"]').first().click();
   await startProject(page);
   await openTool(page, "Coach");
   await expect(page.getByText("Another tab changed this challenge", { exact: true })).toBeVisible();

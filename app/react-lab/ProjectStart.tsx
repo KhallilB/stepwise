@@ -41,7 +41,7 @@ export function ProjectStart({
       <div className="lab-start-content">
         <Split ratio="wide-start" collapse="md" gap="lg" align="start">
           <Grid layout="stack">
-            <ChallengeBrief challenge={challenge} id="lab-start-brief-title" />
+            <ChallengeBrief challenge={challenge} id="lab-start-brief-title" stage={stage} />
             {challenge.stages && (
               <Panel aria-labelledby="lab-start-constraints-title">
                 <Panel.Header>

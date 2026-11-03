@@ -1,7 +1,16 @@
 import { Badge, Grid, Heading, Inline, Panel, Text } from "@kb.ui/react";
 import type { Challenge } from "./types";
 
-export function ChallengeBrief({ challenge, id }: { challenge: Challenge; id: string }) {
+export function ChallengeBrief({
+  challenge,
+  id,
+  stage = 0,
+}: {
+  challenge: Challenge;
+  id: string;
+  stage?: number;
+}) {
+  const details = challenge.buildBrief ?? challenge.debugBrief;
   return (
     <Panel aria-labelledby={id} className="lab-flat-panel lab-challenge-brief">
       <Panel.Header>
@@ -15,6 +24,49 @@ export function ChallengeBrief({ challenge, id }: { challenge: Challenge; id: st
           {challenge.kind === "build" ? "Build from scratch" : "Debug existing code"}
         </Text>
         <Text>{challenge.brief}</Text>
+        {details && (
+          <>
+            <Heading level={3} size="sm">
+              Sample data
+            </Heading>
+            <Text>{details.inputs}</Text>
+            <Heading level={3} size="sm">
+              {challenge.kind === "debug" ? "Expected starting UI" : "Starting UI"}
+            </Heading>
+            <Text>{details.initialUi}</Text>
+            {challenge.kind === "debug" && (
+              <Text size="sm" tone="muted">
+                These examples describe the intended behavior. Investigate the supplied code to find
+                where it differs.
+              </Text>
+            )}
+            <Heading level={3} size="sm">
+              Examples
+            </Heading>
+            <ol className="lab-requirements" aria-label="Sample inputs and expected UI">
+              {details.examples
+                .filter((example) => (example.stage ?? 0) <= stage)
+                .map((example) => (
+                  <li key={example.title}>
+                    <Grid layout="stack">
+                      <Heading level={4} size="sm">
+                        {example.title}
+                      </Heading>
+                      <Text size="sm">
+                        <strong>Sample input:</strong> {example.input}
+                      </Text>
+                      <Text size="sm">
+                        <strong>Action:</strong> {example.action}
+                      </Text>
+                      <Text size="sm">
+                        <strong>Expected UI:</strong> {example.expected}
+                      </Text>
+                    </Grid>
+                  </li>
+                ))}
+            </ol>
+          </>
+        )}
         <Heading level={3} size="sm">
           Acceptance criteria
         </Heading>

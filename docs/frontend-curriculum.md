@@ -61,6 +61,22 @@ label, output format, and required data attribute instead of relying on a prebui
 that contract. Register new builds in `build-starters.ts`; the catalog-level checks cover all
 build/algorithm ids and require minimal, strictly valid starter files.
 
+Every build also registers a definition in `build-briefs.ts`: a product goal, concrete supplied
+inputs, initial visible behavior, outcome constraints, and at least three named examples with
+input, action, and expected UI. Staged examples identify their zero-based stage and become
+visible cumulatively as stages unlock. Include success and recovery/boundary cases; retain exact
+labels and formats required by checks. Describe behavior instead of hooks, internal state
+recipes, code bodies, or step-by-step algorithm instructions. Keep implementation hints separate.
+
+Every debugging exercise registers in `debug-briefs.ts` with a neutral product title, outcome
+brief, sample inputs, expected initial UI, acceptance criteria, and at least three named
+input/action/expected-UI examples. State intended behavior, not the starter's actual failure,
+root cause, faulty line, or repair strategy. Public tags use broad milestone topics so they do
+not disclose a specific fix. Include repeated, boundary, keyboard, error, or recovery scenarios
+where applicable. Audit values against the fixtures, reference, and independent checks; retain
+tested native/ARIA and fixture contracts. Keep diagnosis in explicit hints and answer disclosure.
+The same brief renderer serves builds and debugging; examples never modify learner code.
+
 Layout checks inspect geometry at specified widths. Design checks implement a supplied brief;
 they do not score beauty. A calculation counter is instrumentation, not a speed benchmark.
 Code-point counts are not grapheme counts. An AbortSignal timer fixture is not proof of HTTP
@@ -156,18 +172,18 @@ exercises require both correct feature behavior and correct algorithm results.
 
 | Exercise | Frontend application | Algorithm or JavaScript collection choice |
 | --- | --- | --- |
-| product-projection | Currency-unit price cards | `map`; preserve identity and source data |
-| stock-availability | Availability summary | `filter`, `some`, `every`; explicit empty-collection semantics |
-| cart-lookup | Product inspector | `find`; first match and explicit absence |
-| sales-summary | Sales and category dashboard | `reduce`; quantity-weighted totals and safe grouping keys |
-| merge-feed-pages | Overlapping activity pages | `Map`; latest payload, first-seen order, idempotent delivery |
-| rank-products | Price comparison | Numeric comparator, independent tie policy, `toSorted` or copy before `sort` |
-| tag-facets | Search filter counts | `flatMap`, per-product `Set`, frequency `Map` |
-| activity-window | Trailing traffic counts | Sliding window and monotonic two pointers |
-| timeline-seek | Transcript cue navigation | Lower-bound binary search, duplicate and endpoint handling |
-| comment-tree | Expandable reply outline | Adjacency index and iterative depth-first traversal |
-| command-history | Back/Forward prototype | Two stacks, immutable transitions, abandoned future branches |
-| dependency-planner | Component release plan | Indegrees, adjacency, FIFO topological scheduling, unresolved dependencies |
+| product-projection | Turn records into useful price cards | `map`; preserve identity and source data |
+| stock-availability | Any stock is not the same as all stock | `filter`, `some`, `every`; explicit empty-collection semantics |
+| cart-lookup | Find one product and handle its absence | `find`; first match and explicit absence |
+| sales-summary | Aggregate a sales dashboard from its records | `reduce`; quantity-weighted totals and safe grouping keys |
+| merge-feed-pages | Merge pages without repeating records | `Map`; latest payload, first-seen order, idempotent delivery |
+| rank-products | Sort the view without sorting the source | Numeric comparator, independent tie policy, `toSorted` or copy before `sort` |
+| tag-facets | Count products per tag, not repeated labels | `flatMap`, per-product `Set`, frequency `Map` |
+| activity-window | Count recent activity with a sliding window | Sliding window and monotonic two pointers |
+| timeline-seek | Seek the next transcript cue with binary search | Lower-bound binary search, duplicate and endpoint handling |
+| comment-tree | Turn flat replies into an expandable comment outline | Adjacency index and iterative depth-first traversal |
+| command-history | Prototype Back and Forward with two stacks | Two stacks, immutable transitions, abandoned future branches |
+| dependency-planner | Plan a release without violating dependencies | Indegrees, adjacency, FIFO topological scheduling, unresolved dependencies |
 
 Each algorithm stays exported from `App.tsx`; it can be re-exported from another authored
 module. Authored checks receive the freshly mounted entry module as `exercise` and invoke its
@@ -210,73 +226,73 @@ or recalibrating a challenge; source ids remain the authority for saved work.
 
 | ID | Problem | Difficulty | Milestone |
 | --- | --- | --- | --- |
-| semantic-action | An action deserves a button | Very easy | Web foundations |
-| field-labels | A placeholder is not a label | Very easy | Web foundations |
-| image-alt | Describe the image's purpose | Very easy | Web foundations |
-| preference-checkbox | A checkbox owns a boolean | Very easy | Web foundations |
-| first-counter | Keep a counter inside its bounds | Very easy | Web foundations |
-| character-count | Count the text actually entered | Very easy | Web foundations |
-| native-select | Make the delivery choice visible | Very easy | Web foundations |
-| page-landmarks | Give the page a readable outline | Very easy | Web foundations |
+| semantic-action | Notification signup | Very easy | Web foundations |
+| field-labels | Delivery name entry | Very easy | Web foundations |
+| image-alt | Product image descriptions | Very easy | Web foundations |
+| preference-checkbox | Email update preference | Very easy | Web foundations |
+| first-counter | Ticket quantity picker | Very easy | Web foundations |
+| character-count | Message length indicator | Very easy | Web foundations |
+| native-select | Delivery selection | Very easy | Web foundations |
+| page-landmarks | Workshop page navigation | Very easy | Web foundations |
 | product-projection | Turn records into useful price cards | Very easy | Algorithms in the UI |
-| snapshot | State is a snapshot | Easy | Render & state |
-| identity | Identity survives a reorder | Easy | Render & state |
-| derived | One source of truth | Easy | Render & state |
-| modular-snapshot | State across modules | Easy | Components & contracts |
-| disclosure | A disclosure that tells the truth | Easy | Components & contracts |
-| password-toggle | Reveal without submitting | Easy | Components & contracts |
-| immutable-cart | Update one item, keep the others | Easy | Render & state |
-| search-empty | Search without losing the source | Easy | Render & state |
-| responsive-grid | A grid that fits its space | Easy | Layout & design |
-| long-content | Long names should not break the row | Easy | Layout & design |
-| toolbar-wrap | Let the toolbar take another line | Easy | Layout & design |
-| fluid-image | Fit the image without stretching it | Easy | Layout & design |
-| spacing-tokens | Make spacing follow one scale | Easy | Layout & design |
-| readable-type | Give reading text room to breathe | Easy | Layout & design |
-| empty-recovery | An empty result needs a next step | Easy | Layout & design |
-| locale-price | Format the amount, keep its value | Easy | Layout & design |
-| fieldset-group | Name the choice and its group | Easy | Layout & design |
-| component-callback | Let the parent own the selection | Easy | Layout & design |
+| snapshot | Seat reservation counter | Easy | Render & state |
+| identity | Reviewer drafts | Easy | Render & state |
+| derived | Ticket cart totals | Easy | Render & state |
+| modular-snapshot | Seat reservations across files | Easy | Components & contracts |
+| disclosure | Shipping details disclosure | Easy | Components & contracts |
+| password-toggle | Password visibility control | Easy | Components & contracts |
+| immutable-cart | Cart item quantities | Easy | Render & state |
+| search-empty | People finder | Easy | Render & state |
+| responsive-grid | Responsive product shelf | Easy | Layout & design |
+| long-content | Record row with long content | Easy | Layout & design |
+| toolbar-wrap | Report action toolbar | Easy | Layout & design |
+| fluid-image | Responsive illustration card | Easy | Layout & design |
+| spacing-tokens | Summary card spacing | Easy | Layout & design |
+| readable-type | Reading panel typography | Easy | Layout & design |
+| empty-recovery | Resource search recovery | Easy | Layout & design |
+| locale-price | Localized price display | Easy | Layout & design |
+| fieldset-group | Delivery method choices | Easy | Layout & design |
+| component-callback | Plan selection controls | Easy | Layout & design |
 | stock-availability | Any stock is not the same as all stock | Easy | Algorithms in the UI |
 | cart-lookup | Find one product and handle its absence | Easy | Algorithms in the UI |
 | sales-summary | Aggregate a sales dashboard from its records | Easy | Algorithms in the UI |
-| race | The response that arrived last | Medium | Effects & async |
-| cleanup | A subscription with an owner | Medium | Effects & async |
-| stale | Yesterday's closure | Medium | Effects & async |
-| reducer | Make invalid transitions impossible | Medium | Components & contracts |
-| accessible | A form with a real contract | Medium | Components & contracts |
-| recovery | Recover at the right boundary | Medium | Components & contracts |
-| memo | Skip redundant catalog calculations | Medium | Production judgment |
-| optimistic | Optimism needs a rollback | Medium | Production judgment |
-| external-store | A store outside React | Medium | Production judgment |
-| form-errors | Validation that helps recovery | Medium | Components & contracts |
-| pagination | Pagination follows the result set | Medium | Production judgment |
-| sort-table | A sortable table with a stable contract | Medium | Production judgment |
-| debounced-preview | Debounce the work, not the typing | Medium | Effects & async |
-| retry-request | Retry without a request storm | Medium | Effects & async |
-| responsive-navigation | Navigation that survives a narrow container | Medium | Components & contracts |
-| container-card | A card belongs to its container | Medium | Components & contracts |
-| rtl-layout | Start and end are not always left and right | Medium | Components & contracts |
-| theme-tokens | Every surface must consume the theme | Medium | Components & contracts |
-| bulk-selection | Select the view without losing hidden choices | Medium | Components & contracts |
-| dependent-selects | A city belongs to its country | Medium | Components & contracts |
-| dialog-focus | A dialog returns you to your task | Medium | Components & contracts |
-| tab-contract | Tabs connect focus to the right panel | Medium | Components & contracts |
-| payload-validation | A type assertion cannot validate a response | Medium | Components & contracts |
-| hook-isolation | Shared hook logic is not shared state | Medium | Components & contracts |
+| race | People search results | Medium | Effects & async |
+| cleanup | Room message delivery | Medium | Effects & async |
+| stale | Event pulse counter | Medium | Effects & async |
+| reducer | Cart quantity transitions | Medium | Components & contracts |
+| accessible | Workshop signup form | Medium | Components & contracts |
+| recovery | Report retry flow | Medium | Components & contracts |
+| memo | Catalog search and theme | Medium | Production judgment |
+| optimistic | Bookmark save feedback | Medium | Production judgment |
+| external-store | External counter display | Medium | Production judgment |
+| form-errors | Contact form feedback | Medium | Components & contracts |
+| pagination | Product result pages | Medium | Production judgment |
+| sort-table | Sortable score table | Medium | Production judgment |
+| debounced-preview | Search preview timing | Medium | Effects & async |
+| retry-request | Service request retry | Medium | Effects & async |
+| responsive-navigation | Responsive primary navigation | Medium | Components & contracts |
+| container-card | Workshop summary card | Medium | Components & contracts |
+| rtl-layout | Bidirectional notice layout | Medium | Components & contracts |
+| theme-tokens | Summary card themes | Medium | Components & contracts |
+| bulk-selection | Filtered product selection | Medium | Components & contracts |
+| dependent-selects | Shipping destination selection | Medium | Components & contracts |
+| dialog-focus | Settings dialog interaction | Medium | Components & contracts |
+| tab-contract | Project information tabs | Medium | Components & contracts |
+| payload-validation | Profile data acceptance | Medium | Components & contracts |
+| hook-isolation | Independent note cards | Medium | Components & contracts |
 | merge-feed-pages | Merge pages without repeating records | Medium | Algorithms in the UI |
 | rank-products | Sort the view without sorting the source | Medium | Algorithms in the UI |
 | tag-facets | Count products per tag, not repeated labels | Medium | Algorithms in the UI |
 | build-directory | Build a resilient directory | Hard | Interview builds |
 | build-board | Build a reversible task board | Hard | Interview builds |
 | build-checkout | Build a checkout that recovers | Hard | Interview builds |
-| keyboard-listbox | Focus is not selection | Hard | Components & contracts |
-| undo-history | Undo, redo, and a new branch | Hard | Render & state |
-| request-cache | Cache data without caching intent | Hard | Effects & async |
-| async-combobox | Suggestions follow typing and keyboard intent | Hard | Production judgment |
-| inline-editing | A saved name is not always the current draft | Hard | Production judgment |
-| abortable-search | Cancel work and ignore obsolete results | Hard | Production judgment |
-| reorder-focus | Move an item without losing your place | Hard | Production judgment |
+| keyboard-listbox | Keyboard theme picker | Hard | Components & contracts |
+| undo-history | Draft editing history | Hard | Render & state |
+| request-cache | Profile picker requests | Hard | Effects & async |
+| async-combobox | Asynchronous name suggestions | Hard | Production judgment |
+| inline-editing | Editable profile name | Hard | Production judgment |
+| abortable-search | Search cancellation feedback | Hard | Production judgment |
+| reorder-focus | Playlist ordering controls | Hard | Production judgment |
 | activity-window | Count recent activity with a sliding window | Hard | Algorithms in the UI |
 | timeline-seek | Seek the next transcript cue with binary search | Hard | Algorithms in the UI |
 | comment-tree | Turn flat replies into an expandable comment outline | Hard | Algorithms in the UI |
