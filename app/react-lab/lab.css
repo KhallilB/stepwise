@@ -1361,7 +1361,7 @@
   flex-shrink: 0;
   height: 44px;
   min-height: 44px;
-  padding: 4px 8px;
+  padding: 4px 12px;
 }
 .lab-sidebar-stack > .lab-pane-content {
   flex: 1;
@@ -1960,7 +1960,7 @@
   gap: var(--kb-space-2);
   min-width: 0;
   min-height: 40px;
-  padding: 0 var(--kb-space-1);
+  padding: 0;
   border-bottom: 1px solid var(--kb-color-border);
 }
 .lab-project-tools .lab-project-tool {
@@ -2012,4 +2012,34 @@
   background: var(--kb-material-surface-bg);
   z-index: 3;
   gap: var(--kb-space-2);
+}
+
+.lab-project-tools .lab-project-tool[aria-expanded="true"] {
+  color: var(--kb-color-accent-ink);
+  background: color-mix(in srgb, var(--kb-color-accent) 10%, transparent);
+}
+@keyframes lab-context-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lab-sidebar-stack:not([hidden]) {
+    animation: lab-context-enter var(--kb-motion-duration-base) var(--kb-motion-easing-enter);
+  }
+}
+
+.lab-sidebar-stack .lab-challenge-brief .kb-panel-body > .kb-text {
+  margin-block: 0;
+}
+.lab-sidebar-stack .lab-challenge-brief .kb-panel-body > .kb-heading {
+  margin-block: var(--kb-space-3) 0;
+}
+.lab-sidebar-stack .lab-challenge-brief .lab-requirements {
+  margin-block: 0;
 }

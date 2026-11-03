@@ -110,7 +110,7 @@ window.startReactLab = async ({ code, checks, runId }: Boot) => {
         return exports;
       };
       const exports = load("App.tsx");
-      if (typeof exports.default !== "function")
+      if (exports.default === undefined || exports.default === null)
         throw new Error("Export a React component as default.");
       exercise = exports;
       const styleKey = JSON.stringify([...styles]);

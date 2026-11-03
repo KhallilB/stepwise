@@ -10,6 +10,7 @@ export function CodeEditor({
   files,
   ready,
   onChange,
+  onProjectChange,
   onRun,
   onOpenFile,
 }: {
@@ -18,14 +19,25 @@ export function CodeEditor({
   files?: Record<string, string>;
   ready: boolean;
   onChange: (code: string) => undefined | boolean;
+  onProjectChange?: (files: Record<string, string>) => undefined | boolean;
   onRun: () => void;
   onOpenFile: (path: string) => void;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const instance = useRef<editor.IStandaloneCodeEditor | null>(null);
   const modelsRef = useRef<Map<string, editor.ITextModel>>(new Map());
-  const latest = useRef({ code, filename, files, ready, onChange, onRun, onOpenFile });
-  latest.current = { code, filename, files, ready, onChange, onRun, onOpenFile };
+  const synchronizing = useRef(false);
+  const latest = useRef({
+    code,
+    filename,
+    files,
+    ready,
+    onChange,
+    onProjectChange,
+    onRun,
+    onOpenFile,
+  });
+  latest.current = { code, filename, files, ready, onChange, onProjectChange, onRun, onOpenFile };
   const [loaded, setLoaded] = useState(false);
   const [formatting, setFormatting] = useState(false);
   const formattingRef = useRef(false);
@@ -112,21 +124,49 @@ export function CodeEditor({
           suggest: { showWords: false },
         });
         instance.current = view;
-        const content = view.onDidChangeModelContent(() => {
-          const value = view.getValue();
-          if (value.length > maxCodeLength) {
-            view.trigger("limit", "undo", null);
-            setError(
-              `Code limit is ${maxCodeLength.toLocaleString()} characters. Edit was not saved.`,
-            );
-            return;
-          }
-          setError("");
-          if (latest.current.onChange(value) === false) {
-            view.trigger("project-limit", "undo", null);
-            setError("Project limit is 30,000 characters. Edit was not saved.");
-          }
-        });
+        let disposed = false,
+          queued = false;
+        const changed = new Set<editor.ITextModel>();
+        const content = [...models.values()].map((model) =>
+          model.onDidChangeContent(() => {
+            if (synchronizing.current) return;
+            changed.add(model);
+            if (queued) return;
+            queued = true;
+            queueMicrotask(async () => {
+              queued = false;
+              const modified = [...changed];
+              changed.clear();
+              if (disposed || !latest.current.ready) return;
+              async function reject(message: string) {
+                synchronizing.current = true;
+                try {
+                  for (const model of modified) await model.undo();
+                } finally {
+                  synchronizing.current = false;
+                }
+                setError(message);
+              }
+              const snapshot = Object.fromEntries(
+                [...models].map(([path, model]) => [path, model.getValue()]),
+              );
+              if (Object.values(snapshot).some((value) => value.length > maxCodeLength)) {
+                await reject(
+                  `Code limit is ${maxCodeLength.toLocaleString()} characters. Edit was not saved.`,
+                );
+                return;
+              }
+              const accepted = latest.current.onProjectChange
+                ? latest.current.onProjectChange(snapshot)
+                : latest.current.onChange(view.getValue());
+              if (accepted === false) {
+                await reject("Project limit is 30,000 characters. Edit was not saved.");
+                return;
+              }
+              setError("");
+            });
+          }),
+        );
         function refreshProblems() {
           setProblems(
             monaco.editor
@@ -183,12 +223,13 @@ export function CodeEditor({
         });
         setLoaded(true);
         dispose = () => {
+          disposed = true;
           command.dispose();
           save.dispose();
           markers.dispose();
           modelChange.dispose();
           opener.dispose();
-          content.dispose();
+          for (const listener of content) listener.dispose();
           view.dispose();
           for (const model of models.values()) model.dispose();
           modelsRef.current.clear();
@@ -208,9 +249,14 @@ export function CodeEditor({
   }, [plain, formatDocument]);
   useEffect(() => {
     const view = instance.current;
-    for (const [path, source] of Object.entries(files ?? { [filename]: code })) {
-      const model = modelsRef.current.get(path);
-      if (model && model.getValue() !== source) model.setValue(source);
+    synchronizing.current = true;
+    try {
+      for (const [path, source] of Object.entries(files ?? { [filename]: code })) {
+        const model = modelsRef.current.get(path);
+        if (model && model.getValue() !== source) model.setValue(source);
+      }
+    } finally {
+      synchronizing.current = false;
     }
     const next = modelsRef.current.get(filename);
     if (view && next && view.getModel() !== next) {

@@ -22,6 +22,17 @@ export function readProject(code: string): ProjectFiles {
 export function writeProject(files: ProjectFiles): string {
   return prefix + JSON.stringify(files);
 }
+export function writeProjectSnapshot(currentCode: string, files: ProjectFiles): string {
+  const app = files["App.tsx"];
+  const plain =
+    typeof app === "string" &&
+    !currentCode.startsWith(prefix) &&
+    Object.hasOwn(files, "App.tsx") &&
+    Object.entries(files).every(
+      ([path, source]) => path === "App.tsx" || (path === "styles.css" && source === ""),
+    );
+  return plain ? app : writeProject(files);
+}
 export function editableProject(code: string): ProjectFiles {
   const files = readProject(code);
   if (Object.keys(files).length >= maxFiles) return files;
