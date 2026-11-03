@@ -807,6 +807,13 @@ export function Workspace({
                         files={files}
                         ready={ready}
                         onChange={(next) => saveDraft(updateProjectFile(code, activeFile, next))}
+                        onProjectChange={(snapshot) => {
+                          let next = code;
+                          for (const [path, source] of Object.entries(snapshot))
+                            if (source !== files[path])
+                              next = updateProjectFile(next, path, source);
+                          return saveDraft(next);
+                        }}
                         onRun={run}
                         onOpenFile={openFile}
                       />
