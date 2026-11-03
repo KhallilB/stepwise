@@ -131,34 +131,53 @@ export function Workspace({
     if (open) setToolView("checks");
   }
   const [focusedEditorSize, setFocusedEditorSize] = useState(62);
-  const [sideSize, setSideSize] = useState(20);
+  const [sideSize, setSideSize] = useState(24);
   const [sideView, setSideView] = useState("brief");
   const [view, setView] = useState("code");
   const [reviewVisited, setReviewVisited] = useState(false);
   const [phase, setPhase] = useState<"build" | "review">("build");
   const [hoverTool, setHoverTool] = useState<string | null>(null);
   const hoverClose = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverOpen = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const contextPane = useRef<HTMLDivElement>(null);
   const pinnedOpen = view !== "code" && view !== "output";
   const displaySide = hoverTool ?? sideView;
   const contextOpen = hoverTool !== null || pinnedOpen;
   const ended = !!entry?.answerRevealed;
   function cancelHoverClose() {
     if (hoverClose.current) clearTimeout(hoverClose.current);
+    if (hoverOpen.current) clearTimeout(hoverOpen.current);
+    hoverClose.current = null;
+    hoverOpen.current = null;
   }
   function showHover(tool: string, keyboard = false) {
     if (
       restoringContextFocus.current ||
       phase === "review" ||
+      pinnedOpen ||
       !window.matchMedia("(min-width: 800px)").matches ||
       (!keyboard && !window.matchMedia("(hover: hover) and (pointer: fine)").matches)
     )
       return;
     cancelHoverClose();
-    setHoverTool(tool);
+    if (keyboard) setHoverTool(tool);
+    else hoverOpen.current = setTimeout(() => setHoverTool(tool), 240);
+  }
+  function pinContext(tool: string) {
+    cancelHoverClose();
+    setHoverTool(null);
+    setPhase("build");
+    setOutputExpanded(false);
+    setSideView(tool);
+    setView(tool);
   }
   function closeHoverSoon() {
     cancelHoverClose();
-    hoverClose.current = setTimeout(() => setHoverTool(null), 180);
+    hoverClose.current = setTimeout(() => {
+      const focused = document.activeElement;
+      if (contextPane.current?.contains(focused) || navigation.current?.contains(focused)) return;
+      setHoverTool(null);
+    }, 260);
   }
   function reviewImplementation() {
     cancelHoverClose();
@@ -174,6 +193,7 @@ export function Workspace({
   useEffect(
     () => () => {
       if (hoverClose.current) clearTimeout(hoverClose.current);
+      if (hoverOpen.current) clearTimeout(hoverOpen.current);
     },
     [],
   );
@@ -313,6 +333,7 @@ export function Workspace({
     setSubmission({ code, runId: crypto.randomUUID(), stage: stageIndex });
   }
   function collapseContext() {
+    const returnTool = hoverTool ?? sideView;
     cancelHoverClose();
     setHoverTool(null);
     setView("code");
@@ -325,7 +346,7 @@ export function Workspace({
     restoringContextFocus.current = true;
     if (window.matchMedia("(max-width: 799px)").matches)
       document.querySelector<HTMLElement>(".lab-mobile-nav button")?.focus();
-    else navigation.current?.querySelector<HTMLElement>(`[data-tool="${sideView}"]`)?.focus();
+    else navigation.current?.querySelector<HTMLElement>(`[data-tool="${returnTool}"]`)?.focus();
     restoringContextFocus.current = false;
   }
   function saveDraft(nextCode: string, nextNotes = notes) {
@@ -361,8 +382,7 @@ export function Workspace({
       data-side-view={displaySide}
       onKeyDown={(event) => {
         if (event.key === "Escape" && hoverTool) {
-          cancelHoverClose();
-          setHoverTool(null);
+          collapseContext();
           event.preventDefault();
         }
       }}
@@ -469,12 +489,8 @@ export function Workspace({
             onFocus={() => showHover(tool.id, true)}
             onBlur={closeHoverSoon}
             onClick={() => {
-              cancelHoverClose();
-              setHoverTool(null);
-              setPhase("build");
-              setOutputExpanded(false);
-              setSideView(tool.id);
-              setView(pinnedOpen && sideView === tool.id ? "code" : tool.id);
+              if (pinnedOpen && sideView === tool.id) collapseContext();
+              else pinContext(tool.id);
             }}
           >
             {tool.label}
@@ -487,6 +503,7 @@ export function Workspace({
       <Panel.Group className="lab-shell" direction="row">
         <div
           className="lab-context lab-sidebar-stack"
+          ref={contextPane}
           id="lab-sidebar"
           data-pane="context"
           data-view={displaySide}
@@ -503,29 +520,60 @@ export function Workspace({
               {displaySide === "coach"
                 ? "Final review"
                 : hoverTool
-                  ? "Quick reference · click to pin"
-                  : "Practice context"}
+                  ? `${displaySide === "brief" ? "Brief" : "Reference"} preview`
+                  : `${displaySide === "brief" ? "Brief" : "Reference"} pinned`}
             </Text>
-            <Tooltip content="Collapse context">
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Collapse context"
-                onClick={collapseContext}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  aria-hidden="true"
+            <Inline gap="sm" align="center">
+              {hoverTool && (
+                <Tooltip content={`Keep ${displaySide === "brief" ? "Brief" : "Reference"} open`}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Keep ${displaySide === "brief" ? "Brief" : "Reference"} open`}
+                    onClick={() => {
+                      pinContext(displaySide);
+                      restoringContextFocus.current = true;
+                      navigation.current
+                        ?.querySelector<HTMLElement>(`[data-tool="${displaySide}"]`)
+                        ?.focus();
+                      restoringContextFocus.current = false;
+                    }}
+                  >
+                    <svg
+                      width="17"
+                      height="17"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      aria-hidden="true"
+                    >
+                      <path d="M9 3h6M10 3v6l-3 3v2h10v-2l-3-3V3M12 14v7" />
+                    </svg>
+                  </Button>
+                </Tooltip>
+              )}
+              <Tooltip content="Collapse context">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Collapse context"
+                  onClick={collapseContext}
                 >
-                  <path d="m14 6-6 6 6 6M20 4v16" />
-                </svg>
-              </Button>
-            </Tooltip>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    aria-hidden="true"
+                  >
+                    <path d="m14 6-6 6 6 6M20 4v16" />
+                  </svg>
+                </Button>
+              </Tooltip>
+            </Inline>
           </Inline>
           <Grid
             layout="stack"
