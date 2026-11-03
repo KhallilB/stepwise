@@ -26,7 +26,7 @@ for (const id of ["semantic-action", "modular-snapshot", "product-projection"]) 
     await page.goto(`/react-lab/${id}`);
     await startProject(page);
     await expect(page.locator(".lab-reference-code")).toHaveCount(0);
-    await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+    await page.getByRole("button", { name: "Final run & review", exact: true }).click();
     await page.getByRole("button", { name: "Show answer", exact: true }).click();
     await expect(page.locator(".lab-reference-code")).toHaveCount(0);
     await page

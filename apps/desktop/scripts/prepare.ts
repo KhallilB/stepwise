@@ -1,7 +1,10 @@
 import { mkdir } from "node:fs/promises";
-import { reviewSchema } from "../../interview-lab/app/react-lab/coach";
+import { communicationReviewSchema, reviewSchema } from "../../interview-lab/app/react-lab/coach";
 import { challenges } from "../../interview-lab/app/react-lab/curriculum";
-import { reviewInstructions } from "../../interview-lab/app/react-lab/review-prompt";
+import {
+  communicationInstructions,
+  reviewInstructions,
+} from "../../interview-lab/app/react-lab/review-prompt";
 
 const runtime = Bun.spawn(["bun", "run", "lab:runtime"], {
   cwd: "../interview-lab",
@@ -20,8 +23,10 @@ await Bun.write(
   JSON.stringify({
     instructions: reviewInstructions,
     schema: reviewSchema,
+    communicationSchema: communicationReviewSchema,
+    communicationInstructions,
     challenges: challenges.map(
-      ({ id, title, brief, requirements, rubric, stages, kind, buildBrief, debugBrief }) => ({
+      ({ id, title, brief, requirements, stages, kind, buildBrief, debugBrief }) => ({
         id,
         kind,
         buildBrief,
@@ -29,7 +34,6 @@ await Bun.write(
         title,
         brief,
         requirements,
-        rubric,
         stages: stages?.map(({ title, constraints }) => ({ title, constraints })),
       }),
     ),

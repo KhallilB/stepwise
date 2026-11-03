@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
-import { startProject } from "./lab-tools";
+import { enableCommunication, startProject } from "./lab-tools";
 
 const sampleReview = {
   summary: "Trace the queued state transitions before changing the handler.",
@@ -68,7 +68,7 @@ test("compact tools keep code visible; hover docks the brief and files switch di
   await expect(frame.getByLabel("Reserved seats")).toHaveText("1");
 });
 
-test("review is a final step, guides a retry without showing the answer, and preserves preview state", async ({
+test("review is a final step, guides a retry without showing the answer, and shows fresh check results", async ({
   page,
 }) => {
   await page.route("**/api/react-lab/status", (r) =>
@@ -88,15 +88,15 @@ test("review is a final step, guides a retry without showing the answer, and pre
   await startProject(page);
   const frame = page.frameLocator('iframe[title="React preview"]');
   await frame.getByRole("button", { name: "Reserve 3" }).click();
-  await expect(page.getByRole("button", { name: "Review my implementation" })).toBeHidden();
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Get review & takeaways" })).toBeHidden();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
   expect(
     await page.evaluate(
       () =>
         JSON.parse(localStorage.getItem("stepwise.react-lab.v1") ?? "{}").entries?.snapshot?.code,
     ),
   ).toContain("setCount");
-  await page.getByRole("button", { name: "Review my implementation", exact: true }).click();
+  await page.getByRole("button", { name: "Get review & takeaways", exact: true }).click();
   await expect(page.getByText(sampleReview.summary, { exact: true })).toBeVisible();
   expect(sent?.explanation).toBe("");
   expect(sent?.code).toContain("setCount");
@@ -104,7 +104,7 @@ test("review is a final step, guides a retry without showing the answer, and pre
     page.getByText("Trace one click on paper, then reattempt.", { exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Back to code", exact: true }).click();
-  await expect(frame.getByLabel("Reserved seats")).toHaveText("1");
+  await expect(frame.getByLabel("Reserved seats")).toHaveText("0");
   await expect(page.getByRole("region", { name: "App.tsx", exact: true })).toBeVisible();
 });
 
@@ -113,7 +113,7 @@ test("answer disclosure ends the attempt, survives reload, and is distinct from 
 }) => {
   await page.goto("/react-lab/snapshot");
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
   await page.getByRole("button", { name: "Show answer", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("end this attempt");
@@ -212,7 +212,8 @@ test("reset in another tab cannot silently resurrect deleted challenges", async 
 }) => {
   await page.goto("/react-lab/snapshot");
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
+  await enableCommunication(page);
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("A draft before reset");
   const other = await context.newPage();
   await other.goto("/react-lab");
@@ -233,7 +234,8 @@ test("reset in another tab cannot silently resurrect deleted challenges", async 
   await page.getByRole("button", { name: "Load other tab's draft", exact: true }).click();
   await expect(page.getByRole("button", { name: "Start project", exact: true })).toBeVisible();
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
+  await enableCommunication(page);
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue("");
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("Fresh attempt");
   expect(
@@ -274,8 +276,8 @@ test("a late local-model response cannot restore coaching after reset", async ({
   });
   await page.goto("/react-lab/snapshot");
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
-  await page.getByRole("button", { name: "Review my implementation", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
+  await page.getByRole("button", { name: "Get review & takeaways", exact: true }).click();
   const other = await context.newPage();
   await other.goto("/react-lab");
   await other.getByRole("button", { name: "Reset all progress", exact: true }).click();
@@ -335,7 +337,7 @@ test("exports exclude invalidated coaching even if another tab retains a draft a
   });
   await page.goto("/react-lab/snapshot");
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
   await page.evaluate(
     (review) =>
       localStorage.setItem(
@@ -374,7 +376,7 @@ test("keeping a stale tab draft cannot reopen an attempt whose answer was reveal
 }) => {
   await page.goto("/react-lab/snapshot");
   await startProject(page);
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
   const other = await context.newPage();
   await other.goto("/react-lab/snapshot");
   await startProject(other);

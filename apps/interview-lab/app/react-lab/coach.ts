@@ -1,12 +1,12 @@
 export const dimensions = [
   { id: "correctness", label: "Technical correctness" },
   { id: "reasoning", label: "Reasoning & diagnosis" },
-  { id: "communication", label: "Communication" },
   { id: "tradeoffs", label: "Tradeoffs & depth" },
 ] as const;
 export type Dimension = (typeof dimensions)[number]["id"];
 export type Assessment = { score: number; evidence: string; improve: string };
 export type Review = Record<Dimension, Assessment> & {
+  communication?: Assessment;
   summary: string;
   strengths: string[];
   nextSteps: string[];
@@ -21,7 +21,11 @@ function validText(value: unknown, max = 2000): value is string {
 }
 export function parseReview(value: unknown): Review | null {
   if (!isRecord(value) || !validText(value.summary) || !validText(value.followUp)) return null;
-  for (const { id } of dimensions) {
+  const ids = [
+    ...dimensions.map(({ id }) => id),
+    ...(value.communication === undefined ? [] : ["communication"]),
+  ];
+  for (const id of ids) {
     const item = value[id];
     if (
       !isRecord(item) ||
@@ -49,7 +53,10 @@ export function parseReview(value: unknown): Review | null {
   return value as Review;
 }
 export function reviewScore(review: Review): number {
-  return dimensions.reduce((total, { id }) => total + review[id].score, 0) * 5;
+  return Math.round(
+    (dimensions.reduce((total, { id }) => total + review[id].score, 0) / (dimensions.length * 5)) *
+      100,
+  );
 }
 const assessmentSchema = {
   type: "object",
@@ -72,6 +79,11 @@ export const reviewSchema = {
     followUp: { type: "string" },
   },
   required: ["summary", ...dimensions.map(({ id }) => id), "strengths", "nextSteps", "followUp"],
+};
+export const communicationReviewSchema = {
+  ...reviewSchema,
+  properties: { ...reviewSchema.properties, communication: assessmentSchema },
+  required: [...reviewSchema.required, "communication"],
 };
 
 export type ReviewAttempt = {

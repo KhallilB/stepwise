@@ -9,6 +9,7 @@ import {
   Panel,
   Progress,
   Status,
+  Switch,
   Text,
 } from "@kb.ui/react";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
@@ -54,6 +55,8 @@ export function Coach({
   const [attempts, setAttempts] = useState<ReviewAttempt[]>([]);
   const [error, setError] = useState("");
   const [reviewing, setReviewing] = useState(false);
+  const [communicationEnabled, setCommunicationEnabled] = useState(false);
+  const submittedExplanation = communicationEnabled ? explanation.trim() : "";
   const [invalidated, setInvalidated] = useState(false);
   const [historyWarning, setHistoryWarning] = useState(false);
   const requests = useRef<AbortController | null>(null);
@@ -138,7 +141,7 @@ export function Coach({
   }, [challengeId, connect, resetToken]);
 
   async function review() {
-    const snapshot = { code, explanation, stage, resetToken };
+    const snapshot = { code, explanation: submittedExplanation, stage, resetToken };
     setReviewing(true);
     setError("");
     const controller = new AbortController();
@@ -195,12 +198,14 @@ export function Coach({
   const latest = attempts[0];
   const stale =
     !!latest &&
-    (latest.code !== code || latest.explanation !== explanation || latest.stage !== stage);
+    (latest.code !== code ||
+      latest.explanation.trim() !== submittedExplanation ||
+      latest.stage !== stage);
   return (
     <Panel aria-labelledby="lab-coach-title" className="lab-flat-panel lab-coach">
       <Panel.Header>
         <Heading level={2} size="sm" id="lab-coach-title">
-          Review your implementation
+          2. Review & takeaways
         </Heading>
         <Status live tone={connection === "ready" ? "success" : "neutral"}>
           {connection === "ready"
@@ -218,9 +223,33 @@ export function Coach({
           suggests small experiments for your next attempt. Add your reasoning if you want feedback
           on it.
         </Text>
+        <Switch
+          label="Communication practice (optional)"
+          checked={communicationEnabled}
+          disabled={invalidated || reviewing}
+          onCheckedChange={setCommunicationEnabled}
+        />
+        {communicationEnabled && (
+          <>
+            {children}
+            {!services.speech.ready && (
+              <Text size="sm" tone="muted">
+                {desktop
+                  ? "Speech transcription is not bundled. Type your optional explanation."
+                  : "Voice transcription is unavailable; typed practice still works."}
+              </Text>
+            )}
+            <VoiceCapture
+              key={String(invalidated)}
+              enabled={services.speech.ready && !invalidated}
+              local={services.speech.provider === "local"}
+              onTranscript={onTranscript}
+            />
+          </>
+        )}
         <Inline gap="md" align="center">
           <Button disabled={connection !== "ready" || invalidated || reviewing} onClick={review}>
-            {reviewing ? "Reviewing your implementation…" : "Review my implementation"}
+            {reviewing ? "Reviewing your implementation…" : "Get review & takeaways"}
           </Button>
           {reviewing && (
             <Button variant="ghost" size="sm" onClick={() => requests.current?.abort()}>
@@ -233,10 +262,9 @@ export function Coach({
             ? "Review runs through your local Ollama server. No automatic cloud fallback."
             : "Review sends current code and explanation to OpenAI."}{" "}
           AI can make technical mistakes; compare feedback with behavior checks and official docs.
-          Scores are coaching estimates. Equal weighting: correctness, reasoning, communication, and
-          tradeoffs.
+          Implementation scores cover correctness, reasoning, and tradeoffs equally. Communication
+          feedback is optional and never contributes to that score.
         </Text>
-        {children}
         <Inline gap="sm" justify="between" className="lab-provider-summary">
           <Text as="span" size="sm">
             {services.review.provider === "ollama"
@@ -263,22 +291,6 @@ export function Coach({
             Typed practice and behavior checks stay available.
           </Callout>
         )}
-        {!services.speech.ready && (
-          <Text size="sm" tone="muted">
-            {desktop
-              ? "Desktop review uses your typed explanation. Speech transcription is not included."
-              : services.speech.provider === "local"
-                ? "Local voice server unavailable. Connect a Whisper-compatible server using LOCAL_TRANSCRIBE_URL and LOCAL_TRANSCRIBE_MODEL in .dev.vars."
-                : "Cloud transcription needs OPENAI_API_KEY in .dev.vars."}{" "}
-            You can type your explanation.
-          </Text>
-        )}
-        <VoiceCapture
-          key={String(invalidated)}
-          enabled={services.speech.ready && !invalidated}
-          local={services.speech.provider === "local"}
-          onTranscript={onTranscript}
-        />
         {invalidated && (
           <Callout tone="warning">
             Progress was reset in another tab. Load that tab’s state before requesting another
@@ -300,7 +312,7 @@ export function Coach({
           <section className="lab-assessment" aria-labelledby="lab-assessment-title">
             <Inline justify="between" align="center">
               <Heading level={3} size="sm" id="lab-assessment-title">
-                AI coaching score
+                Takeaways
               </Heading>
               <Text className="lab-score">{reviewScore(latest.review)} / 100</Text>
             </Inline>
@@ -328,6 +340,26 @@ export function Coach({
                 </div>
               ))}
             </Grid>
+            {communicationEnabled && latest.explanation.trim() && latest.review.communication && (
+              <Panel aria-labelledby="lab-communication-title" tone="quiet">
+                <Panel.Header>
+                  <Heading level={4} size="sm" id="lab-communication-title">
+                    Optional communication feedback
+                  </Heading>
+                </Panel.Header>
+                <Panel.Body>
+                  <Text size="sm">Separate from your implementation score.</Text>
+                  <Progress
+                    label="Communication (optional)"
+                    value={latest.review.communication.score}
+                    max={5}
+                    valueText={`${latest.review.communication.score} / 5`}
+                  />
+                  <Text size="sm">{latest.review.communication.evidence}</Text>
+                  <Text size="sm">{latest.review.communication.improve}</Text>
+                </Panel.Body>
+              </Panel>
+            )}
             <Heading level={4} size="sm">
               Keep doing
             </Heading>

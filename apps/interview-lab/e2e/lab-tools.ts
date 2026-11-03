@@ -5,10 +5,13 @@ export async function openCheckSettings(page: Page) {
 }
 export async function openTool(page: Page, name: string) {
   if (name === "Coach") {
-    const finish = page.getByRole("button", { name: "Finish & review", exact: true });
+    const finish = page.getByRole("button", { name: "Final run & review", exact: true });
     if (await finish.isVisible()) await finish.click();
-    else if (!(await page.getByRole("textbox", { name: "Explain your reasoning" }).isVisible()))
+    else if (
+      !(await page.getByRole("heading", { name: "2. Review & takeaways", exact: true }).isVisible())
+    )
       await page.getByRole("button", { name: "Tools", exact: true }).click();
+    await enableCommunication(page);
     return;
   }
   const tool = page.getByRole("button", { name, exact: true });
@@ -29,4 +32,12 @@ export async function openProjectFile(page: Page, path: string) {
 
 export async function startProject(page: Page) {
   await page.getByRole("button", { name: /^(Start|Resume) project$/ }).click();
+}
+
+export async function enableCommunication(page: Page) {
+  const toggle = page.getByRole("switch", {
+    name: "Communication practice (optional)",
+    exact: true,
+  });
+  if (!(await toggle.isChecked())) await toggle.check();
 }

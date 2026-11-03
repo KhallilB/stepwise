@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { startProject } from "./lab-tools";
+import { enableCommunication, startProject } from "./lab-tools";
 
 test("tree collapse and tab closure preserve code and Monaco undo", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -140,7 +140,8 @@ test("editor explorer stays independent of pinned brief and final review", async
   await page.getByRole("treeitem", { name: "App.tsx", exact: true }).click();
   await expect(page.getByRole("region", { name: "References", exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: "App.tsx", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Finish & review", exact: true }).click();
+  await page.getByRole("button", { name: "Final run & review", exact: true }).click();
+  await enableCommunication(page);
   await page
     .getByRole("textbox", { name: "Explain your reasoning" })
     .fill("Keep this review open while browsing.");

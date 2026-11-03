@@ -86,7 +86,7 @@ export function recordAttempt(
         ...(stage === undefined ? {} : { stage }),
         code,
         notes,
-        completed: !answerRevealed && passed && notes.trim().length > 0,
+        completed: !answerRevealed && passed,
         ...(answerRevealed ? { answerRevealed: true } : {}),
       },
     },

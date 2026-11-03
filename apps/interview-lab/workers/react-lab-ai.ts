@@ -1,7 +1,12 @@
-import { isRecord, parseReview, reviewSchema } from "../app/react-lab/coach";
+import {
+  communicationReviewSchema,
+  isRecord,
+  parseReview,
+  reviewSchema,
+} from "../app/react-lab/coach";
 import { findChallenge } from "../app/react-lab/curriculum";
 import { maxCodeLength, maxNotesLength } from "../app/react-lab/progress";
-import { reviewInstructions } from "../app/react-lab/review-prompt";
+import { communicationInstructions, reviewInstructions } from "../app/react-lab/review-prompt";
 
 export type CoachConfig = {
   enabled: boolean;
@@ -214,7 +219,9 @@ export async function handleCoachRequest(
           store: false,
           max_output_tokens: 4500,
           reasoning: { effort: "low" },
-          instructions: reviewInstructions,
+          instructions: input.explanation.trim()
+            ? `${reviewInstructions} ${communicationInstructions}`
+            : reviewInstructions,
           input: JSON.stringify({
             challenge: {
               title: challenge.title,
@@ -222,7 +229,6 @@ export async function handleCoachRequest(
               requirements: challenge.stages
                 ? challenge.stages.slice(0, Number(stage) + 1).flatMap((item) => item.constraints)
                 : challenge.requirements,
-              rubric: challenge.rubric,
               activeStage: activeStage ? { index: Number(stage), title: activeStage.title } : null,
             },
             code: input.code,
@@ -233,7 +239,7 @@ export async function handleCoachRequest(
               type: "json_schema",
               name: "react_interview_review",
               strict: true,
-              schema: reviewSchema,
+              schema: input.explanation.trim() ? communicationReviewSchema : reviewSchema,
             },
           },
         }),
@@ -276,14 +282,14 @@ export async function handleCoachRequest(
       init.body = JSON.stringify({
         model: config.model,
         stream: false,
-        format: reviewSchema,
+        format: openai.text.format.schema,
         messages: [
           {
             role: "system",
             content:
               openai.instructions +
               " Return JSON matching this schema: " +
-              JSON.stringify(reviewSchema),
+              JSON.stringify(openai.text.format.schema),
           },
           { role: "user", content: openai.input },
         ],

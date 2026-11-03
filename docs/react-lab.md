@@ -151,13 +151,20 @@ Final coaching is designed around evidence, Socratic questions, concrete experim
 next practice targets. It receives no reference explanation or solution. The server rejects
 fenced code and full-component-shaped responses without inventing a score. Conceptual
 suggestions can still make a fix clearer; model output needs critical reading.
-Four equally weighted 0–5 dimensions produce a 100-point coaching score: correctness,
-reasoning, communication, and tradeoffs. Missing explanation is treated as missing evidence.
+Three equally weighted 0–5 dimensions produce a 100-point coaching score: correctness,
+reasoning, and tradeoffs. Communication practice is off by default. Turn it on to add a typed
+or spoken explanation and receive separate communication feedback; it never affects the
+implementation score. Turning it off keeps your notes but leaves them out of new reviews.
+Takeaways include what to keep doing, next practice targets, and an interviewer follow-up.
+Optional self-review prompts stay in the workspace, outside the model’s acceptance criteria.
 The model does not execute code, assess accent, or predict hiring outcomes. Changed source,
-notes, or stage labels prior feedback stale. Up to three reviews per challenge are retained.
+submitted explanation, or stage labels prior feedback stale. Up to three reviews per challenge are retained.
 
-Complete challenge is a final-review action requiring current passing checks, all build
-stages, and a nonempty personal explanation. Rubric ticks remain private self-review.
+**Final run & review** runs fresh checks, opens their summary, and offers **Get review &
+takeaways** as an optional next step. Saved feedback survives reopening the challenge.
+**Complete challenge** requires current passing checks and all build stages. Notes, AI
+scores, and rubric ticks are optional; clearing notes preserves completion. Editing code
+requires another passing run.
 
 **Show answer** requires explicit confirmation that it ends the attempt. The saved outcome
 is **Answer viewed**, distinct from completion and excluded from completed counts. Its

@@ -180,6 +180,7 @@ export function Workspace({
     }, 260);
   }
   function reviewImplementation() {
+    run();
     cancelHoverClose();
     setHoverTool(null);
     setOutputExpanded(false);
@@ -207,8 +208,9 @@ export function Workspace({
 
   const currentReport = report?.code === code && report.stage === stageIndex ? report : null;
   const results = currentReport && "results" in currentReport ? currentReport.results : null;
+  const finalError = currentReport && "error" in currentReport ? currentReport.error : "";
   const passed = !!results?.length && results.every((result) => result.passed);
-  const canComplete = passed && finalStage && notes.trim().length > 0 && !running;
+  const canComplete = passed && finalStage && !running;
 
   useEffect(() => {
     if (
@@ -355,7 +357,7 @@ export function Workspace({
       ...entry,
       code: nextCode,
       notes: nextNotes,
-      completed: nextCode === code && nextNotes.trim().length > 0 && !!entry?.completed,
+      completed: nextCode === code && !!entry?.completed,
     });
   }
 
@@ -412,7 +414,7 @@ export function Workspace({
             disabled={!ready || running}
             onClick={() => (phase === "build" ? reviewImplementation() : collapseContext())}
           >
-            {phase === "build" ? "Finish & review" : "Back to code"}
+            {phase === "build" ? "Final run & review" : "Back to code"}
           </Button>
           <Button size="sm" disabled={!ready || running} onClick={run}>
             Run checks
@@ -601,6 +603,48 @@ export function Workspace({
               className="lab-reflection-main lab-pane-content"
               hidden={displaySide !== "coach"}
             >
+              <Panel
+                role="region"
+                aria-labelledby="lab-final-checks-title"
+                className="lab-flat-panel"
+              >
+                <Panel.Header>
+                  <Heading level={2} size="sm" id="lab-final-checks-title">
+                    1. Final checks
+                  </Heading>
+                  <Status live tone={running ? "running" : passed ? "success" : "neutral"}>
+                    {running
+                      ? "Running final checks…"
+                      : passed
+                        ? "All final checks passed"
+                        : results
+                          ? "Some checks need fixes"
+                          : finalError
+                            ? "Final run could not finish"
+                            : "Run checks for this draft"}
+                  </Status>
+                </Panel.Header>
+                <Panel.Body>
+                  <Text size="sm">
+                    Checks cover your current code and stage. Passing all stages is enough to
+                    complete; AI review and communication practice are optional.
+                  </Text>
+                  {finalError && <Callout tone="warning">{finalError}</Callout>}
+                  {!finalStage && (
+                    <Text size="sm">
+                      Finish the remaining stages before completing this challenge.
+                    </Text>
+                  )}
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={!ready || running}
+                    onClick={reviewImplementation}
+                  >
+                    Run final checks again
+                  </Button>
+                </Panel.Body>
+              </Panel>
               <Coach
                 challengeId={challenge.id}
                 resetToken={resetToken}
@@ -616,7 +660,7 @@ export function Workspace({
               >
                 <Textarea
                   label="Explain your reasoning"
-                  description="What failed? Why does your fix hold? Which tradeoff did you choose?"
+                  description="Optional: explain what changed, why it works, and a tradeoff. Code review and completion work without this."
                   rows={5}
                   maxLength={maxNotesLength}
                   value={notes}
@@ -627,9 +671,9 @@ export function Workspace({
               <Panel aria-labelledby="lab-reasoning-title" className="lab-flat-panel">
                 <Panel.Header>
                   <Heading level={2} size="sm" id="lab-reasoning-title">
-                    Finish your practice
+                    Optional self-review
                   </Heading>
-                  <Badge appearance="plain">Explain it out loud</Badge>
+                  <Badge appearance="plain">For practice</Badge>
                 </Panel.Header>
                 <Panel.Body>
                   <div className="lab-rubric">
@@ -649,8 +693,8 @@ export function Workspace({
                     ))}
                   </div>
                   <Text size="sm" tone="muted">
-                    Pass checks and write your explanation to complete. Rubric is a self-review, not
-                    an interview score.
+                    These prompts are optional. Passing the final behavior checks completes the
+                    challenge; notes and coaching scores are not required.
                   </Text>
                 </Panel.Body>
               </Panel>
