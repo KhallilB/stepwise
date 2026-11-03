@@ -1,5 +1,7 @@
 # Technical design
 
+Current workspace and local desktop packaging: [desktop guide](desktop.md). The runner/detector design below describes Stepwise’s intended algorithm pipeline; frontend lab uses its existing isolated preview.
+
 ## How it fits together
 
 Learner code never runs on the page itself. It runs in background workers, and the page only draws and handles input. That keeps stepping smooth and stops a runaway loop from freezing the tab.
@@ -74,7 +76,7 @@ type HeapObj =
   | { kind: "object"; cls: string; fields: Record<string, Value> };
 ```
 
-The code version is [`app/trace/trace.ts`](../app/trace/trace.ts). Changing it changes the stored traces, so do it on purpose ([decision 0004](decisions/0004-trace-and-view-spec-contracts.md)).
+The code version is [`apps/stepwise/app/trace/trace.ts`](../apps/stepwise/app/trace/trace.ts). Changing it changes the stored traces, so do it on purpose ([decision 0004](decisions/0004-trace-and-view-spec-contracts.md)).
 
 The **view spec** lists up to three main views and what each one is bound to. Here's one for a grid search:
 

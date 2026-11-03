@@ -20,3 +20,7 @@ Use React 19, Vite and React Router 7 in framework mode, hosted on Cloudflare Wo
 
 - The required headers cannot be kept on every page.
 - A later feature needs a long-running server.
+
+## Additional target
+
+2026-11-02: [0006](0006-local-interview-desktop.md) adds a local desktop shell. This record continues to govern the independent browser apps.

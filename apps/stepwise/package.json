@@ -1,0 +1,37 @@
+{
+  "name": "@interview/stepwise",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "preview": "bun run build && vite preview",
+    "deploy": "bun run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "typecheck": "wrangler types && react-router typegen && tsc -b",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "bun run typecheck && bun run test && bun run test:e2e",
+    "check:kbui": "bun node_modules/@kb.ui/react/dist/check-versions.js"
+  },
+  "dependencies": {
+    "@kb.ui/react": "0.10.4",
+    "isbot": "5.2.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router": "7.18.5",
+    "@interview/platform": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.65.0",
+    "@playwright/test": "1.64.1",
+    "@react-router/dev": "7.18.5",
+    "@types/node": "22",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5",
+    "wrangler": "4.154.0"
+  }
+}

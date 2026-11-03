@@ -4,7 +4,7 @@ The curriculum has **112 defined problem slots: 76 runnable exercises and 36 pro
 exercises**. Proposed exercises are not available in the lab and do not count toward
 completion. This is a coverage plan, not evidence that every aspect of frontend work is taught.
 
-The runnable catalog lives in `app/react-lab/curriculum.ts`. Existing challenge ids and
+The runnable catalog lives in `apps/interview-lab/app/react-lab/curriculum.ts`. Existing challenge ids and
 notebook storage remain unchanged. New sessions progress from Very easy through Very hard;
 milestone and difficulty filters let experienced learners choose another entry point.
 

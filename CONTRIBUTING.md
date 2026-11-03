@@ -1,15 +1,17 @@
 # Contributing
 
-Stepwise is an early prototype. The design lives in [`docs/`](docs); the app lives in `app/`.
+Stepwise is an early prototype. The design lives in [`docs/`](docs); browser apps live in `apps/interview-lab` and `apps/stepwise`; desktop shell lives in `apps/desktop`.
 
 ## Setup
 
-Install [Bun](https://bun.sh) 1.3 or later, then:
+Install [Bun](https://bun.sh) 1.3.11, then:
 
 ```bash
-bun install
-bunx playwright install chromium
-bun run dev        # http://localhost:5173
+bun install --frozen-lockfile
+bun run --cwd apps/interview-lab test:install webkit
+bun run dev        # lab at http://localhost:5173
+bun run dev:stepwise # algorithms at http://localhost:5174
+bun run desktop:dev # local desktop shell and bundled reviewer
 bun run check      # kbui version guard, lint, types, unit and end-to-end tests
 ```
 
@@ -18,9 +20,11 @@ bun run check      # kbui version guard, lint, types, unit and end-to-end tests
 | `bun run test` | Unit tests (Vitest) |
 | `bun run test:e2e` | Browser tests (Playwright); starts the dev server |
 | `bun run typecheck` | Generates Workers and route types, then type-checks |
-| `bun run build` | Builds the Cloudflare Worker |
+| `bun run build` | Builds both browser apps |
 
 kbui is installed from npm as `@kb.ui/react`; keep its version synchronized with any other `@kb.ui/*` packages.
+
+See [publishing](docs/publishing.md) for existing PR dependencies, GitHub checks, signed source history and desktop releases. Public app availability lives in [Downloads](docs/downloads.md).
 
 ## Documentation guidelines
 

@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Trusted local practice shell; no filesystem, shell, remote-content or general HTTP permissions.",
+  "windows": ["main"],
+  "platforms": ["macOS"],
+  "permissions": [
+    "allow-ollama-status",
+    "allow-start-model-download",
+    "allow-review-solution",
+    "allow-cancel-local-operation"
+  ]
+}

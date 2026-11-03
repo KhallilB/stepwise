@@ -28,3 +28,19 @@ worker-configuration.d.ts
 
 # Generated personal React lab runtime
 /public/react-lab-runtime.js
+
+# Workspace outputs
+**/build/
+**/.react-router/
+**/.wrangler/
+**/test-results/
+**/playwright-report/
+**/worker-configuration.d.ts
+**/public/react-lab-runtime.js
+
+# Desktop generated/runtime artifacts
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+apps/desktop/src-tauri/generated/
+apps/desktop/src-tauri/resources/
+apps/desktop/public/

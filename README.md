@@ -1,34 +1,28 @@
-# Stepwise
+# Interview Practice
 
-**Write a solution. Watch it run, one step at a time.**
+Practice frontend interviews and explore algorithms, with a local reviewer when you need feedback.
 
-Data structures and algorithms are learned by following data as it changes, yet most tools show only the final result. Practice sites report that an answer is wrong, not where it went wrong. Visualizers animate prepared examples, not your own code.
+[Downloads](docs/downloads.md) · [Documentation](docs/README.md) · [Source and releases](https://github.com/KhallilB/stepwise)
 
-Stepwise closes that gap. Pick a problem, write a solution and press **Walk through**. Stepwise runs your code step by step and draws the data the way it is taught: arrays with pointers, grids, linked lists and trees.
+- **React lab:** 76 exercises, a multi-file editor, isolated live preview, behavior checks and a practice notebook.
+- **Stepwise:** algorithm walkthroughs with pointers, grids and queues. These use prepared traces; Stepwise does not execute learner code yet.
+- **Desktop:** both apps together, with bundled Ollama. Download a model once; subsequent reviews run on your Mac without an API key or per-review fee.
 
-```text
- 1   3   5   7   9  11  13  15
-                lo mid      hi
-Step 6 of 6 · "nums[5] is 11. Found it."
+Profile, drafts, progress and feedback save on your device. Export backups before moving between browser and desktop; there is no account or automatic sync.
+
+## Run from source
+
+```sh
+bun install --frozen-lockfile
+bun run dev             # React lab: http://localhost:5173/react-lab
+bun run dev:stepwise    # Stepwise: http://localhost:5174
+bun run desktop:dev    # macOS app and local reviewer
 ```
 
-Each step comes with one plain sentence. When a test fails, the walkthrough opens at the step where it went wrong.
+The browser apps build and deploy separately. Desktop setup needs macOS 14+, Rust and Xcode command-line tools; downloaded app users need none of those developer tools. See [Contributing](CONTRIBUTING.md) and [Desktop development](docs/desktop.md).
 
-> **Status:** building the clickable algorithm prototype ([M1](docs/roadmap.md#m1--clickable-prototype)). The binary search walkthrough runs from a hand-written trace. The separate personal React lab below executes learner code. The design is in [`docs/`](docs).
-
-## Personal React practice
-
-Run `bun run dev` and open `/react-lab` for 76 interactive frontend challenges,
-from Very easy to Very hard, including HTML, responsive CSS, design, accessibility,
-React, practical algorithms, and seven progressive 35–40 minute builds. Edit TSX, run cumulative behavior checks, record spoken explanations, and request AI coaching.
-Drafts and feedback save on your device. Monaco supports React snippets and live preview.
-Use Tailwind utilities or edit `styles.css`; both work locally in the isolated preview.
-Coaching defaults to local Ollama; speech uses a local Whisper-compatible server. OpenAI is optional and explicit.
-See [React lab](docs/react-lab.md) for scope and limits. Personal learning milestones stay
-separate from the algorithm product roadmap.
-The [112-problem curriculum](docs/frontend-curriculum.md) distinguishes 76 runnable exercises
-from 36 proposed browser/server and design-evaluation exercises.
+The [frontend curriculum](docs/frontend-curriculum.md) separates runnable exercises from proposed work. Stepwise's [product roadmap](docs/roadmap.md) tracks the algorithm product.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Bundled runtime notices travel with the app.

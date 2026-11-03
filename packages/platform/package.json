@@ -1,0 +1,17 @@
+{
+  "name": "@interview/platform",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./profile": "./src/Profile.tsx",
+    "./storage": "./src/local-state.ts"
+  },
+  "peerDependencies": {
+    "@kb.ui/react": "0.10.4",
+    "react": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0"
+  }
+}

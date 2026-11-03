@@ -9,3 +9,4 @@ Each record explains one major choice: the context, the decision, the alternativ
 | [0003](0003-react-router-on-cloudflare-workers.md) | Use React Router 7 on Cloudflare Workers | Proposed 2026-10-27 |
 | [0004](0004-trace-and-view-spec-contracts.md) | Connect runner, detector and renderer through two data formats | Proposed 2026-10-27 |
 | [0005](0005-javascript-first.md) | Start with JavaScript, traced by rewriting the code | Proposed 2026-10-28 |
+| [0006](0006-local-interview-desktop.md) | Package connected practice tools locally with Tauri and Ollama | Proposed 2026-11-02 |
