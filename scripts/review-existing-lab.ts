@@ -78,7 +78,7 @@ function main() {
       return false;
     }
   };
-  const fixed = "3e2030430c398725b2095e1f05ee54003f3dc445";
+  const fixed = "873695b0071a604d6148dd926fd6e066b19a3076";
   const policy = foundationReview({
     branch: git("branch", "--show-current"),
     origin: git("remote", "get-url", "origin"),
