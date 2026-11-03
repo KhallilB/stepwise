@@ -210,8 +210,13 @@ export default function App() {
   await expect(page.getByText("0 of 2 checks passed")).toBeVisible({ timeout: 30000 });
   const frame = page.frameLocator('iframe[title="React preview"]');
   await expect(frame.getByText("network blocked")).toBeVisible();
+  const blocked = page.waitForEvent("console", {
+    predicate: (message) =>
+      message.text().includes("https://example.com/lab-probe") &&
+      (message.text().includes("frame-src") || message.text().includes("form-action")),
+  });
   await frame.getByRole("button", { name: "Send outside" }).click();
-  await expect(frame.getByText("network blocked")).toBeVisible();
+  await blocked;
   expect(requests).toBe(0);
 });
 
