@@ -302,3 +302,35 @@ test("an unresolved cross-tab draft choice survives in-app navigation", async ({
   );
   await other.close();
 });
+
+for (const wrapper of ["memo(App)", "forwardRef((_props, _ref) => <App />)"]) {
+  test(`a valid ${wrapper} default export runs behavior checks`, async ({ page }) => {
+    await page.goto("/react-lab/snapshot");
+    await startProject(page);
+    await page.getByRole("button", { name: "Editor options", exact: true }).click();
+    await page.getByRole("menuitem", { name: "Plain editor", exact: true }).click();
+    await page
+      .getByRole("textbox", { name: "App.tsx", exact: true })
+      .fill(`import { memo, forwardRef, useState } from "react";
+function App() {
+  const [count, setCount] = useState(0);
+  return <section><output aria-label="Reserved seats">{count}</output><button onClick={() => setCount(current => current + 3)}>Reserve 3</button><button onClick={() => setCount(0)}>Reset</button></section>;
+}
+export default ${wrapper};`);
+    await page.getByRole("button", { name: "Run checks", exact: true }).click();
+    await expect(page.getByText("2 of 2 checks passed")).toBeVisible({ timeout: 10000 });
+  });
+}
+
+for (const source of ["export const value = 1;", "export default {};"]) {
+  test(`invalid component export stays visible: ${source}`, async ({ page }) => {
+    await page.goto("/react-lab/snapshot");
+    await startProject(page);
+    await page.getByRole("button", { name: "Editor options", exact: true }).click();
+    await page.getByRole("menuitem", { name: "Plain editor", exact: true }).click();
+    await page.getByRole("textbox", { name: "App.tsx", exact: true }).fill(source);
+    await page.getByRole("button", { name: "Run checks", exact: true }).click();
+    await expect(page.getByText("Run needs attention", { exact: true })).toBeVisible();
+    await expect(page.getByText("2 of 2 checks passed")).not.toBeVisible();
+  });
+}
