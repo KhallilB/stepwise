@@ -2,6 +2,7 @@ import { advancedBuilds } from "./advanced-builds";
 import { algorithmPractice } from "./algorithm-practice";
 import { configureStarter } from "./build-starters";
 import { builds } from "./builds";
+import { configureDebugBrief } from "./debug-briefs";
 import { designPractice } from "./design-practice";
 import { foundations } from "./foundations";
 import { frontendHard } from "./frontend-hard";
@@ -978,4 +979,4 @@ challenges.push(
 
 challenges.sort((a, b) => difficultyLevels.indexOf(a.level) - difficultyLevels.indexOf(b.level));
 for (const [index, challenge] of challenges.entries())
-  challenges[index] = configureStarter(challenge);
+  challenges[index] = configureDebugBrief(configureStarter(challenge));

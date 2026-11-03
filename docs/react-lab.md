@@ -26,6 +26,21 @@ the algorithm or UI state. Requirements name the tested algorithm export and UI 
 outputs, and data attributes, so the empty editor does not hide the observable contract.
 The other 57 exercises retain their buggy implementations for diagnosis.
 
+Each build brief states the feature goal, **Sample data**, **Starting UI**, and at least three
+input/action/expected-UI examples. These describe the finished feature, not an interface supplied
+by the starter. Examples cover ordinary interaction plus empty, invalid, repeated, or failed work.
+The seven staged builds reveal each stage's examples only when that stage unlocks; earlier
+examples remain available in Brief. Implementation guidance stays behind explicit hints, and
+the full reference remains behind answer disclosure. Samples do not insert any code into App.
+
+All 57 debugging exercises also include **Sample data**, **Expected starting UI**, and three
+input/action/expected-UI examples (171 total). These state the intended contract; the supplied
+implementation may differ. Public titles, summaries, tags, and acceptance criteria describe the
+feature and its observable outcomes without naming the defect or prescribing a repair. Exact
+native/ARIA semantics and fixture APIs remain contractual where checks require them. Diagnosis
+and implementation guidance remain in opt-in hints and the disclosed answer. Challenge ids,
+buggy starters, reference code, authored checks, and saved learner work remain unchanged.
+
 Staged service fixtures stay separate from learner state. `createStarService()` owns transport
 attempts and exposes `write()`/`calls`; `createDocumentService()` owns the simulated server and
 exposes `read()`, `saveRemote()`, `remoteEdit()`, and `calls`. Create a stable service instance

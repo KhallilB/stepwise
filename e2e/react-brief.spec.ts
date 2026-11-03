@@ -4,7 +4,7 @@ import { openTool } from "./lab-tools";
 test("a challenge begins with its brief and an explicit project start", async ({ page }) => {
   await page.goto("/react-lab/snapshot");
   await expect(
-    page.getByRole("heading", { name: "State is a snapshot", exact: true }),
+    page.getByRole("heading", { name: "Seat reservation counter", exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "The brief", exact: true })).toBeVisible();
   await expect(
@@ -19,7 +19,7 @@ test("a challenge begins with its brief and an explicit project start", async ({
   await page.getByRole("button", { name: "Start project", exact: true }).click();
   await expect(page.getByRole("region", { name: "App.tsx", exact: true })).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "State is a snapshot", exact: true }),
+    page.getByRole("heading", { name: "Seat reservation counter", exact: true }),
   ).toBeFocused();
   await expect(page.getByRole("button", { name: "Start interview", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Expand file explorer" })).toHaveAttribute(

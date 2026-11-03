@@ -1,4 +1,5 @@
 import { algorithmBuildFixtures } from "./algorithm-practice";
+import { buildBriefs } from "./build-briefs";
 import { writeProject } from "./project";
 import type { Challenge } from "./types";
 
@@ -113,10 +114,10 @@ const stagedContracts: Record<string, string[]> = {
     "fixtures.ts exports checkName(name) and saveName(name). Implement username validation yourself: at least three ASCII letters, with surrounding whitespace trimmed for validation and transport.",
   ],
   "build-concurrent-stars": [
-    "fixtures.ts exports createStarService(). Create one stable service instance for the exercise; write(name, value) returns a promise and calls counts transport attempts. It supplies transport behavior only; create optimistic/confirmed state and per-person pending ownership yourself. Start with Ada and Grace unstarred.",
+    "fixtures.ts exports createStarService(). Use one service instance throughout the exercise; write(name, value) returns a promise and calls counts transport attempts. This supplies transport behavior only. Start with Ada and Grace unstarred.",
   ],
   "build-conflict-editor": [
-    "fixtures.ts exports Snapshot and createDocumentService(). Create one stable service instance: read() returns a copied server snapshot, saveRemote(text, expectedRevision) acknowledges or rejects with the latest Snapshot, remoteEdit() simulates another writer, and calls counts transport attempts. Model draft, baseline, pending, and conflict state yourself.",
+    "fixtures.ts exports Snapshot and createDocumentService(). Use one service instance throughout the exercise: read() returns a copied server snapshot, saveRemote(text, expectedRevision) acknowledges or rejects with the latest Snapshot, remoteEdit() simulates another writer, and calls counts transport attempts. Choose your own UI implementation.",
   ],
 };
 
@@ -124,16 +125,19 @@ export function configureStarter(challenge: Challenge): Challenge {
   const contracts = algorithmContracts[challenge.id] ?? stagedContracts[challenge.id];
   if (!contracts) return { ...challenge, kind: "debug" };
   const fixture = algorithmBuildFixtures[challenge.id] ?? stagedFixtures[challenge.id];
+  const definition = buildBriefs[challenge.id];
+  if (!definition) throw new Error(`Missing build brief: ${challenge.id}`);
+  const { goal, constraints, ...buildBrief } = definition;
   return {
     ...challenge,
     kind: "build",
+    brief: goal,
+    buildBrief,
     starter: fixture ? writeProject({ "App.tsx": emptyApp, "fixtures.ts": fixture }) : emptyApp,
     requirements: [
       "Start from the empty App entry point. Write your own state, imports, event handlers, helper functions, and markup; fixture files provide only data, contract types, or local services.",
       ...contracts,
-      ...challenge.requirements.filter(
-        (requirement) => !requirement.startsWith("Keep the named algorithm exported"),
-      ),
+      ...constraints,
       ...(challenge.track === "algorithms"
         ? [
             "Export the named algorithm from App.tsx (re-export it if moved). Independent-input checks call that export as well as checking your UI.",

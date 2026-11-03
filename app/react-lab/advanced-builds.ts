@@ -23,7 +23,7 @@ const feedStages: Stage[] = [
     title: "Bound the rendered work",
     minutes: 15,
     constraints: [
-      "Feed is a 160px-high scroll region. Rows are exactly 32px high; use a spacer for the full scroll extent.",
+      "Feed is a 160px-high scroll region. Rows are exactly 32px high, and the full scroll extent represents every matching row.",
       "Mount at most 10 data-row elements regardless of collection size. Overscan is allowed. Row positioning must match scroll offset, not just replace text in a fixed list.",
     ],
     checks: [
@@ -98,7 +98,7 @@ const registrationStages: Stage[] = [
     title: "Submit exactly the validated version",
     minutes: 15,
     constraints: [
-      "For syntactically valid input, enable Register only when the current normalized name was checked Available and no save is pending. Invalid submission remains available to explain errors. Guard duplicate submissions synchronously.",
+      "For syntactically valid input, enable Register only when the current normalized name was checked Available and no save is pending. Invalid submission remains available to explain errors. Repeated Register actions while pending send only one registration.",
       "saveName acknowledges after 100ms. output Registrations counts writes. On success announce Registered <submitted name> only if that name is still current.",
       "Editing while a save is pending preserves the new draft and never labels it registered from an older acknowledgement. No actual network.",
     ],
@@ -152,7 +152,7 @@ const optimisticStages: Stage[] = [
     constraints: [
       "Retry Ada resends the rejected intent and clears Ada's error after success; it must not undo Grace.",
       "Query filters names case-insensitively without deleting hidden pending state or errors. Clearing Query restores those rows.",
-      "Keep transport attempts and per-person guards outside rendered row lifetimes. Request count counts writes. No global snapshot rollback.",
+      "Hiding and restoring rows does not reset pending requests, errors, or transport attempts. Request count counts writes; one person's failure does not undo another person's acknowledgement.",
     ],
     checks: [
       {
@@ -185,7 +185,7 @@ const documentStages: Stage[] = [
     title: "Edits outlive their requests",
     minutes: 15,
     constraints: [
-      "One save at a time; disable Save document while pending and guard duplicate calls.",
+      "One save at a time; Save document is disabled while pending and repeated actions send only one request.",
       "Edits during a save remain editable. Acknowledgement updates the saved snapshot, never overwrites newer local text. That newer draft stays Unsaved.",
     ],
     checks: [

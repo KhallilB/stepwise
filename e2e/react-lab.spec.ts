@@ -5,7 +5,7 @@ test("lab opens from library, runs learner edits and preserves personal work", a
   await page.goto("/");
   await page.getByRole("link", { name: "React interview lab" }).click();
   await expect(page.getByRole("heading", { name: "Think in React." })).toBeVisible();
-  await page.getByRole("link", { name: "State is a snapshot", exact: true }).click();
+  await page.getByRole("link", { name: "Seat reservation counter", exact: true }).click();
   await startProject(page);
   await page.getByRole("button", { name: "Editor options", exact: true }).click();
   await page.getByRole("menuitem", { name: "Plain editor", exact: true }).click();
@@ -76,7 +76,7 @@ test("small screen, keyboard selection, filter reset and URL navigation work", a
   await page.getByRole("searchbox", { name: "Find a challenge" }).fill("no such challenge");
   await expect(page.getByRole("heading", { name: "No matching challenges" })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  const challenge = page.getByRole("link", { name: "State is a snapshot", exact: true });
+  const challenge = page.getByRole("link", { name: "Seat reservation counter", exact: true });
   await challenge.focus();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/react-lab\/snapshot$/);

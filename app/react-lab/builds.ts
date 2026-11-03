@@ -24,7 +24,7 @@ const directoryStages = [
     minutes: 12,
     constraints: [
       "Add a Frontend only toggle button using aria-pressed.",
-      "Intersect role and query filters without storing a redundant filtered list.",
+      "Role and query filters apply together. Toggling the role filter preserves the current query and does not remove source records.",
     ],
     checks: [
       {
@@ -65,7 +65,7 @@ const boardStages = [
     minutes: 10,
     constraints: [
       "New task input, Add task button, Tasks list. Ignore blank/whitespace tasks.",
-      "Create stable ids when adding, not during rendering.",
+      "Each task keeps the same id through completion, filtering, deletion, and restoration.",
     ],
     checks: [
       {
@@ -79,7 +79,7 @@ const boardStages = [
     minutes: 15,
     constraints: [
       "Each task has Complete <title> button with aria-pressed.",
-      "Active only toggles a derived view; hidden tasks retain identity and completion.",
+      "Active only hides completed tasks; hidden tasks retain identity and completion.",
     ],
     checks: [
       {
@@ -93,7 +93,7 @@ const boardStages = [
     minutes: 15,
     constraints: [
       "Delete <title> removes a task; Undo last delete restores its identity and position.",
-      "At most 5 tasks, including completed tasks. Disable Add task at capacity; enforce the same bound in the handler.",
+      "At most 5 tasks, including completed tasks. Add task is disabled at capacity and repeated actions cannot create a sixth task.",
     ],
     checks: [
       {
@@ -127,7 +127,7 @@ const checkoutStages = [
     minutes: 12,
     constraints: [
       "Promo code input and Apply promo button. SAVE10 (case-insensitive, trimmed) applies 10% off.",
-      "Invalid codes clear a prior discount and announce Invalid promo. Adding tickets retains valid discounts; no redundant total state.",
+      "Invalid codes clear a prior discount and announce Invalid promo. Adding tickets retains valid discounts and keeps Total consistent with quantity and discount.",
     ],
     checks: [
       {

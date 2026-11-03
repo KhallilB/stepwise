@@ -115,12 +115,12 @@ test("very easy curriculum is filterable, reloadable, and reachable by keyboard 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/react-lab?level=Very+easy");
   await expect(page.getByRole("status").filter({ hasText: "9 challenges" })).toBeVisible();
-  const link = page.getByRole("link", { name: "An action deserves a button", exact: true });
+  const link = page.getByRole("link", { name: "Notification signup", exact: true });
   await link.focus();
   await link.press("Enter");
   await expect(page).toHaveURL(/\/react-lab\/semantic-action$/);
   await expect(
-    page.getByRole("heading", { name: "An action deserves a button", exact: true, level: 1 }),
+    page.getByRole("heading", { name: "Notification signup", exact: true, level: 1 }),
   ).toBeVisible();
   await page.goBack();
   await page.reload();
