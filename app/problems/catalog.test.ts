@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 import { findProblem, problems } from "./catalog";
 
 describe("problem catalog", () => {
-  it("lists binary search and sorted pair sum, with unique slugs", () => {
-    expect(problems.map((p) => p.slug)).toEqual(["binary-search", "sorted-pair-sum"]);
+  it("lists the three prototype problems, with unique slugs", () => {
+    expect(problems.map((p) => p.slug)).toEqual([
+      "binary-search",
+      "sorted-pair-sum",
+      "island-count",
+    ]);
   });
 
   it("gives every problem a pattern and a difficulty for the picker", () => {
