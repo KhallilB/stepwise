@@ -58,9 +58,9 @@ new minimal starter when you choose to discard an older draft.
    Use Keep open or click its trigger to pin it; hover never replaces pinned context.
    Click another trigger to switch. Escape dismisses a quick preview and restores trigger
    focus; Collapse context returns space to code. Entry motion respects reduced motion.
-3. **Review:** Finish & review opens implementation coaching beside the code. The coach is
-   first mounted through this action. Review my implementation explicitly sends the current
-   source, optional explanation, and active requirements to the selected model. Back to code
+3. **Review:** Final run & review runs fresh checks and opens coaching beside the code.
+   Get review & takeaways sends current source and active requirements to the selected model.
+   Turn on optional Communication practice to include an explanation. Back to code
    supports another attempt with the same draft. Recorded reasoning and feedback remain
    available across tool switches after review has been opened.
 
@@ -307,7 +307,7 @@ model responses. New authored starters/references also pass strict TSX validatio
    Pin Brief while browsing files; both panes should stay open independently.
 2. Hover Brief and Reference. The inline pane leaves editor/output visible; enter it to
    read, leave or press Escape to close, and click to pin. Repeat using keyboard focus.
-3. Finish & review with a broken attempt. Request local coaching, inspect evidence/questions,
+3. Final run & review with a broken attempt. Request local coaching, inspect evidence/questions,
    then Back to code and try again. No full reference component should appear.
 4. Choose Show answer, cancel once, then confirm. The attempt ends as Answer viewed and
    survives reload without increasing completed count. Reset it to restore its starter.
@@ -327,7 +327,7 @@ Real microphone/transcription and manual screen-reader verification remain owner
 2. Open `/react-lab/responsive-grid`. Implement its narrow/wide requirements, run checks,
    then compare the preview at phone and desktop widths. Repeat **Long names should not
    break the row** with its full unbroken name: the action must remain visible.
-3. Open `/react-lab/dialog-focus`. After an attempt, use **Finish & review**, then **Show
+3. Open `/react-lab/dialog-focus`. After an attempt, use **Final run & review**, then **Show
    answer** if needed; this ends that attempt. For an editable reference experiment, copy
    the reference, reset the challenge, and paste it into the editor. Open settings, type a
    name, press Escape, and reopen: focus returns correctly and the draft remains.
