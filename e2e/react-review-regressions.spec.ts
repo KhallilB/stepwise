@@ -124,7 +124,7 @@ test("F2 rename persists every affected file and retains each file undo history"
   await expect.poll(async () => (await files())["value.ts"]).toContain("export const value");
 });
 
-for (const limit of ["file", "project"]) {
+for (const limit of ["file", "project", "three-file project"]) {
   test(`a cross-file rename exceeding the ${limit} limit restores all models and undo history`, async ({
     page,
   }) => {
@@ -137,7 +137,9 @@ for (const limit of ["file", "project"]) {
         .fill("value")
         .join(",")}];`,
     };
-    if (limit === "project") files["padding.ts"] = `//${"x".repeat(10000)}`;
+    if (limit === "three-file project")
+      files["tail.ts"] = 'import { value } from "./value"; export const tail = value;';
+    if (limit !== "file") files["padding.ts"] = `//${"x".repeat(10000)}`;
     await page.addInitScript((files) => {
       if (top !== window) return;
       localStorage.setItem(
@@ -211,6 +213,10 @@ for (const limit of ["file", "project"]) {
       });
     await expect.poll(async () => (await sources())["value.ts"] === files["value.ts"]).toBe(true);
     expect((await sources())["App.tsx"]).toBe(`${files["App.tsx"]} // Keep me`);
+    if (limit === "three-file project") expect((await sources())["tail.ts"]).toBe(files["tail.ts"]);
+    expect(await page.evaluate(() => localStorage.getItem("stepwise.react-lab.v1"))).not.toContain(
+      "renamedBeyondTheProjectCharacterLimit",
+    );
     await page.evaluate(async () => {
       const modulePath = "/app/react-lab/monaco.client.ts";
       const { monaco } = await import(modulePath);

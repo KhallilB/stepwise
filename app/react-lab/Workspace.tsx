@@ -28,7 +28,7 @@ import { Preview, type Report, type Submission } from "./Preview";
 import { ProjectStart } from "./ProjectStart";
 import { readPlaywrightResponse } from "./playwright-contract";
 import { type Entry, maxCodeLength, maxNotesLength } from "./progress";
-import { editableProject, updateProjectFile } from "./project";
+import { editableProject, updateProjectFile, writeProject } from "./project";
 import { ResetProgress } from "./ResetProgress";
 import { StageGuide } from "./StageGuide";
 import type { Challenge } from "./types";
@@ -855,13 +855,7 @@ export function Workspace({
                         files={files}
                         ready={ready}
                         onChange={(next) => saveDraft(updateProjectFile(code, activeFile, next))}
-                        onProjectChange={(snapshot) => {
-                          let next = code;
-                          for (const [path, source] of Object.entries(snapshot))
-                            if (source !== files[path])
-                              next = updateProjectFile(next, path, source);
-                          return saveDraft(next);
-                        }}
+                        onProjectChange={(snapshot) => saveDraft(writeProject(snapshot))}
                         onRun={run}
                         onOpenFile={openFile}
                       />
