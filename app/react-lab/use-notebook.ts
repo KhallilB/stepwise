@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { parseAttempts, reviewStorageKey } from "./coach";
 import { challenges, findChallenge } from "./curriculum";
 import {
@@ -21,8 +21,18 @@ export function useNotebook(activeId?: string) {
   const [resetWarning, setResetWarning] = useState("");
   const [conflict, setConflict] = useState(false);
   const disk = useRef<Notebook>(emptyNotebook());
+  const pending = useRef(new Map<string, { entry?: Entry; reset?: string }>());
+  const retainPending = useCallback((next: Notebook, current: Notebook): Notebook => {
+    const entries = { ...next.entries },
+      resets = { ...next.resets };
+    for (const id of pending.current.keys()) {
+      if (current.entries[id]) entries[id] = current.entries[id];
+      if (current.resets?.[id]) resets[id] = current.resets[id];
+      else delete resets[id];
+    }
+    return { ...next, entries, resets };
+  }, []);
   useEffect(() => {
-    setConflict(false);
     try {
       const initial = parseNotebook(localStorage.getItem(notebookKey));
       disk.current = initial;
@@ -31,13 +41,29 @@ export function useNotebook(activeId?: string) {
       setStorageError(true);
     }
     setReady(true);
+  }, []);
+  useEffect(() => {
+    const baseline = activeId ? pending.current.get(activeId) : undefined;
+    setConflict(
+      !!activeId &&
+        !!baseline &&
+        (!sameEntry(baseline.entry, disk.current.entries[activeId]) ||
+          baseline.reset !== disk.current.resets?.[activeId]),
+    );
     function changed(event: StorageEvent) {
       if (event.key !== notebookKey) return;
       const external = parseNotebook(event.newValue);
+      const baseline = activeId ? pending.current.get(activeId) : undefined;
       const activeChanged =
         !!activeId &&
-        (!sameEntry(disk.current.entries[activeId], external.entries[activeId]) ||
-          disk.current.resets?.[activeId] !== external.resets?.[activeId]);
+        (!sameEntry(
+          baseline ? baseline.entry : disk.current.entries[activeId],
+          external.entries[activeId],
+        ) ||
+          (baseline ? baseline.reset : disk.current.resets?.[activeId]) !==
+            external.resets?.[activeId]);
+      for (const [id, saved] of pending.current)
+        if (id !== activeId && saved.reset !== external.resets?.[id]) pending.current.delete(id);
       disk.current = external;
       setNotebook((current) => {
         const entries = { ...external.entries };
@@ -52,18 +78,17 @@ export function useNotebook(activeId?: string) {
           if (token) resets[activeId] = token;
           else delete resets[activeId];
         }
-        return { ...external, entries, resets };
+        return retainPending({ ...external, entries, resets }, current);
       });
       if (activeChanged) setConflict(true);
     }
     window.addEventListener("storage", changed);
     return () => window.removeEventListener("storage", changed);
-  }, [activeId]);
+  }, [activeId, retainPending]);
 
   function persist(next: Notebook) {
     localStorage.setItem(notebookKey, JSON.stringify(next));
     disk.current = next;
-    setStorageError(false);
   }
   function save(id: string, entry: Entry) {
     const local = recordAttempt(
@@ -75,13 +100,19 @@ export function useNotebook(activeId?: string) {
       entry.stage,
       entry.answerRevealed,
     );
+    if (!pending.current.has(id))
+      pending.current.set(id, {
+        entry: disk.current.entries[id],
+        reset: disk.current.resets?.[id],
+      });
     setNotebook(local);
     try {
       const latest = parseNotebook(localStorage.getItem(notebookKey));
+      const baseline = pending.current.get(id);
       if (
         conflict ||
-        !sameEntry(disk.current.entries[id], latest.entries[id]) ||
-        disk.current.resets?.[id] !== latest.resets?.[id]
+        !sameEntry(baseline?.entry, latest.entries[id]) ||
+        baseline?.reset !== latest.resets?.[id]
       ) {
         setConflict(true);
         return;
@@ -91,7 +122,9 @@ export function useNotebook(activeId?: string) {
         entries: { ...latest.entries, [id]: local.entries[id] ?? entry },
       };
       persist(next);
-      setNotebook(next);
+      pending.current.delete(id);
+      setNotebook(retainPending(next, local));
+      setStorageError(pending.current.size > 0);
     } catch {
       setStorageError(true);
     }
@@ -111,11 +144,14 @@ export function useNotebook(activeId?: string) {
           : entry;
         const next: Notebook = { ...latest, entries: { ...latest.entries, [activeId]: restored } };
         persist(next);
-        setNotebook(next);
+        pending.current.delete(activeId);
+        setNotebook(retainPending(next, notebook));
       } else {
         disk.current = latest;
-        setNotebook(latest);
+        pending.current.delete(activeId);
+        setNotebook(retainPending(latest, notebook));
       }
+      setStorageError(pending.current.size > 0);
       setConflict(false);
     } catch {
       setStorageError(true);
@@ -127,7 +163,10 @@ export function useNotebook(activeId?: string) {
       const latest = parseNotebook(localStorage.getItem(notebookKey));
       const next = resetNotebook(latest, crypto.randomUUID(), id);
       persist(next);
-      setNotebook(next);
+      if (id) pending.current.delete(id);
+      else pending.current.clear();
+      setNotebook(retainPending(next, notebook));
+      setStorageError(pending.current.size > 0);
       setConflict(false);
       for (const challenge of challenges)
         if (!id || challenge.id === id) {
