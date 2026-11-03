@@ -2,7 +2,7 @@
 
 The owner approved keeping PRs #12 and #13, with a separate cap change for the existing foundation. This does not change the default review limits.
 
-The helper admits only `khallil/react-interview-lab` in `KhallilB/stepwise`, including fixes through `3e20304`. It allows at most 13,000 production lines and 60 production files. It refuses a dirty checkout, further app changes, changed policy files, other branches and other repositories. It expires as soon as the foundation commit reaches `origin/main`.
+The helper admits only `khallil/react-interview-lab` in `KhallilB/stepwise`, including fixes through `873695b`. It allows at most 13,000 production lines and 60 production files. It refuses a dirty checkout, further app changes, changed policy files, other branches and other repositories. It expires as soon as the foundation commit reaches `origin/main`.
 
 Merge this policy PR first, then merge current `main` into the lab branch without rewriting its signed fixes. Resolve `vitest.config.ts` to the reviewed main version, which includes both app and policy tests. The application files must remain identical to the approved fix snapshot.
 
@@ -20,4 +20,4 @@ The first command checks eligibility. The second runs the existing full review g
 
 After #12 merges, the helper refuses further use. New work uses the normal review limits. PR #13 remains the briefs/examples follow-up and must inherit the reviewed lab.
 
-The pinned snapshot includes the three-file rename rollback fix and valid wrapped React component exports found during local review. Updating this pin does not change the cap, expiry or other review requirements.
+The pinned snapshot includes the three-file rename rollback fix, plain-draft encoding compatibility and valid wrapped React component exports found during local review. Updating this pin does not change the cap, expiry or other review requirements.
