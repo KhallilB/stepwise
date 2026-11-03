@@ -95,6 +95,7 @@ export default function ReactLab({
             <Inline gap="md" align="center">
               <a href={links.stepwise}>Stepwise</a>
               <Link to="/profile">Profile</Link>
+              <Link to="/prep">Senior+ prep plan</Link>
               {links.stepwise === "/" && <Link to="/local-model">Local reviewer</Link>}
               <Text as="span" size="sm" className="lab-header-progress">
                 {completed} / {challenges.length} complete
@@ -107,6 +108,11 @@ export default function ReactLab({
         </Container>
       </header>
       <Container as="main" size="full" id="lab-main" className="lab-main">
+        {challenge && (
+          <Inline>
+            <Link to="/prep">Senior+ prep plan</Link>
+          </Inline>
+        )}
         {conflict && (
           <Callout
             tone="warning"

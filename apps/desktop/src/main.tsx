@@ -13,6 +13,12 @@ const router = createBrowserRouter([
     lazy: async () => ({ Component: (await import("../../stepwise/app/routes/library")).default }),
   },
   { path: "/problems/:slug", lazy: () => import("./problem-screen") },
+  {
+    path: "/prep",
+    lazy: async () => ({
+      Component: (await import("../../interview-lab/app/prep/PrepPlan")).default,
+    }),
+  },
   { path: "/react-lab/:id?", lazy: () => import("./lab-screen") },
   {
     path: "/profile",
