@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { expect, type Page, test } from "@playwright/test";
+import type { editor as MonacoEditor } from "monaco-editor";
 import { openProjectFile, openTool, startProject } from "./lab-tools";
 
 async function exportedNotes(page: Page, id: string) {
@@ -122,6 +123,102 @@ test("F2 rename persists every affected file and retains each file undo history"
   });
   await expect.poll(async () => (await files())["value.ts"]).toContain("export const value");
 });
+
+for (const limit of ["file", "project"]) {
+  test(`a cross-file rename exceeding the ${limit} limit restores all models and undo history`, async ({
+    page,
+  }) => {
+    const files: Record<string, string> = {
+      "App.tsx":
+        'import { value } from "./value"; export default function App(){return <p>{value}</p>}',
+      "value.ts": `export const value = 1; export const values = [${Array(
+        limit === "file" ? 1000 : 600,
+      )
+        .fill("value")
+        .join(",")}];`,
+    };
+    if (limit === "project") files["padding.ts"] = `//${"x".repeat(10000)}`;
+    await page.addInitScript((files) => {
+      if (top !== window) return;
+      localStorage.setItem(
+        "stepwise.react-lab.v1",
+        JSON.stringify({
+          version: 1,
+          entries: {
+            "modular-snapshot": {
+              code: `// @stepwise/project\n${JSON.stringify(files)}`,
+              notes: "",
+              completed: false,
+            },
+          },
+        }),
+      );
+    }, files);
+    await page.goto("/react-lab/modular-snapshot");
+    await startProject(page);
+    await expect(page.locator(".monaco-editor")).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(async () => {
+          const modulePath = "/app/react-lab/monaco.client.ts";
+          const { monaco } = await import(modulePath);
+          const editor = monaco.editor.getEditors()[0];
+          if (!editor) return false;
+          editor.setPosition({ lineNumber: 1, column: 10 });
+          editor.focus();
+          return editor.getAction("editor.action.rename")?.isSupported() ?? false;
+        }),
+      )
+      .toBe(true);
+    await page.evaluate(async () => {
+      const modulePath = "/app/react-lab/monaco.client.ts";
+      const { monaco } = await import(modulePath);
+      const editor = monaco.editor.getEditors()[0];
+      const model = editor.getModel();
+      const end = model.getFullModelRange().getEndPosition();
+      editor.executeEdits("test", [
+        { range: monaco.Range.fromPositions(end), text: " // Keep me" },
+      ]);
+      editor.pushUndoStop();
+    });
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem("stepwise.react-lab.v1")))
+      .toContain("Keep me");
+    await page.evaluate(async () => {
+      const modulePath = "/app/react-lab/monaco.client.ts";
+      const { monaco } = await import(modulePath);
+      const editor = monaco.editor.getEditors()[0];
+      editor.setPosition({ lineNumber: 1, column: 10 });
+      editor.focus();
+      void editor.getAction("editor.action.rename")?.run();
+    });
+    const rename = page.locator(".rename-box input");
+    await rename.fill("renamedBeyondTheProjectCharacterLimit");
+    await rename.press("Enter");
+    await expect(page.getByText(/limit is .*characters\. Edit was not saved/)).toBeVisible();
+    const sources = () =>
+      page.evaluate(async () => {
+        const modulePath = "/app/react-lab/monaco.client.ts";
+        const { monaco } = await import(modulePath);
+        return Object.fromEntries(
+          monaco.editor
+            .getModels()
+            .map((model: MonacoEditor.ITextModel) => [
+              model.uri.path.split("/").at(-1),
+              model.getValue(),
+            ]),
+        );
+      });
+    await expect.poll(async () => (await sources())["value.ts"] === files["value.ts"]).toBe(true);
+    expect((await sources())["App.tsx"]).toBe(`${files["App.tsx"]} // Keep me`);
+    await page.evaluate(async () => {
+      const modulePath = "/app/react-lab/monaco.client.ts";
+      const { monaco } = await import(modulePath);
+      monaco.editor.getEditors()[0].trigger("test", "undo", null);
+    });
+    await expect.poll(async () => (await sources())["App.tsx"]).toBe(files["App.tsx"]);
+  });
+}
 
 for (const navigation of ["automatic", "anchor", "handler"]) {
   test(`parent policy prevents preview ${navigation} navigation after SPA entry`, async ({

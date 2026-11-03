@@ -126,19 +126,32 @@ export function CodeEditor({
         instance.current = view;
         let disposed = false,
           queued = false;
+        const changed = new Set<editor.ITextModel>();
         const content = [...models.values()].map((model) =>
           model.onDidChangeContent(() => {
-            if (synchronizing.current || queued) return;
+            if (synchronizing.current) return;
+            changed.add(model);
+            if (queued) return;
             queued = true;
-            queueMicrotask(() => {
+            queueMicrotask(async () => {
               queued = false;
+              const modified = [...changed];
+              changed.clear();
               if (disposed || !latest.current.ready) return;
+              async function reject(message: string) {
+                synchronizing.current = true;
+                try {
+                  for (const model of modified) await model.undo();
+                } finally {
+                  synchronizing.current = false;
+                }
+                setError(message);
+              }
               const snapshot = Object.fromEntries(
                 [...models].map(([path, model]) => [path, model.getValue()]),
               );
               if (Object.values(snapshot).some((value) => value.length > maxCodeLength)) {
-                view.trigger("limit", "undo", null);
-                setError(
+                await reject(
                   `Code limit is ${maxCodeLength.toLocaleString()} characters. Edit was not saved.`,
                 );
                 return;
@@ -147,8 +160,7 @@ export function CodeEditor({
                 ? latest.current.onProjectChange(snapshot)
                 : latest.current.onChange(view.getValue());
               if (accepted === false) {
-                view.trigger("project-limit", "undo", null);
-                setError("Project limit is 30,000 characters. Edit was not saved.");
+                await reject("Project limit is 30,000 characters. Edit was not saved.");
                 return;
               }
               setError("");
