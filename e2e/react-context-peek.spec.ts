@@ -2,19 +2,26 @@ import { expect, test } from "@playwright/test";
 import { startProject } from "./lab-tools";
 
 test("context preview waits for intent, stays beside code, and can be pinned", async ({ page }) => {
+  const start = new Date("2026-11-04T09:00:00Z");
+  await page.clock.install({ time: start });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/react-lab/snapshot");
   await startProject(page);
+  await page.mouse.move(700, 300);
+  // Pause after startup; RPC latency must not consume hover budget.
+  await page.clock.pauseAt(new Date(start.getTime() + 60_000));
   const brief = page.getByRole("button", { name: "Brief", exact: true });
   const reference = page.getByRole("button", { name: "Reference", exact: true });
   const pane = page.locator(".lab-sidebar-stack");
   await brief.hover();
+  await page.clock.runFor(100);
   await expect(pane).toBeHidden({ timeout: 100 });
   await page.mouse.move(700, 300);
-  await page.waitForTimeout(300);
+  await page.clock.runFor(300);
   await expect(pane).toBeHidden();
   await brief.hover();
+  await page.clock.runFor(300);
   await expect(pane).toBeVisible();
   await pane.hover();
   await page.screenshot({ path: "/tmp/pr12-hover-visual/desktop-preview.png" });
@@ -25,7 +32,7 @@ test("context preview waits for intent, stays beside code, and can be pinned", a
   await expect(brief).toHaveAttribute("aria-pressed", "true");
   await page.screenshot({ path: "/tmp/pr12-hover-visual/desktop-pinned.png" });
   await reference.hover();
-  await page.waitForTimeout(350);
+  await page.clock.runFor(350);
   await expect(page.getByRole("region", { name: "The brief", exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: "References", exact: true })).toBeHidden();
   await reference.click();
