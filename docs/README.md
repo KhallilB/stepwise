@@ -18,3 +18,5 @@ Start with the product overview, then read whichever page fits what you're worki
 The [original product spec](specs/2026-10-27-stepwise-spec.html) is kept for reference. If it and these pages disagree, these pages win.
 
 - [Local desktop app](desktop.md): Tauri, bundled Ollama, local profile/progress and packaging.
+
+- [Senior+ interview prep](senior-prep.md) — dated plan, timeboxes and saved checklist.
