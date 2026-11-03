@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { foundationReview } from "./review-existing-lab";
+import { foundationGateArguments, foundationReview } from "./review-existing-lab";
 
 const context = {
   branch: "khallil/react-interview-lab",
@@ -31,4 +31,29 @@ it("accepts the same repository over SSH", () => {
     sizeLimit: 13000,
     fileLimit: 60,
   });
+});
+
+it("pins full review and current main while forwarding evidence commands", () => {
+  expect(
+    foundationGateArguments(["probes=16", "artifact=bun run test", "coupled=bun run build"]),
+  ).toEqual([
+    "gate",
+    "tier=full",
+    "base=origin/main",
+    "probes=16",
+    "artifact=bun run test",
+    "coupled=bun run build",
+  ]);
+});
+
+it.each([
+  ["probes=16", "artifact=bun run test"],
+  ["probes=0", "artifact=bun run test", "coupled=bun run build"],
+  ["probes=16", "artifact=", "coupled=bun run build"],
+  ["probes=16", "artifact=bun run test", "coupled=bun run build", "tier=light"],
+  ["probes=16", "artifact=bun run test", "coupled=bun run build", "base=HEAD^"],
+  ["probes=16", "artifact=bun run test", "coupled=bun run build", "--force"],
+  ["probes=16", "probes=1", "artifact=bun run test", "coupled=bun run build"],
+])("refuses incomplete or weakening gate arguments: %j", (...args) => {
+  expect(() => foundationGateArguments(args)).toThrow();
 });

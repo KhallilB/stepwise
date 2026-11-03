@@ -10,8 +10,11 @@ From that clean lab checkout:
 
 ```sh
 bun scripts/review-existing-lab.ts --check
-bun scripts/review-existing-lab.ts
+bun scripts/review-existing-lab.ts probes=16 \
+  "artifact=bun run test" "coupled=bun run build"
 ```
+
+Record actual source-specific probes in the existing review ledger before running the gate. Set `probes` to that recorded count; the runner checks the evidence.
 
 The first command checks eligibility. The second runs the existing full review gate with only its size and file limits changed. Required probes, confidence evidence, finding disposition, tests, signatures and pre-push checks still apply. A green size check alone does not permit a push.
 

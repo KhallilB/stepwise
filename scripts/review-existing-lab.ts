@@ -36,6 +36,37 @@ export function foundationReview(context: Context) {
   return { sizeLimit: 13000, fileLimit: 60 };
 }
 
+export function foundationGateArguments(args: readonly string[]) {
+  const allowed = new Set([
+    "probes",
+    "artifact",
+    "coupled",
+    "scope_manifest",
+    "manifest",
+    "static",
+    "security",
+    "deps",
+    "mutation",
+    "perf",
+    "widget",
+    "confirm",
+  ]);
+  const seen = new Set<string>();
+  for (const arg of args) {
+    const equal = arg.indexOf("=");
+    const key = arg.slice(0, equal);
+    const value = arg.slice(equal + 1);
+    if (equal < 1 || !allowed.has(key) || !value.trim() || seen.has(key))
+      throw new Error("Invalid or duplicate gate argument");
+    if (key === "probes" && !/^[1-9][0-9]*$/.test(value))
+      throw new Error("Probe count must be positive");
+    seen.add(key);
+  }
+  if (!["probes", "artifact", "coupled"].every((key) => seen.has(key)))
+    throw new Error("Gate requires probes, artifact and coupled evidence");
+  return ["gate", "tier=full", "base=origin/main", ...args];
+}
+
 function main() {
   const git = (...args: string[]) =>
     execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
@@ -65,9 +96,8 @@ function main() {
   for (const path of policyFiles)
     if (git("show", `HEAD:${path}`) !== git("show", `origin/main:${path}`))
       throw new Error(`Policy file differs from reviewed main: ${path}`);
-  if (process.argv.slice(2).some((arg) => arg !== "--check"))
-    throw new Error("Usage: bun scripts/review-existing-lab.ts [--check]");
-  if (process.argv.includes("--check")) {
+  const args = process.argv.slice(2);
+  if (args.length === 1 && args[0] === "--check") {
     console.log(
       JSON.stringify({
         head: git("rev-parse", "HEAD"),
@@ -81,7 +111,7 @@ function main() {
     .map((root) => join(homedir(), root, "skills/review-loop/scripts/review_loop_round.sh"))
     .find(existsSync);
   if (!runner) throw new Error("Install the repository's review-loop tooling before review");
-  execFileSync("bash", [runner, "gate", "base=origin/main"], {
+  execFileSync("bash", [runner, ...foundationGateArguments(args)], {
     stdio: "inherit",
     env: {
       ...process.env,
