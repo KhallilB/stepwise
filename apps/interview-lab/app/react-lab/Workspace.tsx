@@ -411,8 +411,11 @@ export function Workspace({
             ref={reviewAction}
             variant="secondary"
             size="sm"
-            disabled={!ready || running}
-            onClick={() => (phase === "build" ? reviewImplementation() : collapseContext())}
+            aria-disabled={!ready || (phase === "build" && running)}
+            onClick={() => {
+              if (!ready || (phase === "build" && running)) return;
+              phase === "build" ? reviewImplementation() : collapseContext();
+            }}
           >
             {phase === "build" ? "Final run & review" : "Back to code"}
           </Button>
