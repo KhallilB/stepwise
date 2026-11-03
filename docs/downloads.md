@@ -2,7 +2,9 @@
 
 The React lab, Stepwise and a local solution reviewer in one macOS app.
 
-**Preview release is being prepared.** Published downloads will appear on [GitHub Releases](https://github.com/KhallilB/stepwise/releases). No public app asset is available yet.
+**macOS Apple Silicon preview · 0.1.0-alpha.1**
+
+[Download the ZIP](https://github.com/KhallilB/stepwise/releases/download/desktop-v0.1.0-alpha.1/Interview-Practice-macos-arm64.zip) · [SHA-256 checksum](https://github.com/KhallilB/stepwise/releases/download/desktop-v0.1.0-alpha.1/Interview-Practice-macos-arm64.zip.sha256) · [Release notes](https://github.com/KhallilB/stepwise/releases/tag/desktop-v0.1.0-alpha.1)
 
 ## Requirements
 

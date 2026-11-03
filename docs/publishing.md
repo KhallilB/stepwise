@@ -14,14 +14,14 @@ The existing React stack is [#12, lab foundation](https://github.com/KhallilB/st
 
 ## Publish a desktop preview
 
-Use `desktop-v<version>` tags and match the Tauri and Cargo versions. Tag a clean, reviewed source commit containing the reconciled app changes. Fetch current main and complete affected checks before tagging.
+Use `desktop-v<version>` tags and match the Tauri and Cargo versions. Tag a clean, reviewed source commit containing the reconciled app changes. Fetch current main and complete affected checks before tagging. Prepare version-specific links in Downloads before the tag; verify them after publication.
 
 1. Run the commands in [Desktop development](desktop.md), including real WKWebView permissions and a real Ollama review. Save the source commit, commands, platform and results.
 2. Build with the pinned runtime. Verify the default release excludes the test driver, its signature is valid, the ZIP extracts correctly, and the extracted runtime can produce a review.
 3. Verify the SHA-256 sidecar independently. Record the runtime version and archive digest from the pin.
 4. Create a draft GitHub prerelease. Attach `Interview-Practice-macos-arm64.zip` and its `.sha256` file. Include requirements, install/update instructions, source commit, verification results and known limits.
 5. Verify the uploaded assets, then publish. This first preview is ad-hoc signed and not notarized; include the opening steps from [Downloads](downloads.md). A stable release needs Developer ID signing and Apple notarization.
-6. Add the exact version-specific asset link to Downloads and verify it. Link kcb.pro to that page when the site is deployed.
+6. Verify the version-specific links in Downloads against the published assets. Link kcb.pro to that page when the site is deployed.
 
 Keep each published archive immutable. Changed source or packaging needs a new version. Preserve installation docs at the same source tag as the build. Use a version-specific link for previews; a stable `releases/latest/download/...` shortcut can follow the first stable release.
 
