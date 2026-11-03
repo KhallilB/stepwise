@@ -76,14 +76,25 @@ test("F2 rename persists every affected file and retains each file undo history"
   await page.goto("/react-lab/modular-snapshot");
   await startProject(page);
   await expect(page.locator(".monaco-editor")).toBeVisible();
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const modulePath = "/app/react-lab/monaco.client.ts";
+          const { monaco } = await import(modulePath);
+          const editor = monaco.editor.getEditors()[0];
+          if (!editor) return false;
+          editor.setPosition({ lineNumber: 1, column: 10 });
+          editor.focus();
+          return editor.getAction("editor.action.rename")?.isSupported() ?? false;
+        }),
+      { timeout: 10000 },
+    )
+    .toBe(true);
   await page.evaluate(async () => {
     const modulePath = "/app/react-lab/monaco.client.ts";
     const { monaco } = await import(modulePath);
-    const editor = monaco.editor.getEditors()[0];
-    if (!editor) throw new Error("Editor missing");
-    editor.setPosition({ lineNumber: 1, column: 10 });
-    editor.focus();
-    void editor.getAction("editor.action.rename")?.run();
+    void monaco.editor.getEditors()[0]?.getAction("editor.action.rename")?.run();
   });
   const rename = page.locator(".rename-box input");
   await rename.fill("renamed");
@@ -159,3 +170,32 @@ for (const navigation of ["automatic", "anchor", "handler"]) {
     expect(outside).toEqual([]);
   });
 }
+
+test("an unresolved cross-tab draft choice survives in-app navigation", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/react-lab/snapshot");
+  await startProject(page);
+  await openTool(page, "Coach");
+  await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("Local choice");
+  const other = await context.newPage();
+  await other.goto("/react-lab/snapshot");
+  await startProject(other);
+  await openTool(other, "Coach");
+  await other.getByRole("textbox", { name: "Explain your reasoning" }).fill("Other choice");
+  await expect(page.getByText("Another tab changed this challenge", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "All challenges", exact: true }).click();
+  await page.getByRole("link", { name: "State is a snapshot", exact: true }).click();
+  await startProject(page);
+  await openTool(page, "Coach");
+  await expect(page.getByText("Another tab changed this challenge", { exact: true })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
+    "Local choice",
+  );
+  await page.getByRole("button", { name: "Load other tab's draft", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
+    "Other choice",
+  );
+  await other.close();
+});

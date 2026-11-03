@@ -21,7 +21,7 @@ export function useNotebook(activeId?: string) {
   const [resetWarning, setResetWarning] = useState("");
   const [conflict, setConflict] = useState(false);
   const disk = useRef<Notebook>(emptyNotebook());
-  const pending = useRef(new Map<string, { entry?: Entry; reset?: string }>());
+  const pending = useRef(new Map<string, { entry?: Entry; reset?: string; failed?: boolean }>());
   const retainPending = useCallback((next: Notebook, current: Notebook): Notebook => {
     const entries = { ...next.entries },
       resets = { ...next.resets };
@@ -62,6 +62,11 @@ export function useNotebook(activeId?: string) {
         ) ||
           (baseline ? baseline.reset : disk.current.resets?.[activeId]) !==
             external.resets?.[activeId]);
+      if (activeId && activeChanged && !pending.current.has(activeId))
+        pending.current.set(activeId, {
+          entry: disk.current.entries[activeId],
+          reset: disk.current.resets?.[activeId],
+        });
       for (const [id, saved] of pending.current)
         if (id !== activeId && saved.reset !== external.resets?.[id]) pending.current.delete(id);
       disk.current = external;
@@ -124,8 +129,10 @@ export function useNotebook(activeId?: string) {
       persist(next);
       pending.current.delete(id);
       setNotebook(retainPending(next, local));
-      setStorageError(pending.current.size > 0);
+      setStorageError([...pending.current.values()].some((value) => value.failed));
     } catch {
+      const baseline = pending.current.get(id);
+      if (baseline) baseline.failed = true;
       setStorageError(true);
     }
   }
@@ -151,7 +158,7 @@ export function useNotebook(activeId?: string) {
         pending.current.delete(activeId);
         setNotebook(retainPending(latest, notebook));
       }
-      setStorageError(pending.current.size > 0);
+      setStorageError([...pending.current.values()].some((value) => value.failed));
       setConflict(false);
     } catch {
       setStorageError(true);
@@ -166,7 +173,7 @@ export function useNotebook(activeId?: string) {
       if (id) pending.current.delete(id);
       else pending.current.clear();
       setNotebook(retainPending(next, notebook));
-      setStorageError(pending.current.size > 0);
+      setStorageError([...pending.current.values()].some((value) => value.failed));
       setConflict(false);
       for (const challenge of challenges)
         if (!id || challenge.id === id) {
