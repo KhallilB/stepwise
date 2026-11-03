@@ -53,7 +53,7 @@ describe("AI coaching boundary", () => {
     const parsed = parseReview(sampleReview);
     expect(parsed).not.toBeNull();
     if (!parsed) throw new Error("Expected valid review");
-    expect(reviewScore(parsed)).toBe(65);
+    expect(reviewScore(parsed)).toBe(60);
     expect(
       parseReview({ ...sampleReview, correctness: { ...sampleReview.correctness, score: 9 } }),
     ).toBeNull();

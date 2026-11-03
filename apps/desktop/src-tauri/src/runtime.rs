@@ -1,4 +1,4 @@
-use crate::policy::{allowed_model, review_input, Submission};
+use crate::policy::{allowed_model, review_contract, review_input, Submission};
 use serde::Serialize;
 use serde_json::{json, Value};
 use std::{
@@ -317,9 +317,10 @@ impl Reviewer {
         catalog: &Value,
         input: Value,
     ) -> Result<Value, String> {
+        let (schema, instructions) = review_contract(&input, catalog);
         let response = self.client.post(format!("{base}/api/chat")).json(&json!({
-            "model":model,"stream":false,"format":catalog["schema"],"keep_alive":0,
-            "messages":[{"role":"system","content":catalog["instructions"]},{"role":"user","content":input.to_string()}],
+            "model":model,"stream":false,"format":schema,"keep_alive":0,
+            "messages":[{"role":"system","content":instructions},{"role":"user","content":input.to_string()}],
             "options":{"temperature":0.2,"num_predict":2500,"num_ctx":16384}
         })).timeout(Duration::from_secs(180)).send().await.map_err(|_| "Local review timed out or stopped. No score recorded.")?;
         let value = bounded_json(response, 80000).await?;

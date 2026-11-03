@@ -29,13 +29,13 @@ describe("personal lab notebook", () => {
     expect(parsed.entries.unknown).toBeUndefined();
     expect(parsed.entries.identity).toBeUndefined();
   });
-  it("requires passing current code and personal reasoning before completion", () => {
+  it("requires passing current code; personal reasoning stays optional", () => {
     const state = emptyNotebook();
     expect(recordAttempt(state, "snapshot", "code", "why", false).entries.snapshot?.completed).toBe(
       false,
     );
     expect(recordAttempt(state, "snapshot", "code", "", true).entries.snapshot?.completed).toBe(
-      false,
+      true,
     );
     expect(
       recordAttempt(state, "snapshot", "code", "I explained the snapshot", true).entries.snapshot

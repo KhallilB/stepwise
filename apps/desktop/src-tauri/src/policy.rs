@@ -13,6 +13,26 @@ pub struct Submission {
 pub fn allowed_model(name: &str) -> bool {
     matches!(name, "qwen2.5-coder:7b" | "qwen2.5-coder:1.5b")
 }
+pub fn review_contract<'a>(input: &Value, catalog: &'a Value) -> (&'a Value, String) {
+    let communication = input["explanation"]
+        .as_str()
+        .is_some_and(|text| !text.trim().is_empty());
+    let instructions = catalog["instructions"].as_str().unwrap_or_default();
+    if communication {
+        (
+            &catalog["communicationSchema"],
+            format!(
+                "{} {}",
+                instructions,
+                catalog["communicationInstructions"]
+                    .as_str()
+                    .unwrap_or_default()
+            ),
+        )
+    } else {
+        (&catalog["schema"], instructions.to_owned())
+    }
+}
 pub fn review_input(submission: &Submission, catalog: &Value) -> Result<Value, String> {
     if submission.code.trim().is_empty()
         || submission.code.chars().count() > 30000
@@ -61,13 +81,40 @@ pub fn review_input(submission: &Submission, catalog: &Value) -> Result<Value, S
         build_brief["examples"] = Value::Array(visible);
     }
     Ok(
-        serde_json::json!({"challenge": {"kind":challenge["kind"],"buildBrief":build_brief,"debugBrief":challenge["debugBrief"],"title":challenge["title"],"brief":challenge["brief"],"requirements":requirements,"rubric":challenge["rubric"]},"code":submission.code,"explanation":submission.explanation}),
+        serde_json::json!({"challenge": {"kind":challenge["kind"],"buildBrief":build_brief,"debugBrief":challenge["debugBrief"],"title":challenge["title"],"brief":challenge["brief"],"requirements":requirements},"code":submission.code,"explanation":submission.explanation}),
     )
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn communication_contract_requires_optional_explanation_material() {
+        let catalog = serde_json::json!({
+            "instructions":"Implementation only.",
+            "communicationInstructions":"Optional communication feedback.",
+            "schema":{"required":["correctness","reasoning","tradeoffs"]},
+            "communicationSchema":{"required":["correctness","reasoning","tradeoffs","communication"]}
+        });
+        for explanation in ["", "   "] {
+            let (schema, instructions) =
+                review_contract(&serde_json::json!({"explanation":explanation}), &catalog);
+            assert_eq!(
+                schema["required"],
+                serde_json::json!(["correctness", "reasoning", "tradeoffs"])
+            );
+            assert_eq!(instructions, "Implementation only.");
+        }
+        let (schema, instructions) = review_contract(
+            &serde_json::json!({"explanation":"My optional explanation."}),
+            &catalog,
+        );
+        assert_eq!(
+            schema["required"],
+            serde_json::json!(["correctness", "reasoning", "tradeoffs", "communication"])
+        );
+        assert!(instructions.contains("Optional communication feedback."));
+    }
     fn submission() -> Submission {
         Submission {
             challenge_id: "test".into(),
@@ -95,6 +142,7 @@ mod tests {
     #[test]
     fn cumulative_requirements_never_include_future_stage() {
         let input = review_input(&submission(), &catalog()).unwrap();
+        assert!(input["challenge"].get("rubric").is_none());
         assert_eq!(
             input["challenge"]["requirements"],
             serde_json::json!(["first"])

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { advancedBuilds } from "../app/react-lab/advanced-builds";
 import { builds } from "../app/react-lab/builds";
-import { openTool, startProject } from "./lab-tools";
+import { enableCommunication, openTool, startProject } from "./lab-tools";
 
 const review = {
   summary: "Good diagnosis; explain the updater queue more precisely.",
@@ -57,10 +57,10 @@ test("AI scoring is explicit, handles stale feedback and retains useful history"
   await page
     .getByRole("textbox", { name: "Explain your reasoning" })
     .fill("The closure reads one snapshot; functional updates consume pending state.");
-  await expect(page.getByRole("button", { name: "Review my implementation" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Get review & takeaways" })).toBeEnabled();
   expect(sent).toBe(0);
-  await page.getByRole("button", { name: "Review my implementation" }).click();
-  await expect(page.getByText("65 / 100", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Get review & takeaways" }).click();
+  await expect(page.getByText("60 / 100", { exact: true })).toBeVisible();
   await expect(
     page.getByText("Improve: Compare +3 with three +1 updates.", { exact: true }),
   ).toBeVisible();
@@ -74,7 +74,7 @@ test("AI scoring is explicit, handles stale feedback and retains useful history"
   await page.reload();
   await startProject(page);
   await openTool(page, "Coach");
-  await expect(page.getByText("65 / 100", { exact: true })).toBeVisible();
+  await expect(page.getByText("60 / 100", { exact: true })).toBeVisible();
 });
 
 test("voice capture stops microphone and appends transcription to latest typed notes", async ({
@@ -149,7 +149,18 @@ test("voice capture stops microphone and appends transcription to latest typed n
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
     "My typed prediction.\n\nEach updater receives pending state.",
   );
-  await openTool(page, "Coach");
+  await page.evaluate(() => delete document.documentElement.dataset.tracksStopped);
+  await page.getByRole("button", { name: "Record explanation", exact: true }).click();
+  await expect(page.getByText("Recording", { exact: true })).toBeVisible();
+  await page
+    .getByRole("switch", { name: "Communication practice (optional)", exact: true })
+    .uncheck();
+  await expect(page.locator("html")).toHaveAttribute("data-tracks-stopped", "true");
+  await expect(page.getByRole("button", { name: "Stop recording", exact: true })).toHaveCount(0);
+  await enableCommunication(page);
+  await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
+    "My typed prediction.\n\nEach updater receives pending state.",
+  );
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("x".repeat(12000));
   await page.getByRole("button", { name: "Record explanation", exact: true }).click();
   await page.getByRole("button", { name: "Stop recording", exact: true }).click();
@@ -177,7 +188,7 @@ test("missing AI configuration preserves typed practice without invented scores"
   await startProject(page);
   await openTool(page, "Coach");
   await expect(page.getByText("Coach needs setup", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Review my implementation" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Get review & takeaways" })).toBeDisabled();
   await openTool(page, "Coach");
   await page
     .getByRole("textbox", { name: "Explain your reasoning" })

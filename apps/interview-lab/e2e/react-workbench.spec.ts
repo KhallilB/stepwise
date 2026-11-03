@@ -62,20 +62,21 @@ test("workbench uses compact practice controls and a shared resizable bottom pan
   await page.screenshot({ path: "/tmp/stepwise-react-lab/cohesive-workbench.png" });
 });
 
-test("phone workbench switches code, preview and tools without losing state", async ({ page }) => {
+test("phone final review refreshes checks while view switches preserve notes", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/react-lab/snapshot");
   await startProject(page);
   await page.getByRole("button", { name: "Preview", exact: true }).click();
   const frame = page.frameLocator('iframe[title="React preview"]');
   await frame.getByRole("button", { name: "Reserve 3" }).click();
+  await expect(frame.getByLabel("Reserved seats")).toHaveText("1");
   await page.getByRole("button", { name: "Tools", exact: true }).click();
   await openTool(page, "Coach");
   await page.getByRole("textbox", { name: "Explain your reasoning" }).fill("Phone draft retained.");
   await page.getByRole("button", { name: "Code", exact: true }).click();
   await expect(page.getByRole("textbox", { name: "App.tsx", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Preview", exact: true }).click();
-  await expect(frame.getByLabel("Reserved seats")).toHaveText("1");
+  await expect(frame.getByLabel("Reserved seats")).toHaveText("0");
   await page.getByRole("button", { name: "Tools", exact: true }).click();
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(
     "Phone draft retained.",

@@ -90,7 +90,7 @@ test("desktop workbench keeps editor, output and actions in one viewport while c
   expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1)).toBe(
     true,
   );
-  for (const label of ["Run checks", "Finish & review"]) {
+  for (const label of ["Run checks", "Final run & review"]) {
     const box = await page.getByRole("button", { name: label, exact: true }).boundingBox();
     expect(box && box.y + box.height <= 900).toBeTruthy();
   }
@@ -178,7 +178,7 @@ test("context collapses without losing notes and returns space to code and outpu
   await expect.poll(async () => (await editor.boundingBox())?.width).toBeLessThan(wide?.width ?? 0);
   await page.getByRole("button", { name: "Collapse context" }).click();
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toBeHidden();
-  await expect(page.getByRole("button", { name: "Finish & review", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Final run & review", exact: true })).toBeFocused();
   await expect.poll(async () => (await editor.boundingBox())?.width).toBe(wide?.width);
   await openTool(page, "Coach");
   await expect(page.getByRole("textbox", { name: "Explain your reasoning" })).toHaveValue(

@@ -104,13 +104,21 @@ export default function App() {
     app.evaluate(() => document.body.textContent?.includes("2 of 2 checks passed")),
   );
   console.log("Learner implementation passes behavior checks in native WKWebView");
-  await app.click("Finish & review");
-  await app.fill(
-    ".lab-coach textarea",
-    "Each functional updater receives pending state. Three queued updaters reserve three seats per activation; Reset starts again at zero. The output label and buttons keep the interaction accessible.",
+  await app.click("Final run & review");
+  assert(await app.evaluate(() => !document.querySelector(".lab-coach textarea")));
+  await until("fresh final checks", () =>
+    app.evaluate(() => document.body.textContent?.includes("All final checks passed")),
+  );
+  await app.click("Complete challenge");
+  assert(
+    await app.evaluate(
+      () =>
+        JSON.parse(localStorage.getItem("stepwise.react-lab.v1") ?? "{}").entries.snapshot
+          .completed,
+    ),
   );
   const started = Date.now();
-  await app.click("Review my implementation");
+  await app.click("Get review & takeaways");
   const raw = await until(
     "real Ollama review in native UI",
     async () => {
@@ -125,6 +133,9 @@ export default function App() {
   const [attempt] = parseAttempts(raw);
   assert.equal(attempt.model, "qwen2.5-coder:7b");
   assert.equal(attempt.code, implementation);
+  assert.equal(attempt.explanation, "");
+  assert.equal(attempt.review.communication, undefined);
+  assert(attempt.review.nextSteps.length > 0);
   assert(attempt.review.summary.length > 0);
   assert(
     await app.evaluate(
@@ -136,13 +147,39 @@ export default function App() {
   console.log(`Real local review rendered and saved in ${reviewSeconds.toFixed(2)}s`);
   await app.navigate("/react-lab/snapshot");
   await app.click("Resume project");
-  await app.click("Finish & review");
+  await app.click("Final run & review");
   await until("saved review after reload", () =>
     app.evaluate(
       (summary) => document.querySelector(".lab-assessment")?.textContent?.includes(summary),
       attempt.review.summary,
     ),
   );
+  await app.evaluate(() =>
+    document.querySelector<HTMLButtonElement>('.lab-coach [role="switch"]')?.click(),
+  );
+  const optionalExplanation =
+    "Functional updates compose from pending state; reset returns to zero. A single increment by three is simpler when intermediate updates are unnecessary.";
+  await app.fill(".lab-coach textarea", optionalExplanation);
+  await app.click("Get review & takeaways");
+  const optionalRaw = await until(
+    "real optional communication review",
+    async () => {
+      const value = await app.evaluate(
+        (key) => localStorage.getItem(key),
+        reviewStorageKey("snapshot"),
+      );
+      return value && parseAttempts(value)[0]?.explanation === optionalExplanation ? value : null;
+    },
+    190000,
+  );
+  const [optionalAttempt] = parseAttempts(optionalRaw);
+  assert(optionalAttempt.review.communication);
+  assert(
+    await app.evaluate(() =>
+      document.body.textContent?.includes("Optional communication feedback"),
+    ),
+  );
+  console.log("Real optional communication feedback rendered separately from implementation score");
   await writeFile(
     join(target, "native-e2e-result.json"),
     JSON.stringify(
@@ -155,6 +192,9 @@ export default function App() {
         reviewSeconds,
         review: attempt.review,
         reviewReload: true,
+        communicationOptional: true,
+        optionalReview: optionalAttempt.review,
+        codeOnlyCompletion: true,
       },
       null,
       2,

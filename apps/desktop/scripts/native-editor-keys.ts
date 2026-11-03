@@ -62,7 +62,15 @@ export async function verifyNativeEditorKeys(app: NativeDriver) {
             ?.code === expected,
         expected,
       ),
-    );
+    ).catch(async (error) => {
+      const actual = await app.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("stepwise.react-lab.v1") ?? "{}").entries?.snapshot?.code,
+      );
+      throw new Error(
+        `${String(error)}; expected ${JSON.stringify(expected)}; saved ${JSON.stringify(actual)}`,
+      );
+    });
   }
   await press("ArrowUp", 38, { metaKey: true });
   await press("ArrowRight", 39, { metaKey: true });

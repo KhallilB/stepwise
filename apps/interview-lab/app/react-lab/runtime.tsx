@@ -25,6 +25,18 @@ const pause = (milliseconds = 35) => new Promise((resolve) => setTimeout(resolve
 let root: Root | undefined;
 let disposeStyles: (() => void) | undefined;
 
+// Signal commit without changing learner DOM or scheduling.
+function MountedExercise({
+  component,
+  onReady,
+}: {
+  component: React.ComponentType;
+  onReady: () => void;
+}) {
+  React.useLayoutEffect(onReady, [onReady]);
+  return React.createElement(component);
+}
+
 window.startReactLab = async ({ code, checks, runId }: Boot) => {
   disposeStyles?.();
   const send = (type: string, payload: object) =>
@@ -142,14 +154,24 @@ window.startReactLab = async ({ code, checks, runId }: Boot) => {
         stylesheet.remove();
       };
       refreshStyles();
-      root = createRoot(container, {
-        onUncaughtError: (error) => send("error", { message: String(error) }),
-        onCaughtError: (error) =>
-          send("console", { level: "error", text: String(error).slice(0, 4000) }),
+      const component = exports.default;
+      await new Promise<void>((resolve, reject) => {
+        root = createRoot(container, {
+          onUncaughtError: (error) => {
+            send("error", { message: String(error) });
+            reject(error);
+          },
+          onCaughtError: (error) =>
+            send("console", { level: "error", text: String(error).slice(0, 4000) }),
+        });
+        root.render(
+          React.createElement(
+            React.StrictMode,
+            null,
+            React.createElement(MountedExercise, { component, onReady: resolve }),
+          ),
+        );
       });
-      root.render(
-        React.createElement(React.StrictMode, null, React.createElement(exports.default)),
-      );
       await pause(50);
       refreshStyles();
     };

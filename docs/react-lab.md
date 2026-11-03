@@ -58,9 +58,9 @@ new minimal starter when you choose to discard an older draft.
    Use Keep open or click its trigger to pin it; hover never replaces pinned context.
    Click another trigger to switch. Escape dismisses a quick preview and restores trigger
    focus; Collapse context returns space to code. Entry motion respects reduced motion.
-3. **Review:** Finish & review opens implementation coaching beside the code. The coach is
-   first mounted through this action. Review my implementation explicitly sends the current
-   source, optional explanation, and active requirements to the selected model. Back to code
+3. **Review:** Final run & review runs fresh checks and opens coaching beside the code.
+   Get review & takeaways sends current source and active requirements to the selected model.
+   Turn on optional Communication practice to include an explanation. Back to code
    supports another attempt with the same draft. Recorded reasoning and feedback remain
    available across tool switches after review has been opened.
 
@@ -151,13 +151,20 @@ Final coaching is designed around evidence, Socratic questions, concrete experim
 next practice targets. It receives no reference explanation or solution. The server rejects
 fenced code and full-component-shaped responses without inventing a score. Conceptual
 suggestions can still make a fix clearer; model output needs critical reading.
-Four equally weighted 0–5 dimensions produce a 100-point coaching score: correctness,
-reasoning, communication, and tradeoffs. Missing explanation is treated as missing evidence.
+Three equally weighted 0–5 dimensions produce a 100-point coaching score: correctness,
+reasoning, and tradeoffs. Communication practice is off by default. Turn it on to add a typed
+or spoken explanation and receive separate communication feedback; it never affects the
+implementation score. Turning it off keeps your notes but leaves them out of new reviews.
+Takeaways include what to keep doing, next practice targets, and an interviewer follow-up.
+Optional self-review prompts stay in the workspace, outside the model’s acceptance criteria.
 The model does not execute code, assess accent, or predict hiring outcomes. Changed source,
-notes, or stage labels prior feedback stale. Up to three reviews per challenge are retained.
+submitted explanation, or stage labels prior feedback stale. Up to three reviews per challenge are retained.
 
-Complete challenge is a final-review action requiring current passing checks, all build
-stages, and a nonempty personal explanation. Rubric ticks remain private self-review.
+**Final run & review** runs fresh checks, opens their summary, and offers **Get review &
+takeaways** as an optional next step. Saved feedback survives reopening the challenge.
+**Complete challenge** requires current passing checks and all build stages. Notes, AI
+scores, and rubric ticks are optional; clearing notes preserves completion. Editing code
+requires another passing run.
 
 **Show answer** requires explicit confirmation that it ends the attempt. The saved outcome
 is **Answer viewed**, distinct from completion and excluded from completed counts. Its
@@ -300,7 +307,7 @@ model responses. New authored starters/references also pass strict TSX validatio
    Pin Brief while browsing files; both panes should stay open independently.
 2. Hover Brief and Reference. The inline pane leaves editor/output visible; enter it to
    read, leave or press Escape to close, and click to pin. Repeat using keyboard focus.
-3. Finish & review with a broken attempt. Request local coaching, inspect evidence/questions,
+3. Final run & review with a broken attempt. Request local coaching, inspect evidence/questions,
    then Back to code and try again. No full reference component should appear.
 4. Choose Show answer, cancel once, then confirm. The attempt ends as Answer viewed and
    survives reload without increasing completed count. Reset it to restore its starter.
@@ -320,7 +327,7 @@ Real microphone/transcription and manual screen-reader verification remain owner
 2. Open `/react-lab/responsive-grid`. Implement its narrow/wide requirements, run checks,
    then compare the preview at phone and desktop widths. Repeat **Long names should not
    break the row** with its full unbroken name: the action must remain visible.
-3. Open `/react-lab/dialog-focus`. After an attempt, use **Finish & review**, then **Show
+3. Open `/react-lab/dialog-focus`. After an attempt, use **Final run & review**, then **Show
    answer** if needed; this ends that attempt. For an editable reference experiment, copy
    the reference, reset the challenge, and paste it into the editor. Open settings, type a
    name, press Escape, and reopen: focus returns correctly and the draft remains.
