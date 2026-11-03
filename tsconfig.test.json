@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["e2e/**/*", "app/**/*.ts"],
+  "include": ["e2e/**/*", "app/**/*.ts", "workers/react-lab-ai.ts"],
   "compilerOptions": {
     "composite": true,
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "lib": ["ES2022", "DOM"],
     "target": "ES2022",
     "module": "ES2022",

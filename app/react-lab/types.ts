@@ -1,0 +1,24 @@
+export const difficultyLevels = ["Very easy", "Easy", "Medium", "Hard", "Very hard"] as const;
+export type Check = { name: string; script: string };
+export type Stage = { title: string; minutes: number; constraints: string[]; checks: Check[] };
+export type Challenge = {
+  kind?: "build" | "debug";
+  id: string;
+  track: string;
+  title: string;
+  summary: string;
+  minutes: number;
+  level: (typeof difficultyLevels)[number];
+  tags: string[];
+  brief: string;
+  requirements: string[];
+  starter: string;
+  solution: string;
+  checks: Check[];
+  stages?: Stage[];
+  hints: [string, string, string];
+  explanation: string;
+  rubric: [string, string, string];
+  followUp: string;
+  resource: string;
+};

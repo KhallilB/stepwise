@@ -4,12 +4,16 @@
     "vite.config.ts",
     "vitest.config.ts",
     "react-router.config.ts",
-    "playwright.config.ts"
+    "playwright.config.ts",
+    "dev/**/*.ts",
+    "app/react-lab/playwright-contract.ts",
+    "app/react-lab/types.ts"
   ],
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "composite": true,
     "types": ["node"],
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "bundler"

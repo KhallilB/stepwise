@@ -12,6 +12,14 @@ export default function Library() {
           <Heading level={1}>Stepwise</Heading>
           <Text>Pick a problem and step through it.</Text>
         </div>
+        <Card>
+          <Heading level={2} size="md">
+            <Link to="/react-lab">React interview lab</Link>
+          </Heading>
+          <Text>
+            Hands-on React practice for senior frontend interviews. Build, debug, and explain.
+          </Text>
+        </Card>
         <Grid as="ul" className="library">
           {problems.map((p) => (
             <Card as="li" key={p.slug}>
