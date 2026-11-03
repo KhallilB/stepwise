@@ -7,6 +7,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseAttempts, reviewStorageKey } from "../../interview-lab/app/react-lab/coach";
 import { NativeDriver, until } from "./native-driver";
+import { verifyNativeEditorKeys } from "./native-editor-keys";
 import { verifyNativePermissions } from "./native-permissions";
 
 assert.equal(process.platform, "darwin", "Native WKWebView tests require macOS");
@@ -57,6 +58,7 @@ try {
     "WKWebView test",
   );
   console.log("Native profile survives app quit and relaunch");
+  await verifyNativeEditorKeys(app);
   await driver.navigate("/local-model");
   await until(
     "cached local model ready",

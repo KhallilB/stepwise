@@ -20,6 +20,8 @@ import "monaco-editor/editor/contrib/gotoError/browser/gotoError";
 import "monaco-editor/editor/contrib/gotoSymbol/browser/goToCommands";
 import "monaco-editor/editor/contrib/rename/browser/rename";
 import "monaco-editor/editor/contrib/multicursor/browser/multicursor";
+import "monaco-editor/editor/contrib/wordOperations/browser/wordOperations";
+import "monaco-editor/editor/contrib/linesOperations/browser/linesOperations";
 import "monaco-editor/editor/contrib/parameterHints/browser/parameterHints";
 import "monaco-editor/editor/contrib/snippet/browser/snippetController2";
 import "monaco-editor/editor/contrib/suggest/browser/suggestController";

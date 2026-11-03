@@ -387,7 +387,15 @@ export function CodeEditor({
               <br />
               F12 definition · F2 rename · ⌘/Ctrl . quick fix
               <br />
-              Ctrl M lets Tab leave editor.
+              Mac: ⌥←/→ word · ⌘←/→ line · ⌘↑/↓ file
+              <br />
+              Windows: Ctrl ←/→ word · Home/End line
+              <br />
+              Windows: Ctrl Home/End file · Shift extends selection
+              <br />
+              ⌥/Ctrl Backspace deletes word · Alt ↑/↓ moves line
+              <br />
+              Tab leaves editor: Mac Ctrl Shift M · Windows Ctrl M
               <br />
               Type rstate or reffect for React snippets.
             </Text>
